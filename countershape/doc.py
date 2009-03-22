@@ -2,9 +2,6 @@ from __future__ import with_statement
 import os, os.path, re, fnmatch, shutil, shlex, string
 from optparse import OptionParser
 import model, utils, html, state, template, form, widgets, encoding
-from pygments import highlight
-from pygments.lexers import PythonLexer
-from pygments.formatters import HtmlFormatter
 
 _ConfFile = "index.py"
 

@@ -1,7 +1,3 @@
-"""
-    This module contains HTML building blocks that don't require an
-    underpinning dynamic application.
-"""
 import copy
 import utils
 import tinytree

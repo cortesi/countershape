@@ -1,7 +1,7 @@
 import cubictemp, tinytree
 import model, state, html, widgets, textish
-import pygments
-import pygments.lexers
+import pygments, pygments.lexers, pygments.formatters
+from pygments import highlight
 
 
 class Syntax:
