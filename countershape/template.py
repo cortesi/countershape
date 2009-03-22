@@ -1,53 +1,68 @@
 import cubictemp, tinytree
 import model, state, html, widgets, textish
-import pygments, pygments.lexers, pygments.formatters
-from pygments import highlight
 
+try:
+    import pygments, pygments.lexers, pygments.formatters
+    from pygments import highlight
+    class Syntax:
+        def __init__(self,
+                     lexer,
+                     style="native",
+                     linenostep=0,
+                     linenos=False,
+                     cssClass="highlight"):
+            self.lexer, self.style = lexer, style
+            self.linenostep, self.linenos = linenostep, linenos
+            self.cssClass = cssClass
 
-class Syntax:
-    def __init__(self,
-                 lexer,
-                 style="native",
-                 linenostep=0,
-                 linenos=False,
-                 cssClass="highlight"):
-        self.lexer, self.style = lexer, style
-        self.linenostep, self.linenos = linenostep, linenos
-        self.cssClass = cssClass
+        def withConf(self,
+                     style="native",
+                     linenostep=0,
+                     linenos=False,
+                     cssClass="highlight"):
+            return Syntax(lexer=self.lexer,
+                          style=style,
+                          linenostep=linenostep,
+                          linenos=linenos,
+                          cssClass=cssClass)
 
-    def withConf(self,
-                 style="native",
-                 linenostep=0,
-                 linenos=False,
-                 cssClass="highlight"):
-        return Syntax(lexer=self.lexer,
-                      style=style,
-                      linenostep=linenostep,
-                      linenos=linenos,
-                      cssClass=cssClass)
-
-    def __call__(self, txt):
-        txt = txt.rstrip()
-        fargs = dict(style=self.style)
-        if self.linenos:
-            fargs["linenos"] = self.linenos
-        if self.linenostep:
-            fargs["linenostep"] = self.linenostep
-        if self.cssClass:
-            fargs["cssclass"] = self.cssClass
-        return "%s\n"%unicode(
-                pygments.highlight(
-                    txt,
-                    self.lexer,
-                    pygments.formatters.HtmlFormatter(**fargs)
+        def __call__(self, txt):
+            txt = txt.rstrip()
+            fargs = dict(style=self.style)
+            if self.linenos:
+                fargs["linenos"] = self.linenos
+            if self.linenostep:
+                fargs["linenostep"] = self.linenostep
+            if self.cssClass:
+                fargs["cssclass"] = self.cssClass
+            return "%s\n"%unicode(
+                    pygments.highlight(
+                        txt,
+                        self.lexer,
+                        pygments.formatters.HtmlFormatter(**fargs)
+                    )
                 )
-            )
+    pySyntax            = Syntax(pygments.lexers.PythonLexer())
+    pyTracebackSyntax   = Syntax(pygments.lexers.PythonTracebackLexer())
+    cssSyntax           = Syntax(pygments.lexers.CssLexer())
+    htmlSyntax          = Syntax(pygments.lexers.HtmlLexer())
+    jsSyntax            = Syntax(pygments.lexers.JavascriptLexer())
+except ImportError:
+    class Syntax:
+        def __init__(self, *args, **kwargs):
+            pass
 
-pySyntax            = Syntax(pygments.lexers.PythonLexer())
-pyTracebackSyntax   = Syntax(pygments.lexers.PythonTracebackLexer())
-cssSyntax           = Syntax(pygments.lexers.CssLexer())
-htmlSyntax          = Syntax(pygments.lexers.HtmlLexer())
-jsSyntax            = Syntax(pygments.lexers.JavascriptLexer())
+        def withConf(self, *args, **kwargs):
+            return Syntax()
+
+        def __call__(self, txt):
+            return "%s\n"%unicode(txt)
+    pySyntax            = Syntax(pygments.lexers.PythonLexer())
+    pyTracebackSyntax   = Syntax(pygments.lexers.PythonTracebackLexer())
+    cssSyntax           = Syntax(pygments.lexers.CssLexer())
+    htmlSyntax          = Syntax(pygments.lexers.HtmlLexer())
+    jsSyntax            = Syntax(pygments.lexers.JavascriptLexer())
+    
 
 def cubescript(txt):
     txt = txt.replace("@_!", "@!")
