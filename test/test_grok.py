@@ -275,6 +275,7 @@ class uModule(libpry.AutoTree):
 
     def test_class_str(self):
         assert str(list(self.mod.classes())[2])
+        assert str(self.mod())
 
     def test_functions(self):
         f = self.mod["Foo"]
@@ -348,7 +349,7 @@ class uFunc(libpry.AutoTree):
         str(x)
 
 
-class uProject(libpry.AutoTree):
+class uProjectCShape(libpry.AutoTree):
     def setUpAll(self):
         self.p = countershape.grok.grok("../countershape")
 
@@ -367,10 +368,20 @@ class uProject(libpry.AutoTree):
         assert self.p("model")
 
 
+class uProject(libpry.AutoTree):
+    def setUpAll(self):
+        self.p = countershape.grok.grok("testmod")
+
+    def test_paths(self):
+        assert self.p("foo")
+
+
+
 tests = [
     u_TokenIter(),
     u_TokProc(),
     uModule(),
     uFunc(),
-    uProject()
+    uProject(),
+    uProjectCShape()
 ]
