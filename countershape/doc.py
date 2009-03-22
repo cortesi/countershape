@@ -220,7 +220,7 @@ class Directory(StaticDirectory, _DocMixin):
             self.namespace.update(ns.getDict())
 
         # Copy files not explicitly listed
-        for f in os.listdir(self.src):
+        for f in sorted(os.listdir(self.src)):
             fullSrc = os.path.join(self.src, f)
             for patt in self.excludePatterns:
                 if fnmatch.fnmatch(fullSrc, patt):
