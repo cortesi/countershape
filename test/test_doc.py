@@ -2,7 +2,6 @@ import shutil, os
 import libpry
 import countershape
 import countershape.doc as doc
-from pyparsing import *
 
 
 class DocTestPage(doc._DocHTMLPage):

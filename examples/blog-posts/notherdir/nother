@@ -1,0 +1,6 @@
+Nother post
+short: This is a short summary of the post
+
+<img src="@!urlTo("posts/beware.jpg")!@">
+
+Another post.

@@ -1,7 +1,7 @@
 from __future__ import with_statement
 import os, os.path, re, fnmatch, shutil, shlex, string
 from optparse import OptionParser
-import model, utils, html, state, template, form, widgets, encoding
+import model, utils, html, state, template, widgets, encoding
 
 _ConfFile = "index.py"
 
