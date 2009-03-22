@@ -34,19 +34,17 @@ class uPython(libpry.AutoTree):
         d = doc.PythonModule("name", "title", "testmod")
 
 
-class u_DocHTMLPage(countershape.test.DummyState, libpry.TmpDirMixin):
+class u_DocHTMLPage(libpry.AutoTree, libpry.TmpDirMixin):
     def setUp(self):
         self.application = doc._DocApplication(
             TestRoot([
                 DummyPage()
             ])
         )
-        countershape.test.DummyState.setUp(self)
         libpry.TmpDirMixin.setUp(self)
 
     def tearDown(self):
         libpry.TmpDirMixin.tearDown(self)
-        countershape.test.DummyState.tearDown(self)
 
     def test_repr(self):
         repr(countershape.state.page)

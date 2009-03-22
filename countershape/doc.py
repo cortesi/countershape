@@ -47,7 +47,7 @@ class _DocMixin:
     
 
 class _DocHTMLPage(model.HTMLPage, _DocMixin):
-    link = form.Link([])
+    link = model.Link([])
     _verbatimComponents = "pageTitle"
     _pageTitle = None
     def __init__(self, name, title, namespace=None, src=None, pageTitle=None):
@@ -111,7 +111,7 @@ class Page(_DocHTMLPage):
 
 
 class Copy(model.Page, _DocMixin):
-    link = form.Link([])
+    link = model.Link([])
     def __init__(self, name, title=None, src=None):
         self.name, self.src = self._nameSrc(name, src)
         model.Page.__init__(self)

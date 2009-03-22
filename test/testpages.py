@@ -47,7 +47,7 @@ class TPageWithTitle(TPage):
     title = "Tester"
 
 
-class TestApplication(countershape.Application):
+class TestApplication(countershape.BaseApplication):
     testing = 1
     debug = 1
     scriptName = "foo"

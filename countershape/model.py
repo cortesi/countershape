@@ -4,12 +4,34 @@
 import os.path, sys, cStringIO, inspect, types, copy
 import mimetypes, time
 import cubictemp, tinytree
-import countershape, html, layout, template, form, encoding
+import countershape, html, layout, template, encoding
 import utils, state
 
 
 class ApplicationError(Exception): pass
 
+
+class Link(html._Renderable):
+    """
+        A standard href link.
+    """
+    def __init__(self, destination):
+        """
+            The arguments are as follows:
+
+                destination         Link destination (optional)
+        """
+        html._Renderable.__init__(self)
+        self.destination = destination
+
+    def __call__(self, valobj=None, **kwargs):
+        return html._Renderable.__call__(self, valobj, **kwargs)
+
+    def __str__(self):
+        content = self.page.title or self.page.name
+        vals = {}
+        url = UrlTo(self.destination, **vals)
+        return unicode(html.A(content, href=url))
 
 class UrlTo:
     """
@@ -116,7 +138,7 @@ class Page(tinytree.Tree):
         tinytree.Tree.__init__(self, children)
         if not self.name:
             self.name = self.__class__.__name__
-        self.link = form.Link(self)
+        self.link = Link(self)
 
     def _prime(self, app):
         """
@@ -284,15 +306,6 @@ class BaseRoot(Page):
             return i
 
 
-class AppRoot(BaseRoot):
-    def __init__(self, *args, **kwargs):
-        BaseRoot.__init__(self, *args, **kwargs)
-        self.first = self.getFirst()
-
-    def run(self):
-        return "test"
-
-
 class BaseApplication(object):
     testing = 0
     def __init__(self, root):
@@ -448,6 +461,3 @@ class BaseApplication(object):
             yield d
         self.post(page)
 
-
-class Application(BaseApplication):
-    logErr = sys.stderr

@@ -42,8 +42,8 @@ class DummyState(RenderTester):
     testing = 2
     def setUp(self):
         if not self.application:
-            self.application = countershape.Application(
-                    model.AppRoot(
+            self.application = countershape.BaseApplication(
+                    model.BaseRoot(
                         [
                             TestPage()
                         ]

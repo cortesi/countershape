@@ -29,7 +29,7 @@ class CLayout(testpages.TPageHTML):
 class uLayoutRender(countershape.test.RenderTester):
     def setUp(self):
         self.application = testpages.TestApplication(
-            countershape.AppRoot([
+            countershape.BaseRoot([
                 CMissingMethodLayout("missing"),
                 CLayout("good"),
             ])

@@ -74,7 +74,7 @@ class uTemplate(countershape.test.DummyState):
 class uFileTemplate(countershape.test.DummyState):
     def setUp(self):
         self.application = TestApplication(
-            countershape.AppRoot(
+            countershape.BaseRoot(
                 [
                     TPageHTMLFileTemplate(),
                 ]

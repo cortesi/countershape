@@ -13,7 +13,7 @@ class uContext(countershape.test.DummyState):
 
     def test_relativePath(self):
         self.application = TestApplication(
-            AppRoot(
+            BaseRoot(
                 [
                     TPageHTML("foo"), [
                         TPageHTML("bar")
@@ -73,7 +73,7 @@ class uHeader(test.DummyState):
 class uHTMLPage(countershape.test.RenderTester):
     def setUp(self):
         self.application = TestApplication(
-            AppRoot(
+            BaseRoot(
                 [
                     TPageHTMLFileTemplate(),
                     [
@@ -106,7 +106,7 @@ class uHTMLPage(countershape.test.RenderTester):
 
 class uBaseApplication(test.RenderTester):
     def setUp(self):
-        self.r = AppRoot(
+        self.r = BaseRoot(
             [
                 TException("one"),
             ]
@@ -121,7 +121,7 @@ class uBaseApplication(test.RenderTester):
 class uApplication(test.DummyState):
     def setUp(self):
         self.application = TestApplication(
-           AppRoot(
+           BaseRoot(
                 [
                     TPageHTML("base"),
                     [
@@ -144,7 +144,7 @@ class uApplication(test.DummyState):
         assert self.application.getPage(p) == p
 
     def test_getPageRoot(self):
-        assert self.application.getPage("").name == "AppRoot"
+        assert self.application.getPage("").name == "BaseRoot"
 
     def test_LinkToNoArgs(self):
         assert str(LinkTo("base"))
@@ -197,7 +197,7 @@ class uPageModel(libpry.AutoTree):
         self.a, self.b = TPage("test"), TPage("test")
         self.s1, self.s2 = TPage("end", structural=True), TPage("end", structural=True)
         self.p1, self.p2 = TPage("sub1", structural=True), TPage("sub2", structural=True)
-        self.r = AppRoot([
+        self.r = BaseRoot([
                 TPage("base", structural=False, internal=True),[
                     self.a,
                     TPage("one", structural=True), [
@@ -269,7 +269,7 @@ class uPageModel(libpry.AutoTree):
 
     def test_root_url(self):
         state.page = self.t.getPage("one/two")
-        assert str(UrlTo("AppRoot")) == ".."
+        assert str(UrlTo("BaseRoot")) == ".."
 
     def test_getPath(self):
         page, path = self.t.getPath(["one", "two"])
@@ -301,7 +301,7 @@ class uPageModel(libpry.AutoTree):
 
 class uPageModelErrors(libpry.AutoTree):
     def test_ambiguouschild(self):
-        r = AppRoot([
+        r = BaseRoot([
             TPage("one", structural=True), [
                 TPage("test"),
                 TPage("test"),
@@ -314,7 +314,7 @@ class uPageModelErrors(libpry.AutoTree):
         )
 
     def test_ambiguouschild2(self):
-        r = AppRoot([
+        r = BaseRoot([
             TPage("one", structural=True), [
                 TPage("test"),
                 TPage("X", structural=False),[
@@ -329,7 +329,7 @@ class uPageModelErrors(libpry.AutoTree):
         )
 
     def test_ambiguoustoplevel(self):
-        r = AppRoot([
+        r = BaseRoot([
             TPage("test", structural=True),
             TPage("test", structural=False),
         ])
@@ -346,7 +346,7 @@ class TException(TPage):
 
 
 _TestApp = TestApplication(
-    AppRoot(
+    BaseRoot(
         [
             TPage("one", structural=True),
             [

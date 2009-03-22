@@ -364,7 +364,7 @@ class uProject(libpry.AutoTree):
         libpry.raises("no such path", self.p, "model.bar.boing")
 
     def test_paths(self):
-        assert self.p("form")
+        assert self.p("model")
 
 
 tests = [
