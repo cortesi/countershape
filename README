@@ -1,8 +1,5 @@
 
-Countershape depends on the following modules:
-
-    - Pygments  
-        http://pygments.org/
+Countershape requires the following modules:
 
     - TinyTree
         http://dev.nullcube.com
@@ -11,8 +8,11 @@ Countershape depends on the following modules:
         http://dev.nullcube.com
 
 
-And if you want to run the test suite, you will also need:
+Optional modules:
 
-    - Pry
+    - Pygments for syntax highlighting
+        http://pygments.org/
+
+    - Pry to run the test suite
         http://dev.nullcube.com
 
