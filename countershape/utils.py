@@ -102,7 +102,7 @@ def isNumeric(obj):
         return 1
 
 
-fileExcludePatterns = ["*.svn*", "*/*.swp", "*/*.swo", "README"]
+fileExcludePatterns = ["*.svn*", "*/*.swp", "*/*.swo", "*/README"]
 
 def walkTree(path, exclude=fileExcludePatterns):
     for root, dirs, files in os.walk(path):
@@ -113,65 +113,6 @@ def walkTree(path, exclude=fileExcludePatterns):
                     break
             else:
                yield relpath
-
-
-class MultiDict(UserDict.DictMixin):
-    """
-        MultiDict objects are dictionaries that can hold multiple objects per
-        key.
-
-        Note that this class assumes that keys are strings.
-
-        Keys have no order, but the order in which values are added to a key is
-        preserved.
-    """
-    _helper = str
-    def __init__(self, *args, **kwargs):
-        self._d = dict()
-        tmp = dict(*args, **kwargs)
-        for k, v in tmp.items():
-            self[k] = v
-
-    def __delitem__(self, key):
-        del self._d[key]
-
-    def __getitem__(self, key):
-        key = self._helper(key)
-        if self._d.has_key(key):
-            return self._d[key]
-        else:
-            raise KeyError, "No such key: %s"%key
-    
-    def __setitem__(self, key, value):
-        if not isSequenceLike(value):
-            raise ValueError, "Cannot insert non-sequence."
-        key = self._helper(key)
-        self._d[key] = value
-
-    def extend(self, key, value):
-        if not isSequenceLike(value):
-            raise ValueError, "Cannot extend value with non-sequence."
-        if not self.has_key(key):
-            self[key] = []
-        self[key].extend(value)
-
-    def append(self, key, value):
-        self.extend(key, [value])
-
-    def has_key(self, key):
-        key = self._helper(key)
-        return self._d.has_key(key)
-
-    def keys(self):
-        return [unicode(i) for i in self._d.keys()]
-
-    def itemPairs(self):
-        """
-            Yield all possible pairs of items.
-        """
-        for i in self.keys():
-            for j in self[i]:
-                yield (i, j)
 
 
 class OrderedSet(list):

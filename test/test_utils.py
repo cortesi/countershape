@@ -51,6 +51,7 @@ class uisSequenceLike(libpry.AutoTree):
         assert utils.isSequenceLike([1, 2, 3])
         assert utils.isSequenceLike((1, 2, 3))
         assert not utils.isSequenceLike("foobar")
+        assert not utils.isSequenceLike(1)
         assert utils.isSequenceLike(["foobar", "foo"])
         x = iter([1, 2, 3])
         assert utils.isSequenceLike(x)
@@ -70,57 +71,6 @@ class uWalkTree(libpry.AutoTree):
         assert not "README" in s
         assert "copy" in s
         assert "foo/index.py" in s
-
-
-class uMultiDict(libpry.AutoTree):
-    def setUp(self):
-        self.md = utils.MultiDict()
-
-    def test_setget(self):
-        self.md.append("foo", 1)
-        assert self.md["foo"] == [1]
-
-    def test_del(self):
-        self.md.append("foo", 1)
-        del self.md["foo"]
-        assert not self.md.has_key("foo")
-
-    def test_extend(self):
-        self.md.append("foo", 1)
-        self.md.extend("foo", [2, 3])
-        assert self.md["foo"] == [1, 2, 3]
-
-    def test_extend_err(self):
-        self.md.append("foo", 1)
-        libpry.raises("non-sequence", self.md.extend, "foo", 2)
-
-    def test_get(self):
-        self.md.append("foo", 1)
-        self.md.append("foo", 2)
-        assert self.md.get("foo") == [1, 2]
-        assert self.md.get("bar") == None
-
-    def test_dict(self):
-        self.md.append("foo", 1)
-        self.md.append("foo", 2)
-        self.md["bar"] = [3]
-        assert self.md == self.md
-        assert dict(self.md) == self.md
-
-    def test_setitem(self):
-        libpry.raises(ValueError, self.md.__setitem__, "foo", "bar")
-        self.md["foo"] = ["bar"]
-        assert self.md["foo"] == ["bar"]
-
-    def test_itemPairs(self):
-        self.md.append("foo", 1)
-        self.md.append("foo", 2)
-        self.md.append("bar", 3)
-        l = list(self.md.itemPairs())
-        assert len(l) == 3
-        assert ("foo", 1) in l
-        assert ("foo", 2) in l
-        assert ("bar", 3) in l
 
 
 class uOrderedSet(libpry.AutoTree):
@@ -176,7 +126,6 @@ tests = [
     uisSequenceLike(),
     uisNumeric(),
     uWalkTree(),
-    uMultiDict(),
     uOrderedSet(),
     uBufIter(),
     uInDir(),
