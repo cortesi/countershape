@@ -1,0 +1,102 @@
+
+Textish is a MarkDown-inspired shorthand for producing HTML documentation. 
+
+First, the text is "de-dented" by trimming an amount of space equal to the
+smallest indent of any line from the left of each line. Next, the set of text
+transformations discussed below are performed. These transformations are NOT
+performed inside HTML block elements. 
+
+
+Paragraphs
+==========
+
+Any block of text is wrapped in &lt;p&gt; &lt;/p&gt; tags. A block of text is
+any contiguous set of lines and HTML blocks. HTML blocks are considered to be
+"units", regardless of any whitespace they contain.
+
+<!--(block | textish)-->
+This is a paragraph...
+<!--(end)-->
+
+<!--(block | textish)-->
+...and so is <div>
+
+this
+
+<div>
+<!--(end)-->
+
+<!--(block | textish)-->
+but this is two paragraphs.
+
+<div>something</div>"
+<!--(end)-->
+
+
+
+Headings
+========
+
+H1 and H2 headings can be created simply using double or single underlines:
+
+<!--(block | textish)-->
+H1 Heading
+==========
+
+H2 Heading
+----------
+<!--(end)-->
+
+An extended heading syntax allows you to specify the heading degree precisely
+with leading colons:
+
+<!--(block | textish)-->
+: H1 Heading
+------------
+
+::::: H5 Heading
+----------------
+<!--(end)-->
+
+
+
+Lists
+=====
+
+<!--(block | textish)-->
+* This is a item.
+* So is this.
+
+* And so is this. List items
+  can span multiple lines.
+<!--(end)-->
+
+Nested lists are not currently supported. If any list item in a list is
+separated from the rest of the list by a blank line, all items are wrapped in
+paragraph tags.
+
+
+Emphasis
+========  
+
+<!--(block | textish)-->
+Text can be given _emphasis_, or be made __strong__.
+<!--(end)-->
+
+Text can be given _emphasis_, or be made __strong__.
+
+
+Definitions
+===========
+
+Definition lists are handy in a number of circumstances, especially code
+documentation. They are declared as follows:
+
+<!--(block | textish)-->
+:term This is a definition.
+<!--(end)-->
+
+Resulting in something like this:
+
+:term This is a definition.
+

@@ -1,0 +1,10 @@
+#!/usr/bin/env python2.5
+import os.path
+import countershape.doc as doc
+
+def main():
+    c = doc.CSDoc()
+    c.main()
+
+if __name__ == "__main__":
+    main()

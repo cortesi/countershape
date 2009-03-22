@@ -1,0 +1,77 @@
+
+    Textish operates as follows:
+
+        - First, the text is "de-dented" by trimming an amount of space equal
+          to the smallest indent of any line from the left of each line.
+        - Then, the following transformations are performed:
+
+                Paragraph:
+
+                    Any block of text is wrapped in <p> </p> tags. A block of
+                    text is any contiguous set of lines (where HTML block tags
+                    are considered to be a single "unit", regardless of
+                    contained newlines). That means that:
+
+                            "This is a single paragraph..."
+
+                            "...and so is this <div>
+
+                            something
+
+                            <div>"
+
+                            "but this is two paragraphs..
+
+                            <div>something</div>"
+
+                Heading:
+
+                    H1 Heading
+                    ==========
+
+                    H2 Heading
+                    ----------
+
+                    : H1 Heading
+                    ------------
+
+                    ::::: H5 Heading
+                    ----------------
+                    
+                    These are wrapped in <hX> tags where the X depends on the
+                    number of leading colons. 
+
+
+                UL Lists
+
+                    * This is a UL list item.
+                    * So is this.
+                    
+                    * And so is this. List items
+                      can span multiple lines.
+
+                    Nested lists are not currently supported. If any list item
+                    in a list is separated from the rest of the list by a blank
+                    line, all items are wrapped in a P tag.
+
+                Emphasis:
+
+                    _emphasis_ -> <em>emphasis</em>
+                    __strong__  -> <strong>strong</strong>
+
+
+                Footnotes:
+
+                    This is a footnote[1]. This is a footnote[this can be any
+                    text]. 
+
+                    [1] And here is where it is defined.
+                    [this can be any text] And here is where it is defined.
+
+                    All footnotes are collected together at the end of the
+                    document output. 
+
+        - The markup transformations shown above are NOT performed inside HTML
+          block elements. Quotes, code blocks, etc. are therefore done just as
+          they are in a straight HTML document.
+

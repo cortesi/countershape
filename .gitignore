@@ -1,0 +1,8 @@
+# Python object files
+*.py[cd]
+# Vim swap files
+*.swp
+*.swo
+/build
+/dist
+/doc

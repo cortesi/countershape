@@ -1,0 +1,18 @@
+
+Countershape depends on the following modules:
+
+    - Pygments  
+        http://pygments.org/
+
+    - TinyTree
+        http://dev.nullcube.com
+
+    - Cubictemp
+        http://dev.nullcube.com
+
+
+And if you want to run the test suite, you will also need:
+
+    - Pry
+        http://dev.nullcube.com
+

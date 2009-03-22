@@ -1,0 +1,9 @@
+
+Icon source files are in the Xara Xtreme format. Some icons are modified
+versions of the BSD-licensed icon set found here:
+
+http://svgicons.sourceforge.net/
+
+After modifying an icon, make sure to export it to a corresponding .gif file
+for use by Countershape. The .gif files are also checked into the repository,
+to make it easy for people without Xara Xtreme.
