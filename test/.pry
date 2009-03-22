@@ -1,3 +1,2 @@
-
 coverage = ../countershape
-exclude = ../countershape/external
+exclude = ../countershape/rssgen.py

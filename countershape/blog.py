@@ -3,8 +3,6 @@ import os.path, re, datetime, urllib
 import html, model, doc, utils
 import rssgen
 
-class QBlagError(Exception): pass
-
 class _PostRenderer(html._Renderable):
     """
         Lazy post renderer.
@@ -253,7 +251,7 @@ class Blog:
         self.blogname, self.url, self.base, self.src = blogname, url, base, src
         self.blogdesc = blogdesc
         if not os.path.isdir(src):
-            raise QBlagError("Blog source is not a directory: %s"%src)
+            raise model.ApplicationError("Blog source is not a directory: %s"%src)
         self.blogdir = BlogDirectory(base, src)
 
     def index(self, name, title, posts=10):

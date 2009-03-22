@@ -1,6 +1,7 @@
 import cubictemp, tinytree
 import model, state, html, widgets, textish
 
+#begin nocover
 try:
     import pygments, pygments.lexers, pygments.formatters
     from pygments import highlight
@@ -62,6 +63,7 @@ except ImportError:
     cssSyntax           = Syntax(pygments.lexers.CssLexer())
     htmlSyntax          = Syntax(pygments.lexers.HtmlLexer())
     jsSyntax            = Syntax(pygments.lexers.JavascriptLexer())
+#end nocover
     
 
 def cubescript(txt):

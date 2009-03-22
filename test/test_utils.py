@@ -72,16 +72,6 @@ class uWalkTree(libpry.AutoTree):
         assert "foo/index.py" in s
 
 
-class u_CaselessHelper(libpry.AutoTree):
-    def test_hash(self):
-        a = utils._CaselessHelper("Foo")
-        b = utils._CaselessHelper("foo")
-        d = {}
-        d[a] = a
-        d[b] = b
-        assert len(d) == 1
-
-
 class uMultiDict(libpry.AutoTree):
     def setUp(self):
         self.md = utils.MultiDict()
@@ -109,14 +99,6 @@ class uMultiDict(libpry.AutoTree):
         self.md.append("foo", 2)
         assert self.md.get("foo") == [1, 2]
         assert self.md.get("bar") == None
-
-    def test_caseSensitivity(self):
-        self.md._helper = utils._CaselessHelper
-        self.md["foo"] = [1]
-        self.md.append("FOO", 2)
-        assert self.md["foo"] == [1, 2]
-        assert self.md["FOO"] == [1, 2]
-        assert self.md.has_key("FoO")
 
     def test_dict(self):
         self.md.append("foo", 1)
@@ -194,7 +176,6 @@ tests = [
     uisSequenceLike(),
     uisNumeric(),
     uWalkTree(),
-    u_CaselessHelper(),
     uMultiDict(),
     uOrderedSet(),
     uBufIter(),

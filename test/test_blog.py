@@ -120,6 +120,12 @@ class uBlog(libpry.TmpDirMixin, libpry.AutoTree):
                 )
             )
 
+    def test_invalid_blogdir(self):
+        libpry.raises(
+            "not a directory", blog.Blog,
+            "Title", "description", "http://foo", "nonexistent", "nonexistent"
+        )
+
     def test_render(self):
         self.a.render(self["tmpdir"])
 

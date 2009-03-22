@@ -61,6 +61,9 @@ class uPageIndex(countershape.test.DummyState):
         assert "nest1" in p
         assert "nest2" in p
 
+    def test_currentactive(self):
+        str(ParentPageIndex("nest1", currentActive=True))
+
 
 class CSiblingNavBarPage(testpages.TPageHTML):
     def body(self):

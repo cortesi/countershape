@@ -115,24 +115,6 @@ def walkTree(path, exclude=fileExcludePatterns):
                yield relpath
 
 
-class _CaselessHelper:
-    """
-        Helper class used with MultiDict to provide a case-insensitive but
-        case-preserving dictionary.
-    """
-    def __init__(self, s):
-        self.s = s
-
-    def __eq__(self, other):
-        return self.s.lower() == other.s.lower()
-
-    def __hash__(self):
-        return hash(self.s.lower())
-
-    def __str__(self):
-        return self.s
- 
-
 class MultiDict(UserDict.DictMixin):
     """
         MultiDict objects are dictionaries that can hold multiple objects per
@@ -149,9 +131,6 @@ class MultiDict(UserDict.DictMixin):
         tmp = dict(*args, **kwargs)
         for k, v in tmp.items():
             self[k] = v
-
-    def clear(self):
-        self._d.clear()
 
     def __delitem__(self, key):
         del self._d[key]

@@ -301,9 +301,6 @@ class HTMLPage(Page):
 
 class BaseRoot(Page):
     root = True
-    def getFirst(self):
-        for i in self.preOrder():
-            return i
 
 
 class BaseApplication(object):
