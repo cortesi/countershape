@@ -50,14 +50,10 @@ class _DocHTMLPage(model.HTMLPage, _DocMixin):
             self.namespace = {}
         else:
             self.namespace = namespace
-        if pageTitle:
-            self._pageTitle = pageTitle
+        self._pageTitle = pageTitle
 
     def pageTitle(self, *args, **kwargs):
-        if self._pageTitle:
-            t = self._pageTitle
-        else:
-            t = model.HTMLPage.pageTitle(self)
+        t = self._pageTitle or model.HTMLPage.pageTitle(self)
         prefix = self.findAttr("titlePrefix")
         if prefix:
             return "%s%s"%(prefix, t)
@@ -292,18 +288,6 @@ class _DocApplication(model.BaseApplication):
                 out = self(i)
                 f = open(os.path.join(destination, *path), "w")
                 f.write(out)
-            d = i.__dict__.get("resources")
-            if d:
-                partDest = os.path.join(destination, *path)
-                for local, url in d.paths.values():
-                    p, f = os.path.split(url)
-                    dstdir = os.path.join(partDest, p)
-                    if not os.path.isdir(dstdir):
-                        os.makedirs(dstdir)
-                    shutil.copy(
-                        local,
-                        os.path.join(partDest, url)
-                    )
 
     def __call__(self, page):
         return list(model.BaseApplication.__call__(self, page))[0]
