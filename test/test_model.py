@@ -46,6 +46,17 @@ class uPageInstantiate(test.DummyState):
 
 
 class uHeader(test.DummyState):
+    def test_path(self):
+        h = Header(state.page)
+        h.path("foo.css")
+        h.path("bar.js")
+        assert "foo" in h._cssPath[0]
+        assert "bar" in h._jsPath[0]
+
+    def test_path_err(self):
+        h = Header(state.page)
+        libpry.raises("unrecognised resource extension", h.path, "foo.bar")
+
     def test_cssPath(self):
         h = Header(state.page)
         h.cssPath("foo")
@@ -103,6 +114,10 @@ class uHTMLPage(countershape.test.RenderTester):
         assert d.find("template") > -1
         assert d.find("html") > -1
 
+    def test_repr(self):
+        t = TPageHTMLTemplate()
+        assert repr(t)
+
 
 class uBaseApplication(test.RenderTester):
     def setUp(self):
@@ -146,8 +161,9 @@ class uApplication(test.DummyState):
     def test_getPageRoot(self):
         assert self.application.getPage("").name == "BaseRoot"
 
-    def test_LinkToNoArgs(self):
+    def test_LinkTo(self):
         assert str(LinkTo("base"))
+        assert LinkTo("base")()
 
     def test_linkTo_withTitle(self):
         assert str(LinkTo("TPageWithTitle"))
@@ -266,6 +282,7 @@ class uPageModel(libpry.AutoTree):
 
         assert self.s1.matchPage(["sub1", "page"], True)
         assert not self.s1.matchPage(["page"], True)
+        assert not self.r.matchPage(["page"], False)
 
     def test_root_url(self):
         state.page = self.t.getPage("one/two")

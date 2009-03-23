@@ -1,6 +1,6 @@
 from __future__ import with_statement
 import os.path, re, datetime, urllib
-import html, model, doc, utils
+import html, model, doc, utils, template
 import rssgen
 
 class _PostRenderer(html._Renderable):
@@ -17,7 +17,7 @@ class _PostRenderer(html._Renderable):
             date = html.H2(self.post.time.strftime("%d %B %Y"))
             head = html.DIV(title, date, _class="posthead")
             body = html.DIV(
-                       doc.Template(True, self.post.data),
+                       template.Template(True, self.post.data),
                        _class="postbody"
                    )
             return str(html.DIV(head, body, _class="post"))

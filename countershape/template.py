@@ -108,7 +108,10 @@ class _TemplateMixin:
         return cubictemp.Template.__call__(self, **kwargs)
 
     def _getNS(self):
-        return {}
+        if state.page and hasattr(state.page, "namespace"):
+            return state.page.namespace
+        else:
+            return {}
 
 
 class Template(_TemplateMixin, cubictemp.Template, tinytree.Tree):

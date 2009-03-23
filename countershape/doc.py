@@ -5,11 +5,6 @@ import model, utils, html, state, template, widgets, encoding
 
 _ConfFile = "index.py"
 
-class Template(template.Template):
-    def _getNS(self):
-        return state.page.namespace
-
-
 class _Bunch:
     def __init__(self, **kwds):
         self.__dict__.update(kwds)
@@ -83,7 +78,7 @@ class _DocHTMLPage(model.HTMLPage, _DocMixin):
             base = os.path.dirname(self.src)
         with utils.InDir(base or "."):
             if utils.isStringLike(r) and (attr not in self._verbatimComponents):
-                return Template(self.findAttr("textish"), unicode(r))
+                return template.Template(self.findAttr("textish"), unicode(r))
             else:
                 return r
 
@@ -100,7 +95,7 @@ class Page(_DocHTMLPage):
         dt = self.findAttr("contentName")
         if not dt in self.namespace:
             s = open(os.path.join(self.src)).read()
-            self.namespace[dt] = Template(self.findAttr("textish"), s)
+            self.namespace[dt] = template.Template(self.findAttr("textish"), s)
             self.namespace[dt].name = self.src
 
     def __repr__(self):

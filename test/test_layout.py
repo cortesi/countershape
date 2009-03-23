@@ -5,19 +5,17 @@ import testpages
 
 
 class TestLayout(countershape.layout.Layout):
-    components = ("body", "inline", "header", "special")
+    bodyClass = "test"
+    components = ("body", "header", "special")
+
 
 class CMissingMethodLayout(testpages.TPageHTML):
-    layout = TestLayout()
-
+    layout = TestLayout("templates/frame.html")
 
 class CLayout(testpages.TPageHTML):
     layout = TestLayout()
     def body(self):
         yield "body"
-
-    def inline(self):
-        yield "inline"
 
     def header(self):
         yield "header"

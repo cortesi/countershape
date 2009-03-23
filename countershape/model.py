@@ -33,6 +33,7 @@ class Link(html._Renderable):
         url = UrlTo(self.destination, **vals)
         return unicode(html.A(content, href=url))
 
+
 class UrlTo:
     """
         A lazily evaluated URL to a page in this application.
