@@ -135,7 +135,9 @@ class Page(tinytree.Tree):
     structural = False
     def __init__(self, children = None):
         if state.page and not state.application.testing:
-            raise ApplicationError("Page object instantiated during page call.")
+            raise ApplicationError(
+                    "Page object instantiated during page call. Last page: %s"%state.page.name
+                )
         tinytree.Tree.__init__(self, children)
         if not self.name:
             self.name = self.__class__.__name__

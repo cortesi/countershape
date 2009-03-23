@@ -112,3 +112,8 @@ class DummyState(RenderTester):
             raise countershape.model.ApplicationError, p
         self.application.pre(p)
 
+    def tearDown(self):
+        if self.application:
+            self.application._resetState()
+        
+

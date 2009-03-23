@@ -7,8 +7,8 @@ class _PostRenderer(html._Renderable):
     """
         Lazy post renderer.
     """
-    def __init__(self, post):
-        self.post = post
+    def __init__(self, post, markup):
+        self.post, self.markup = post, markup
         self.src = os.path.abspath(post.src)
     
     def __str__(self):
@@ -17,7 +17,7 @@ class _PostRenderer(html._Renderable):
             date = html.H2(self.post.time.strftime("%d %B %Y"))
             head = html.DIV(title, date, _class="posthead")
             body = html.DIV(
-                       template.Template(True, self.post.data),
+                       template.Template(self.markup, self.post.data),
                        _class="postbody"
                    )
             return str(html.DIV(head, body, _class="post"))
@@ -127,7 +127,7 @@ class Post(doc._DocHTMLPage):
     def _prime(self, app):
         doc._DocHTMLPage._prime(self, app)
         dt = self.findAttr("contentName")
-        self.namespace[dt] = _PostRenderer(self)
+        self.namespace[dt] = _PostRenderer(self, self.findAttr("markup"))
 
     def __repr__(self):
         return "Post(%s, \"%s\")"%(self.time.strftime("%d %B %Y"), self.title)
@@ -156,7 +156,7 @@ class IndexPage(doc._DocHTMLPage):
     def _getIndex(self):
         out = html.Group()
         for i in self.blogdir.sortedPosts()[:self.posts]:
-            out.addChild(_PostRenderer(i))
+            out.addChild(_PostRenderer(i, self.findAttr("markup")))
         return out
 
     def _getLayoutComponent(self, attr):

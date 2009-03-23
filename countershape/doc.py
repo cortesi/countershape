@@ -74,7 +74,7 @@ class _DocHTMLPage(model.HTMLPage, _DocMixin):
             base = os.path.dirname(self.src)
         with utils.InDir(base or "."):
             if utils.isStringLike(r) and (attr not in self._verbatimComponents):
-                return template.Template(self.findAttr("textish"), unicode(r))
+                return template.Template(self.findAttr("markup"), unicode(r))
             else:
                 return r
 
@@ -91,7 +91,7 @@ class Page(_DocHTMLPage):
         dt = self.findAttr("contentName")
         if not dt in self.namespace:
             s = open(os.path.join(self.src)).read()
-            self.namespace[dt] = template.Template(self.findAttr("textish"), s)
+            self.namespace[dt] = template.Template(self.findAttr("markup"), s)
             self.namespace[dt].name = self.src
 
     def __repr__(self):
@@ -249,7 +249,7 @@ class _DocRoot(Directory):
     structural = False
     # Default namespace tag for file content
     contentName = "body"
-    textish = True
+    markup = "textish"
     _baseNS = dict(
         pySyntax            = template.pySyntax,
         pyTracebackSyntax   = template.pyTracebackSyntax,

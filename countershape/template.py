@@ -92,6 +92,9 @@ def _ns():
         htmlescape          = cubictemp.escape
     )
 
+markup = dict(
+    textish = textish.Textish
+)
 
 class _TemplateMixin:
     def __str__(self):
@@ -100,7 +103,7 @@ class _TemplateMixin:
         kwargs.update(self._getNS())
         kwargs.update(self.nsDict)
         s = self.block(**kwargs)
-        return unicode(textish.Textish(s)) if self.textish else s
+        return unicode(markup[self.markup](s)) if self.markup else s
 
     def __call__(self, *args, **kwargs):
         kwargs.update(_ns())
@@ -115,14 +118,14 @@ class _TemplateMixin:
 
 
 class Template(_TemplateMixin, cubictemp.Template, tinytree.Tree):
-    def __init__(self, textish, *args, **kwargs):
+    def __init__(self, markup, *args, **kwargs):
         cubictemp.Template.__init__(self, *args, **kwargs)
         tinytree.Tree.__init__(self)
-        self.textish = textish
+        self.markup = markup
 
 
 class File(_TemplateMixin, cubictemp.File, tinytree.Tree):
-    def __init__(self, textish, *args, **kwargs):
+    def __init__(self, markup, *args, **kwargs):
         cubictemp.File.__init__(self, *args, **kwargs)
         tinytree.Tree.__init__(self)
-        self.textish = textish
+        self.markup = markup

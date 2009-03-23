@@ -66,7 +66,7 @@ class uTemplate(testpages.DummyState):
         s = """
             _this is bold_
         """
-        t = countershape.template.Template(True, s)
+        t = countershape.template.Template("textish", s)
         assert "<em>" in str(t)
 
 

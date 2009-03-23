@@ -119,6 +119,9 @@ class uBlog(libpry.TmpDirMixin, libpry.AutoTree):
                 )
             )
 
+    def tearDown(self):
+        self.a._resetState()
+
     def test_invalid_blogdir(self):
         libpry.raises(
             "not a directory", blog.Blog,
