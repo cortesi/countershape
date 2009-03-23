@@ -6,7 +6,7 @@ class Layout:
         A basic framework for layout objects.
     """
     bodyClass = ""
-    components = ("body", "header")
+    components = ("pageTitle", "body", "header")
     def __init__(self, path = None):
         if path:
             body = template.File(False, path)

@@ -181,8 +181,8 @@ class Directory(StaticDirectory, _DocMixin):
         A directory that auto-constructs its contents.
     """
     excludePatterns = utils.fileExcludePatterns + ["*/%s"%_ConfFile, "*/_*"]
-    stdHeaders = []
     def __init__(self, name, src=None, namespace=None):
+        self.stdHeaders = []
         name, self.src = self._nameSrc(name, src)
         StaticDirectory.__init__(self, name)
         if not namespace:
