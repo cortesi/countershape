@@ -108,6 +108,18 @@ except ImportError:
 #end nocover
 
 
+#begin nocover
+try:
+    import docutils.core
+    def rst(txt):
+        d = docutils.core.publish_parts(txt, writer_name = "html4css1")
+        return d["fragment"]
+    markup["rst"] = rst
+except ImportError:
+    pass
+#end nocover
+
+
 class _TemplateMixin:
     def __str__(self):
         kwargs = {}

@@ -10,6 +10,12 @@ Countershape requires the following modules:
 
 Optional modules:
 
+    - docutils for RST markup support.
+        http://docutils.sourceforge.net/
+
+    - python-markdown for Markdown markup support.
+        http://pygments.org/
+
     - Pygments for syntax highlighting
         http://pygments.org/
 

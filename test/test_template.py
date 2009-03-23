@@ -79,6 +79,15 @@ class uMarkdown(testpages.DummyState):
         assert "<p>" in s
 
 
+class uRst(testpages.DummyState):
+    def test_str(self):
+        s = """name@!this.name!@name"""
+        t = countershape.template.Template("rst", s, this=countershape.state.page)
+        s = str(t)
+        assert "TestPage" in s
+        assert "<p>" in s
+
+
 class uFileTemplate(testpages.DummyState):
     def setUp(self):
         self.application = testpages.TestApplication(
@@ -108,5 +117,7 @@ tests = [
 
 if countershape.template.markup.has_key("markdown"):
     tests.append(uMarkdown())
+if countershape.template.markup.has_key("rst"):
+    tests.append(uRst())
 
 
