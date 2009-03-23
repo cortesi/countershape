@@ -96,6 +96,18 @@ markup = dict(
     textish = textish.Textish
 )
 
+
+#begin nocover
+try:
+    import markdown
+    def md(txt):
+        return markdown.markdown(txt)
+    markup["markdown"] = md
+except ImportError:
+    pass
+#end nocover
+
+
 class _TemplateMixin:
     def __str__(self):
         kwargs = {}
