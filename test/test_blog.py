@@ -1,6 +1,5 @@
 import datetime, os, shutil
 import countershape
-import countershape.test as test
 import countershape.doc as doc
 import libpry
 import countershape.blog as blog

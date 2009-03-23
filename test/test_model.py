@@ -1,22 +1,22 @@
 import shutil, time, cStringIO
 import libpry
-import countershape, countershape.test
+import countershape, testpages
 from countershape import *
 from countershape import utils
-from testpages import *
+import testpages
 
 
-class uContext(countershape.test.DummyState):
+class uContext(testpages.DummyState):
     def setUp(self):
-        countershape.test.DummyState.setUp(self)
-        countershape.test.RenderTester.setUp(self)
+        testpages.DummyState.setUp(self)
+        testpages.RenderTester.setUp(self)
 
     def test_relativePath(self):
-        self.application = TestApplication(
+        self.application = testpages.TestApplication(
             BaseRoot(
                 [
-                    TPageHTML("foo"), [
-                        TPageHTML("bar")
+                    testpages.TPageHTML("foo"), [
+                        testpages.TPageHTML("bar")
                     ]
                 ]
             )
@@ -39,13 +39,13 @@ class uContext(countershape.test.DummyState):
         assert p.top(), ".."
 
 
-class uPageInstantiate(test.DummyState):
+class uPageInstantiate(testpages.DummyState):
     def test_instantiate_err(self):
         self.application.testing = False
         libpry.raises("instantiated during page call", Page)
 
 
-class uHeader(test.DummyState):
+class uHeader(testpages.DummyState):
     def test_path(self):
         h = Header(state.page)
         h.path("foo.css")
@@ -81,23 +81,23 @@ class uHeader(test.DummyState):
         assert len([i for i in s.splitlines() if i]) == 4
        
 
-class uHTMLPage(countershape.test.RenderTester):
+class uHTMLPage(testpages.RenderTester):
     def setUp(self):
-        self.application = TestApplication(
+        self.application = testpages.TestApplication(
             BaseRoot(
                 [
-                    TPageHTMLFileTemplate(),
+                    testpages.TPageHTMLFileTemplate(),
                     [
-                        TPageHTML("nestedpage")
+                        testpages.TPageHTML("nestedpage")
                     ],
-                    TPageHTMLTemplate(),
+                    testpages.TPageHTMLTemplate(),
                 ]
             )
         )
         self.application.testing = 2
 
     def test_pageTitle(self):
-        t = TPageHTMLTemplate()
+        t = testpages.TPageHTMLTemplate()
         assert t.pageTitle() == "TPageHTMLTemplate"
         t.title = "Foo"
         assert t.pageTitle() == "Foo"
@@ -115,11 +115,11 @@ class uHTMLPage(countershape.test.RenderTester):
         assert d.find("html") > -1
 
     def test_repr(self):
-        t = TPageHTMLTemplate()
+        t = testpages.TPageHTMLTemplate()
         assert repr(t)
 
 
-class uBaseApplication(test.RenderTester):
+class uBaseApplication(testpages.RenderTester):
     def setUp(self):
         self.r = BaseRoot(
             [
@@ -133,22 +133,22 @@ class uBaseApplication(test.RenderTester):
         libpry.raises("an exception", list, self.application(p))
 
 
-class uApplication(test.DummyState):
+class uApplication(testpages.DummyState):
     def setUp(self):
-        self.application = TestApplication(
+        self.application = testpages.TestApplication(
            BaseRoot(
                 [
-                    TPageHTML("base"),
+                    testpages.TPageHTML("base"),
                     [
-                        TPageNoLink(),
-                        TPageWithTitle()
+                        testpages.TPageNoLink(),
+                        testpages.TPageWithTitle()
                     ],
-                    TPage("internal", internal=True)
+                    testpages.TPage("internal", internal=True)
                 ]
             )
         )
         self.pageName = "base"
-        test.DummyState.setUp(self)
+        testpages.DummyState.setUp(self)
 
     def test_getPageErr(self):
         assert not self.application.getPage('nonexistent')
@@ -210,32 +210,32 @@ class uPageModel(libpry.AutoTree):
     """
     def setUp(self):
         state.page = None
-        self.a, self.b = TPage("test"), TPage("test")
-        self.s1, self.s2 = TPage("end", structural=True), TPage("end", structural=True)
-        self.p1, self.p2 = TPage("sub1", structural=True), TPage("sub2", structural=True)
+        self.a, self.b = testpages.TPage("test"), testpages.TPage("test")
+        self.s1, self.s2 = testpages.TPage("end", structural=True), testpages.TPage("end", structural=True)
+        self.p1, self.p2 = testpages.TPage("sub1", structural=True), testpages.TPage("sub2", structural=True)
         self.r = BaseRoot([
-                TPage("base", structural=False, internal=True),[
+                testpages.TPage("base", structural=False, internal=True),[
                     self.a,
-                    TPage("one", structural=True), [
-                        TPage("X", structural=False),[
-                            TPage("two", structural=True, internal=False), [
+                    testpages.TPage("one", structural=True), [
+                        testpages.TPage("X", structural=False),[
+                            testpages.TPage("two", structural=True, internal=False), [
                                 self.b,
                             ]
                         ]
                     ],
                     self.p1, [
-                        TPage("page", structural=True), [
+                        testpages.TPage("page", structural=True), [
                             self.s1
                         ],
                     ],
                     self.p2, [
-                        TPage("page", structural=True), [
+                        testpages.TPage("page", structural=True), [
                             self.s2,
                         ]
                     ],
                 ]
             ])
-        self.t = TestApplication(self.r)
+        self.t = testpages.TestApplication(self.r)
         state.application = self.t
 
     def tearDown(self):
@@ -319,69 +319,69 @@ class uPageModel(libpry.AutoTree):
 class uPageModelErrors(libpry.AutoTree):
     def test_ambiguouschild(self):
         r = BaseRoot([
-            TPage("one", structural=True), [
-                TPage("test"),
-                TPage("test"),
+            testpages.TPage("one", structural=True), [
+                testpages.TPage("test"),
+                testpages.TPage("test"),
             ]
         ])
         libpry.raises(
             countershape.ApplicationError,
-            TestApplication,
+            testpages.TestApplication,
             r
         )
 
     def test_ambiguouschild2(self):
         r = BaseRoot([
-            TPage("one", structural=True), [
-                TPage("test"),
-                TPage("X", structural=False),[
-                    TPage("test"),
+            testpages.TPage("one", structural=True), [
+                testpages.TPage("test"),
+                testpages.TPage("X", structural=False),[
+                    testpages.TPage("test"),
                 ]
             ]
         ])
         libpry.raises(
             countershape.ApplicationError,
-            TestApplication,
+            testpages.TestApplication,
             r
         )
 
     def test_ambiguoustoplevel(self):
         r = BaseRoot([
-            TPage("test", structural=True),
-            TPage("test", structural=False),
+            testpages.TPage("test", structural=True),
+            testpages.TPage("test", structural=False),
         ])
         libpry.raises(
             countershape.ApplicationError,
-            TestApplication,
+            testpages.TestApplication,
             r
         )
 
 
-class TException(TPage):
+class TException(testpages.TPage):
     def __call__(self, *args, **kwargs):
         raise ValueError("An exception")
 
 
-_TestApp = TestApplication(
+_TestApp = testpages.TestApplication(
     BaseRoot(
         [
-            TPage("one", structural=True),
+            testpages.TPage("one", structural=True),
             [
-                TPage("two"),
-                TPage("three")
+                testpages.TPage("two"),
+                testpages.TPage("three")
             ],
-            TPage("internal", internal=True),
+            testpages.TPage("internal", internal=True),
             TException("exception"),
         ]
     )
 )
 
 
-class uApplicationRenderNoTesting(test.RenderTester):
+class uApplicationRenderNoTesting(testpages.RenderTester):
     def setUp(self):
         self.application = _TestApp
         self.application.testing = 1
-        test.RenderTester.setUp(self)
+        testpages.RenderTester.setUp(self)
 
     def test_dirtystate(self):
         self.application.testing = 0
@@ -397,7 +397,7 @@ class uApplicationRenderNoTesting(test.RenderTester):
         self.application.pre(p)
 
 
-class uApplicationRender(test.RenderTester):
+class uApplicationRender(testpages.RenderTester):
     def setUp(self):
         self.application = _TestApp
         self.application.testing = 2

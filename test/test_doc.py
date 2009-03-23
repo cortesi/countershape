@@ -2,7 +2,7 @@ import shutil, os
 import libpry
 import countershape
 import countershape.doc as doc
-
+import testpages
 
 class DocTestPage(doc._DocHTMLPage):
     def __init__(self, name):
@@ -111,7 +111,7 @@ class u_DocRoot(libpry.TmpDirMixin, libpry.AutoTree):
         repr(x)
 
 
-class uPage(countershape.test.DummyState):
+class uPage(testpages.DummyState):
     def setUp(self):
         os.chdir("doctemplate")
         self.d = doc.Page("test.html", "Title", pageTitle="PageTitle")
@@ -122,10 +122,10 @@ class uPage(countershape.test.DummyState):
         )
         self.application.testing = 2
         self.pageName = "test.html"
-        countershape.test.DummyState.setUp(self)
+        testpages.DummyState.setUp(self)
 
     def tearDown(self):
-        countershape.test.DummyState.tearDown(self)
+        testpages.DummyState.tearDown(self)
         os.chdir("..")
 
     def test_call(self):
@@ -171,7 +171,7 @@ class uDirectory(libpry.AutoTree):
         repr(s)
 
 
-class uCopy(countershape.test.DummyState):
+class uCopy(testpages.DummyState):
     def setUp(self):
         self.application = doc._DocApplication(
             TestRoot([
@@ -179,7 +179,7 @@ class uCopy(countershape.test.DummyState):
             ])
         )
         self.pageName = "bar"
-        countershape.test.DummyState.setUp(self)
+        testpages.DummyState.setUp(self)
 
     def test_repr(self):
         repr(countershape.state.page)

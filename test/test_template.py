@@ -1,9 +1,8 @@
 import countershape
 import libpry
-from testpages import *
+import testpages
 
-
-class uSyntax(countershape.test.DummyState):
+class uSyntax(testpages.DummyState):
     def test_simple_syntax(self):
         assert countershape.template.pySyntax("def foo")
 
@@ -17,12 +16,12 @@ class uSyntax(countershape.test.DummyState):
         assert p("def foo")
 
 
-class uNS(countershape.test.DummyState):
+class uNS(testpages.DummyState):
     def setUp(self):
         self.d = countershape.doc._DocRoot("doctree")
         self.application = countershape.doc._DocApplication(self.d)
         self.pageName = "/test.html"
-        countershape.test.DummyState.setUp(self)
+        testpages.DummyState.setUp(self)
 
     def test_syntax_next(self):
         p = countershape.template._ns()["next"]
@@ -48,7 +47,7 @@ class ucubescript(libpry.AutoTree):
         assert "<!--(block bar)-->" in out
 
 
-class uTemplate(countershape.test.DummyState):
+class uTemplate(testpages.DummyState):
     def test_str(self):
         s = """
             top@!top!@top
@@ -71,17 +70,17 @@ class uTemplate(countershape.test.DummyState):
         assert "<em>" in str(t)
 
 
-class uFileTemplate(countershape.test.DummyState):
+class uFileTemplate(testpages.DummyState):
     def setUp(self):
-        self.application = TestApplication(
+        self.application = testpages.TestApplication(
             countershape.BaseRoot(
                 [
-                    TPageHTMLFileTemplate(),
+                    testpages.TPageHTMLFileTemplate(),
                 ]
             )
         )
         self.pageName = "TPageHTMLFileTemplate"
-        countershape.test.DummyState.setUp(self)
+        testpages.DummyState.setUp(self)
 
     def test_foo(self):
         s = self.call("TPageHTMLFileTemplate")

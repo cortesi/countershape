@@ -2,7 +2,7 @@ import countershape
 from countershape.widgets import *
 import testpages
 
-class uPageIndex(countershape.test.DummyState):
+class uPageIndex(testpages.DummyState):
     def setUp(self):
         self.application = testpages.TestApplication(
             countershape.BaseRoot(
@@ -27,7 +27,7 @@ class uPageIndex(countershape.test.DummyState):
             )
         )
         self.pageName = "one"
-        countershape.test.DummyState.setUp(self)
+        testpages.DummyState.setUp(self)
 
     def test_render(self):
         p = str(SiblingPageIndex("one", 2, exclude=["exclude"]))
@@ -81,7 +81,7 @@ class CNavBarPage(testpages.TPageHTML):
         yield NavBar(["one", "two"], _class="myclass")
 
 
-class uNavBar(countershape.test.RenderTester):
+class uNavBar(testpages.RenderTester):
     def setUp(self):
         self.application = testpages.TestApplication(
             countershape.BaseRoot([
@@ -105,7 +105,7 @@ class uNavBar(countershape.test.RenderTester):
         assert self.call("fixedmenu")
 
 
-class uPageTrail(countershape.test.DummyState):
+class uPageTrail(testpages.DummyState):
     def setUp(self):
         self.application = testpages.TestApplication(
             countershape.BaseRoot(
@@ -117,7 +117,7 @@ class uPageTrail(countershape.test.DummyState):
             )
         )
         self.pageName = "one-one"
-        countershape.test.DummyState.setUp(self)
+        testpages.DummyState.setUp(self)
 
     def test_init(self):
         s = PageTrail(state.page)

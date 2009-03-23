@@ -24,7 +24,7 @@ class CLayout(testpages.TPageHTML):
         yield "special"
 
 
-class uLayoutRender(countershape.test.RenderTester):
+class uLayoutRender(testpages.RenderTester):
     def setUp(self):
         self.application = testpages.TestApplication(
             countershape.BaseRoot([
