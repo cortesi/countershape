@@ -71,7 +71,7 @@ class Post(doc._DocHTMLPage):
             :text Entire text of post, including metadata.
         """
         title, time = None, None
-        lines = iter(text.lstrip().splitlines())
+        lines = utils.BuffIter(text.lstrip().splitlines())
         short = None
         for i in lines:
             i = i.strip()
@@ -88,13 +88,13 @@ class Post(doc._DocHTMLPage):
                     time = klass._timeFromStr(value)
                 elif name == "short":
                     v = [value]
-                    for i in lines:
-                        if i:
-                            v.append(i)
+                    for j in lines:
+                        if j and not klass._metaRe.match(j.strip()):
+                            v.append(j)
                         else:
+                            lines.push(j)
                             short = "\n".join(v).strip()
                             break
-                    break
                 else:
                     raise ValueError("Invalid metadata: %s"%i)
             else:

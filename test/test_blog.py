@@ -26,6 +26,30 @@ class uPost(libpry.AutoTree):
         assert p != p2
 
     def test_fromStr(self):
+        def check(title, time, data, short):
+            assert title == "my title"
+            assert time == datetime.datetime(1977, 11, 24, 14, 05)
+            d = data.strip()
+            assert d.startswith("this")
+            assert d.endswith("data")
+            d = short.strip()
+            assert d.startswith("this is the")
+            assert d.endswith("this post")
+
+        data = """
+            my title
+            short: this is the 
+            short description
+            of this post
+            time: 1977-11-24 14:05
+
+            this
+            is
+            data
+        """
+        title, time, data, short = blog.Post.fromStr(data)
+        check(title, time, data, short)
+
         data = """
             my title
             time: 1977-11-24 14:05
@@ -38,14 +62,8 @@ class uPost(libpry.AutoTree):
             data
         """
         title, time, data, short = blog.Post.fromStr(data)
-        assert title == "my title"
-        assert time == datetime.datetime(1977, 11, 24, 14, 05)
-        d = data.strip()
-        assert d.startswith("this")
-        assert d.endswith("data")
-        d = short.strip()
-        assert d.startswith("this is the")
-        assert d.endswith("this post")
+        check(title, time, data, short)
+
 
     def test_fromStr_err(self):
         libpry.raises("not a valid post", blog.Post.fromStr, "")

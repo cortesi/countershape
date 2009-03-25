@@ -21,7 +21,6 @@ class InDir(object):
         os.chdir(self.oldpath)
 
 
-
 def makeURL(destination, **args):
     """
         If destination is a list-like object, it is treated as a series of path
