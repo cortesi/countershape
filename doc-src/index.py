@@ -18,9 +18,8 @@ ns.cs = countershape.grok.grok("../countershape")
 
 pages = [
     Page("index.html", "Introduction"),
-    Page("start.html", "Getting Started"),
-    Page("doc.html", "Static Sites"),
-    Directory("doc"),
+    Page("structure.html", "Document Structure"),
+    Page("code.html", "Documenting Code"),
     Page("api.html", "API Reference"),
     Directory("api"),
     PythonModule("../countershape", "Source"),

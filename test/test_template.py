@@ -1,4 +1,5 @@
 import countershape
+from countershape import model
 import libpry
 import testpages
 
@@ -91,7 +92,7 @@ class uRst(testpages.DummyState):
 class uFileTemplate(testpages.DummyState):
     def setUp(self):
         self.application = testpages.TestApplication(
-            countershape.BaseRoot(
+            model.BaseRoot(
                 [
                     testpages.TPageHTMLFileTemplate(),
                 ]

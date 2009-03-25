@@ -207,14 +207,14 @@ class ArchivePage(doc._DocHTMLPage):
         return "Archive(%s)"%(self.title)
 
 
-class RSSPage(model.Page, doc._DocMixin):
+class RSSPage(model.BasePage, doc._DocMixin):
     structural = False
     def __init__(self, name, title, blogdir, posts, blogname, description, url):
         self.name, self.title = name, title
         self.blogdir, self.posts, self.blogname = blogdir, posts, blogname
         self.description, self.url = description, url
         self.src = "."
-        model.Page.__init__(self)
+        model.BasePage.__init__(self)
 
     def _getRSS(self):
         items = []

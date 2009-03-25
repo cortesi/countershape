@@ -1,6 +1,6 @@
 from __future__ import with_statement
 import os, os.path, re, fnmatch, shutil, shlex, string
-import model, utils, html, state, template, widgets, encoding
+import model, utils, html, state, template, widgets
 
 _ConfFile = "index.py"
 
@@ -97,17 +97,17 @@ class Page(_DocHTMLPage):
         return "DocTemplate(%s)"%self.name
 
 
-class Copy(model.Page, _DocMixin):
+class Copy(model.BasePage, _DocMixin):
     link = model.Link([])
     def __init__(self, name, title=None, src=None):
         self.name, self.src = self._nameSrc(name, src)
-        model.Page.__init__(self)
+        model.BasePage.__init__(self)
 
     def __repr__(self):
         return "Copy(%s)"%self.name
 
     def __call__(self, *args, **kwargs):
-        yield encoding.binary(file(self.src, "rb").read())
+        yield file(self.src, "rb").read()
 
 
 class PythonPage(_DocHTMLPage):
@@ -164,11 +164,11 @@ class PythonModule(_DocHTMLPage):
         return "PythonModule(%s)"%self.src
 
 
-class StaticDirectory(model.Page):
+class StaticDirectory(model.BasePage):
     structural = True
     internal = True
     def __init__(self, name):
-        model.Page.__init__(self)
+        model.BasePage.__init__(self)
         self.name = name
 
     def __repr__(self):

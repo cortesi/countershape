@@ -1,6 +1,7 @@
 import cStringIO
 import libpry
 import countershape
+import countershape.model as model
 import testpages
 
 
@@ -27,7 +28,7 @@ class CLayout(testpages.TPageHTML):
 class uLayoutRender(testpages.RenderTester):
     def setUp(self):
         self.application = testpages.TestApplication(
-            countershape.BaseRoot([
+            model.BaseRoot([
                 CMissingMethodLayout("missing"),
                 CLayout("good"),
             ])

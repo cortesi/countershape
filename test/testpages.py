@@ -1,35 +1,36 @@
 import libpry
 import countershape, countershape.template
 import countershape.doc
+import countershape.model as model
 
 
-class TPage(countershape.Page):
+class TPage(model.BasePage):
     def __init__(self, name = None, structural = False, internal = False):
         if name:
             self.name = name
             self.title = name
         self.structural, self.internal = structural, internal
-        countershape.Page.__init__(self)
+        model.BasePage.__init__(self)
 
     def run(self, *args, **kwargs):
         return str(args) + str(kwargs)
 
 
-class TPageHTMLTemplate(countershape.HTMLPage):
+class TPageHTMLTemplate(model.HTMLPage):
     body = countershape.template.Template(False, "@!this.name!@")
     def __init__(self, name = None):
         if name:
             self.name = name
             self.title = name
-        countershape.HTMLPage.__init__(self)
+        model.HTMLPage.__init__(self)
 
 
-class TPageHTMLFileTemplate(countershape.HTMLPage):
+class TPageHTMLFileTemplate(model.HTMLPage):
     def __init__(self, name = None):
         if name:
             self.name = name
             self.title = name
-        countershape.HTMLPage.__init__(self)
+        model.HTMLPage.__init__(self)
 
     def body(self):
         yield countershape.template.File(
@@ -50,7 +51,7 @@ class TPageWithTitle(TPage):
     title = "Tester"
 
 
-class TestApplication(countershape.BaseApplication):
+class TestApplication(model.BaseApplication):
     testing = 1
     debug = 1
     scriptName = "foo"
@@ -79,12 +80,12 @@ class RenderTester(libpry.AutoTree):
         """
         p = self.application.getPage(spec)
         if not p:
-            raise countershape.ApplicationError, "No such page: %s"%spec
+            raise model.ApplicationError, "No such page: %s"%spec
         self.application.pre(p)
         return "".join([unicode(i) for i in self.application(p)])
 
 
-class TestPage(countershape.HTMLPage):
+class TestPage(model.HTMLPage):
     def body(self):
         yield "dummy"
 
@@ -95,8 +96,8 @@ class DummyState(RenderTester):
     testing = 2
     def setUp(self):
         if not self.application:
-            self.application = countershape.BaseApplication(
-                    countershape.model.BaseRoot(
+            self.application = model.BaseApplication(
+                    model.BaseRoot(
                         [
                             TestPage()
                         ]
@@ -109,7 +110,7 @@ class DummyState(RenderTester):
             p = self.application.getPage(self.pageName)
         if not p:
             p = "Could not find test page."
-            raise countershape.model.ApplicationError, p
+            raise model.ApplicationError, p
         self.application.pre(p)
 
     def tearDown(self):

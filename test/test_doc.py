@@ -2,6 +2,7 @@ import shutil, os
 import libpry
 import countershape
 import countershape.doc as doc
+import countershape.model as model
 import testpages
 
 class DocTestPage(doc._DocHTMLPage):
@@ -185,7 +186,7 @@ class uCopy(testpages.DummyState):
         repr(countershape.state.page)
 
 
-class TestRoot(countershape.BaseRoot):
+class TestRoot(model.BaseRoot):
     contentName = "body"
     stdHeaders = []
     namespace = countershape.doc.DocRoot._baseNS

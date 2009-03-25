@@ -1,13 +1,14 @@
 import datetime, os, shutil
 import countershape
+import countershape.model as model
 import countershape.doc as doc
-import libpry
 import countershape.blog as blog
+import libpry
 
-class TestRoot(countershape.BaseRoot):
+class TestRoot(model.BaseRoot):
     contentName = "body"
     stdHeaders = []
-    namespace = countershape.doc.DocRoot._baseNS
+    namespace = doc.DocRoot._baseNS
 
 
 class uPost(libpry.AutoTree):

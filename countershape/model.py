@@ -51,10 +51,10 @@ class UrlTo:
         to = state.application.getPage(self.pageSpec)
         if not to:
             s = "Link to unknown page: %s."%self.pageSpec
-            raise countershape.ApplicationError(s)
+            raise ApplicationError(s)
         if to.internal:
             s = "URL request to internal page: %s."%to.name
-            raise countershape.ApplicationError(s)
+            raise ApplicationError(s)
         rel = state.page.relativePath([i.name for i in to.structuralPath()])
         u = utils.makeURL(rel)
         if self.anchor:
@@ -79,7 +79,7 @@ class LinkTo(html._Renderable):
         p = state.application.getPage(self.page)
         if not p:
             s = "Link to unknown page: %s."%self.page
-            raise countershape.ApplicationError(s)
+            raise ApplicationError(s)
         l = p.link()
         l.page = p
         return l
@@ -117,7 +117,7 @@ class Top:
         return utils.urlCat("./", state.page.top())
 
 
-class Page(tinytree.Tree):
+class BasePage(tinytree.Tree):
     """
         Objects inheriting from this class should over-ride the run() method,
         which will be called with the arguments of the page submission as
@@ -255,7 +255,7 @@ class Header(object):
                 )
 
 
-class HTMLPage(Page):
+class HTMLPage(BasePage):
     """
         Instances of this class represent HTML pages. Children of this class
         would normally over-ride a suite of methods that depend on the
@@ -281,7 +281,7 @@ class HTMLPage(Page):
         meth = self.findAttr(attr)
         if meth is None:
             s = "Cannot find layout component \"%s\""%attr
-            raise countershape.ApplicationError(s)
+            raise ApplicationError(s)
         if callable(meth):
             ret = meth(*args, **kwargs)
             if isinstance(ret, types.GeneratorType):
@@ -302,7 +302,7 @@ class HTMLPage(Page):
         return "HTMLPage(%s)"%self.name
 
 
-class BaseRoot(Page):
+class BaseRoot(BasePage):
     root = True
 
 
@@ -340,7 +340,7 @@ class BaseApplication(object):
         return self.getPageFrom(state.page, page)
 
     def getPageFrom(self, fromPage, toPage):
-        if isinstance(toPage, Page):
+        if isinstance(toPage, BasePage):
             return toPage
         elif utils.isStringLike(toPage):
             exact, isParent, isChild, isSibling, isLocal = False, False, False, False, False
@@ -398,7 +398,7 @@ class BaseApplication(object):
         else:
             s = "Invalid argument to getPage: %s."%repr(toPage) +\
                 " Must be either a string or a Page object."
-            raise countershape.ApplicationError(s)
+            raise ApplicationError(s)
     
     def getPath(self, path):
         """
@@ -427,7 +427,7 @@ class BaseApplication(object):
         for i in lst:
             if i.path == page.path:
                 e = "Ambiguous page structure: duplicate page %s."
-                raise countershape.ApplicationError(e%(page.path))
+                raise ApplicationError(e%(page.path))
         lst.append(page)
 
     def pre(self, p):
@@ -441,7 +441,7 @@ class BaseApplication(object):
                 "state.application : %s"%state.application,
             ]
             s = "Dirty state: (%s)"%(" ;".join(vals))
-            raise countershape.ApplicationError(s)
+            raise ApplicationError(s)
         if not self.testing:
             self._resetState()
         state.page = p

@@ -5,7 +5,7 @@ import testpages
 class uPageIndex(testpages.DummyState):
     def setUp(self):
         self.application = testpages.TestApplication(
-            countershape.BaseRoot(
+            model.BaseRoot(
                 [
                     testpages.TPageHTML("one"), [
                         testpages.TPageHTML("one-one"),
@@ -84,7 +84,7 @@ class CNavBarPage(testpages.TPageHTML):
 class uNavBar(testpages.RenderTester):
     def setUp(self):
         self.application = testpages.TestApplication(
-            countershape.BaseRoot([
+            model.BaseRoot([
                 CSiblingNavBarPage("top"), [
                     CSiblingNavBarPage("one"), [
                         CSiblingNavBarPage("onechild"),
@@ -108,7 +108,7 @@ class uNavBar(testpages.RenderTester):
 class uPageTrail(testpages.DummyState):
     def setUp(self):
         self.application = testpages.TestApplication(
-            countershape.BaseRoot(
+            model.BaseRoot(
                 [
                     testpages.TPage("one", internal=True, structural=True), [
                         testpages.TPageHTML("one-one"),

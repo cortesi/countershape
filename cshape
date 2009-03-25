@@ -45,9 +45,11 @@ class CSDoc:
                     print >> sys.stderr, "Rewriting %s"%i.src
                     i.rewrite()
 
+
 def main():
     c = CSDoc()
     c.main()
+
 
 if __name__ == "__main__":
     main()
