@@ -267,12 +267,16 @@ class DocRoot(Directory):
         return "DocRoot(%s)"%self.name
 
 
-class DocApplication(model.BaseApplication):
+class Doc(model.BaseApplication):
     """
         Document rendering application.
     """
     def __init__(self, root):
-        model.BaseApplication.__init__(self, root)
+        if utils.isStringLike(root):
+            d = DocRoot(root)
+        else:
+            d = root
+        model.BaseApplication.__init__(self, d)
 
     def render(self, destination):
         if not os.path.exists(destination):

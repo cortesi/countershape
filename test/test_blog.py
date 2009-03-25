@@ -113,7 +113,7 @@ class uRewriteTests(libpry.TmpDirMixin, libpry.AutoTree):
 
 class uBlogDirectory(libpry.AutoTree):
     def test_init(self):
-        a = doc.DocApplication(
+        a = doc.Doc(
                 TestRoot(
                     [
                         blog.BlogDirectory("testblog")
@@ -127,7 +127,7 @@ class uBlog(libpry.TmpDirMixin, libpry.AutoTree):
     def setUp(self):
         libpry.TmpDirMixin.setUp(self)
         self.b = blog.Blog("Blog Title", "blog description", "http://foo", "posts", "testblog")
-        self.a = doc.DocApplication(
+        self.a = doc.Doc(
                 TestRoot(
                     [
                         self.b(),

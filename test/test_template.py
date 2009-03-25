@@ -20,7 +20,7 @@ class uSyntax(testpages.DummyState):
 class uNS(testpages.DummyState):
     def setUp(self):
         self.d = countershape.doc.DocRoot("doctree")
-        self.application = countershape.doc.DocApplication(self.d)
+        self.application = countershape.doc.Doc(self.d)
         self.pageName = "/test.html"
         testpages.DummyState.setUp(self)
 
