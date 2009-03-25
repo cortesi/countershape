@@ -12,5 +12,5 @@ setup(
         url = "http://dev.nullcube.com",
         packages = packages,
         package_data = package_data,
-        scripts = ["cshape"],
+        scripts = ["cshape", "csblog"],
 )
