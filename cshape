@@ -1,9 +1,52 @@
 #!/usr/bin/env python2.5
 import os.path
+from optparse import OptionParser
 import countershape.doc as doc
+import countershape.blog as blog
+
+class CSDoc:
+    usage = "usage: %prog [options] src dst"
+    description = "Renders a Countershape documentation tree."
+    def getDoc(self, path):
+        d = doc.DocRoot(path)
+        a = doc.DocApplication(d)
+        return d, a
+
+    def main(self):
+        parser = OptionParser(self.usage, description=self.description)
+        parser.add_option("-s", "--structure",
+                          action="store_true", dest="structure", default=False,
+                          help="Show site structure.")
+        parser.add_option("-d", "--dummy",
+                          action="store_true", dest="dummy", default=False,
+                          help="Perform a dummy run - don't render any files.")
+
+        options, args = parser.parse_args()
+
+        if options.structure:
+            if len(args) < 1:
+                parser.error("Missing source specification.")
+        else:
+            if len(args) != 2:
+                parser.error("Please pass source and destination.")
+            if os.path.abspath(args[0]) == os.path.abspath(args[1]):
+                parser.error("Refusing to render documentation source onto itself.")
+
+        root, app, = self.getDoc(args[0])
+        if options.structure:
+            root.dump()
+        elif not options.dummy:
+            app.render(args[1])
+            lst = filter(
+                    lambda x: isinstance(x, blog.Post), root.preOrder()
+                )
+            for i in lst:
+                if i.changed:
+                    print >> sys.stderr, "Rewriting %s"%i.src
+                    i.rewrite()
 
 def main():
-    c = doc.CSDoc()
+    c = CSDoc()
     c.main()
 
 if __name__ == "__main__":

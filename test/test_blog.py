@@ -7,7 +7,7 @@ import countershape.blog as blog
 class TestRoot(countershape.BaseRoot):
     contentName = "body"
     stdHeaders = []
-    namespace = countershape.doc._DocRoot._baseNS
+    namespace = countershape.doc.DocRoot._baseNS
 
 
 class uPost(libpry.AutoTree):
@@ -112,7 +112,7 @@ class uRewriteTests(libpry.TmpDirMixin, libpry.AutoTree):
 
 class uBlogDirectory(libpry.AutoTree):
     def test_init(self):
-        a = doc._DocApplication(
+        a = doc.DocApplication(
                 TestRoot(
                     [
                         blog.BlogDirectory("testblog")
@@ -126,7 +126,7 @@ class uBlog(libpry.TmpDirMixin, libpry.AutoTree):
     def setUp(self):
         libpry.TmpDirMixin.setUp(self)
         self.b = blog.Blog("Blog Title", "blog description", "http://foo", "posts", "testblog")
-        self.a = doc._DocApplication(
+        self.a = doc.DocApplication(
                 TestRoot(
                     [
                         self.b(),

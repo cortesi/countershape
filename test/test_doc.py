@@ -35,7 +35,7 @@ class uPython(libpry.AutoTree):
 
 class u_DocHTMLPage(libpry.AutoTree, libpry.TmpDirMixin):
     def setUp(self):
-        self.application = doc._DocApplication(
+        self.application = doc.DocApplication(
             TestRoot([
                 DummyPage()
             ])
@@ -51,7 +51,7 @@ class u_DocHTMLPage(libpry.AutoTree, libpry.TmpDirMixin):
 
 class uRenderTests(libpry.AutoTree, libpry.TmpDirMixin):
     def setUp(self):
-        self.application = doc._DocApplication(
+        self.application = doc.DocApplication(
             TestRoot([
                 doc.Page("doctree/test.html", "Title"),
                 doc.Copy("doctree/copy"),
@@ -85,7 +85,7 @@ class uBunch(libpry.AutoTree):
 
 class uFullRender(libpry.TmpDirMixin, libpry.AutoTree):
     def test_render(self):
-        app = doc._DocApplication(doc._DocRoot("doctree"))
+        app = doc.DocApplication(doc.DocRoot("doctree"))
         t = self["tmpdir"]
         app.render(t)
         
@@ -97,17 +97,17 @@ class uFullRender(libpry.TmpDirMixin, libpry.AutoTree):
         assert os.path.isdir(os.path.join(t, "foo"))
 
     def test_render_newdir(self):
-        app = doc._DocApplication(doc._DocRoot("doctree"))
+        app = doc.DocApplication(doc.DocRoot("doctree"))
         t = self["tmpdir"]
         app.render(os.path.join(t, "newdir"))
 
 
-class u_DocRoot(libpry.TmpDirMixin, libpry.AutoTree):
+class uDocRoot(libpry.TmpDirMixin, libpry.AutoTree):
     def test_render(self):
-        libpry.raises(SyntaxError, doc._DocApplication, doc._DocRoot("doctree_err"))
+        libpry.raises(SyntaxError, doc.DocApplication, doc.DocRoot("doctree_err"))
 
     def test_repr(self):
-        x = doc._DocRoot("doctree")
+        x = doc.DocRoot("doctree")
         repr(x)
 
 
@@ -115,7 +115,7 @@ class uPage(testpages.DummyState):
     def setUp(self):
         os.chdir("doctemplate")
         self.d = doc.Page("test.html", "Title", pageTitle="PageTitle")
-        self.application = doc._DocApplication(
+        self.application = doc.DocApplication(
             TestRoot([
                 self.d
             ])
@@ -173,7 +173,7 @@ class uDirectory(libpry.AutoTree):
 
 class uCopy(testpages.DummyState):
     def setUp(self):
-        self.application = doc._DocApplication(
+        self.application = doc.DocApplication(
             TestRoot([
                 doc.Copy("bar", "foo")
             ])
@@ -188,7 +188,7 @@ class uCopy(testpages.DummyState):
 class TestRoot(countershape.BaseRoot):
     contentName = "body"
     stdHeaders = []
-    namespace = countershape.doc._DocRoot._baseNS
+    namespace = countershape.doc.DocRoot._baseNS
 
 
 
@@ -203,5 +203,5 @@ tests = [
     uRenderTests(),
     uFullRender(),
     uBunch(),
-    u_DocRoot(),
+    uDocRoot(),
 ]

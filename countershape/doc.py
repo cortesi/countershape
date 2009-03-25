@@ -1,6 +1,5 @@
 from __future__ import with_statement
 import os, os.path, re, fnmatch, shutil, shlex, string
-from optparse import OptionParser
 import model, utils, html, state, template, widgets, encoding
 
 _ConfFile = "index.py"
@@ -241,7 +240,7 @@ class Directory(StaticDirectory, _DocMixin):
         return "Directory(%s)"%self.name
 
 
-class _DocRoot(Directory):
+class DocRoot(Directory):
     """
         The top node in the document tree.
     """
@@ -268,7 +267,7 @@ class _DocRoot(Directory):
         return "DocRoot(%s)"%self.name
 
 
-class _DocApplication(model.BaseApplication):
+class DocApplication(model.BaseApplication):
     """
         Document rendering application.
     """
@@ -293,44 +292,3 @@ class _DocApplication(model.BaseApplication):
         return list(model.BaseApplication.__call__(self, page))[0]
         
 
-# begin nocover
-class CSDoc:
-    usage = "usage: %prog [options] src dst"
-    description = "Renders a Countershape documentation tree."
-    def getParser(self):
-        parser = OptionParser(self.usage, description=self.description)
-        parser.add_option("-s", "--structure",
-                          action="store_true", dest="structure", default=False,
-                          help="Show site structure.")
-        parser.add_option("-d", "--dummy",
-                          action="store_true", dest="dummy", default=False,
-                          help="Perform a dummy run - don't render any files.")
-        return parser
-
-    def sanity(self, parser, options, args):
-        if options.structure:
-            if len(args) < 1:
-                parser.error("Missing source specification.")
-        else:
-            if len(args) != 2:
-                parser.error("Please pass source and destination.")
-            if os.path.abspath(args[0]) == os.path.abspath(args[1]):
-                parser.error("Refusing to render documentation source onto itself.")
-
-    def getDoc(self, path):
-        d = _DocRoot(path)
-        a = _DocApplication(d)
-        return d, a
-
-    def run(self, root, app, options, args):
-        if options.structure:
-            root.dump()
-        elif not options.dummy:
-            app.render(args[1])
-
-    def main(self):
-        parser = self.getParser()
-        options, args = parser.parse_args()
-        self.sanity(parser, options, args)
-        root, app, = self.getDoc(args[0])
-        self.run(root, app, options, args)
