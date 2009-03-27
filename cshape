@@ -7,11 +7,6 @@ import countershape.blog as blog
 class CSDoc:
     usage = "usage: %prog [options] src dst"
     description = "Renders a Countershape documentation tree."
-    def getDoc(self, path):
-        d = doc.DocRoot(path)
-        a = doc.DocApplication(d)
-        return d, a
-
     def main(self):
         parser = OptionParser(self.usage, description=self.description)
         parser.add_option("-s", "--structure",
@@ -32,13 +27,13 @@ class CSDoc:
             if os.path.abspath(args[0]) == os.path.abspath(args[1]):
                 parser.error("Refusing to render documentation source onto itself.")
 
-        root, app, = self.getDoc(args[0])
+        d = doc.Doc(args[0])
         if options.structure:
-            root.dump()
+            d.root.dump()
         elif not options.dummy:
-            app.render(args[1])
+            d.render(args[1])
             lst = filter(
-                    lambda x: isinstance(x, blog.Post), root.preOrder()
+                    lambda x: isinstance(x, blog.Post), d.root.preOrder()
                 )
             for i in lst:
                 if i.changed:

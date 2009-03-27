@@ -1,10 +1,7 @@
-import countershape.layout
-import countershape.template
-import countershape.widgets
-import countershape.grok
-from countershape.doc import *
+import countershape
+from countershape import Page, Directory, PythonModule
 
-this.layout = countershape.layout.Layout("_layout.html")
+this.layout = countershape.Layout("_layout.html")
 this.markdown = "rst"
 ns.docTitle = "Countershape Manual"
 ns.docMaintainer = "Aldo Cortesi"
@@ -14,7 +11,7 @@ ns.head = countershape.template.File(None, "_header.html")
 ns.sidebar = countershape.widgets.SiblingPageIndex(
             '/index.html', exclude=['countershape']
           )
-ns.cs = countershape.grok.grok("../countershape")
+ns.cs = countershape.grok("../countershape")
 
 pages = [
     Page("index.html", "Introduction"),
