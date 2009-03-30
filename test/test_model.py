@@ -1,4 +1,4 @@
-import shutil, time, cStringIO
+import shutil, time, cStringIO, os
 import libpry
 import countershape, testpages
 from countershape import utils
@@ -22,7 +22,7 @@ class uContext(testpages.DummyState):
                 ]
             )
         )
-        p = self.application.getPage("foo/bar")
+        p = self.application.getPage(os.path.join("foo","bar"))
         assert p.relativePath(["oink"]) == "../oink"
         assert p.relativePath(["oink", "voing"]) == "../oink/voing"
         assert p.relativePath(["foo"]) == "../foo"
@@ -36,7 +36,7 @@ class uContext(testpages.DummyState):
         assert p.relativePath(["foo", "bar"]) == "foo/bar"
 
     def test_top(self):
-        p = self.application.getPage("foo/bar")
+        p = self.application.getPage(os.path.join("foo","bar"))
         assert p.top(), ".."
 
 
@@ -243,18 +243,18 @@ class uPageModel(libpry.AutoTree):
         state.ctx = None
 
     def test_getPage(self):
-        libpry.raises("ambiguous path", self.t.getPage, "page/end")
-        assert self.t.getPage("sub1/page/end")
-        assert self.t.getPage("sub2/page/end")
+        libpry.raises("ambiguous path", self.t.getPage, os.path.join("page","end"))
+        assert self.t.getPage(os.path.join("sub1","page","end"))
+        assert self.t.getPage(os.path.join("sub2","page","end"))
 
     def test_getPageChild(self):
         state.page = self.p1
-        assert self.t.getPage("./page/end") is self.s1
-        assert not self.t.getPage("./page/foo")
-        assert self.t.getPage("./page")
+        assert self.t.getPage(os.path.join(".","page","end")) is self.s1
+        assert not self.t.getPage(os.path.join(".","page","foo"))
+        assert self.t.getPage(os.path.join(".","page"))
 
     def test_getPage_nostate(self):
-        libpry.raises("relative page link", self.t.getPage, "./page/end")
+        libpry.raises("relative page link", self.t.getPage, os.path.join("page","end"))
 
     def test_getPageParent(self):
         state.page = self.s1
@@ -286,7 +286,7 @@ class uPageModel(libpry.AutoTree):
         assert not self.r.matchPage(["page"], False)
 
     def test_root_url(self):
-        state.page = self.t.getPage("one/two")
+        state.page = self.t.getPage(os.path.join("one","two"))
         assert str(model.UrlTo("BaseRoot")) == ".."
 
     def test_getPath(self):
@@ -311,7 +311,7 @@ class uPageModel(libpry.AutoTree):
         assert self.t.getPath(["two", "foo"]) == (self.r, ["two", "foo"])
 
     def test_url(self):
-        state.page = self.t.getPage("one/two")
+        state.page = self.t.getPage(os.path.join("one","two"))
         assert str(model.UrlTo("two")) == "two"
         state.page = self.t.getPage("one")
         assert str(model.UrlTo("one")) == "one"

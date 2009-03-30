@@ -149,7 +149,7 @@ class BasePage(tinytree.Tree):
         """
         self.application = app
         sp = self.structuralPath()
-        self.path = "/" + "/".join([i.name for i in sp])
+        self.path = os.path.sep + (os.path.sep).join([i.name for i in sp])
 
     def structuralPath(self):
         """
@@ -189,7 +189,7 @@ class BasePage(tinytree.Tree):
 
     def top(self):
         l = len(self.structuralPath()) - 1
-        return "/".join([".."]*l)
+        return (os.path.sep).join([".."]*l)
 
     def relativePath(self, toPath):
         """
@@ -344,24 +344,24 @@ class BaseApplication(object):
             return toPage
         elif utils.isStringLike(toPage):
             exact, isParent, isChild, isSibling, isLocal = False, False, False, False, False
-            if toPage.startswith("/"):
+            if toPage.startswith("/") or toPage.startswith(os.path.sep):
                 exact = True
-            elif toPage.startswith("./"):
+            elif toPage.startswith("./") or toPage.startswith("." + os.path.sep):
                 isChild = True
                 toPage = toPage[2:]
-            elif toPage.startswith("^/"):
+            elif toPage.startswith("^/") or toPage.startswith("^" + os.path.sep):
                 isParent = True
                 toPage = toPage[2:]
-            elif toPage.startswith("-/"):
+            elif toPage.startswith("-/") or toPage.startswith("-" + os.path.sep):
                 isSibling = True
                 toPage = toPage[2:]
-            elif toPage.startswith("$/"):
+            elif toPage.startswith("$/") or toPage.startswith("$" + os.path.sep):
                 isLocal = True
                 toPage = toPage[2:]
             if any([isParent, isChild, isSibling, isLocal]) and not fromPage:
                 s = "Relative page link '%s' outside of page call context."%toPage
                 raise ApplicationError(s)
-            path = [i for i in toPage.split("/") if i]
+            path = [i for i in toPage.split(os.path.sep) if i]
             if not path:
                 return self.root
             pname = path.pop()
@@ -415,7 +415,7 @@ class BaseApplication(object):
         for i in range(l):
             match = self._pages.get(path[-i-1])
             if match:
-                p = "/" + "/".join(path[:l-i])
+                p = os.path.sep + (os.path.sep).join(path[:l-i])
                 for j in match:
                     if not j.internal and j.path == p:
                         return j, path[l-i:]

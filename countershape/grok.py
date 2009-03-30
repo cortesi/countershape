@@ -508,7 +508,7 @@ class Project:
             if i.endswith(".py"):
                 modpath, n = os.path.split(i)
                 if modpath:
-                    modpath = modpath.split("/")
+                    modpath = modpath.split(os.path.sep)
                     modpath.append(n[:-3])
                     modpath = ".".join(modpath)
                 else:
