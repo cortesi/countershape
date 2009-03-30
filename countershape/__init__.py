@@ -4,5 +4,4 @@ from widgets import NavBar, SiblingNavBar, ExtendedParentPageIndex, SiblingPageI
 from widgets import ParentPageIndex, PageTrail
 from blog import Post, IndexPage, ArchivePage, RSSPage, Blog
 from template import File, Template
-from grok import grok
 from layout import Layout

@@ -527,7 +527,7 @@ class Project:
         return module(".".join(subpath))
 
 
-def grok(path):
+def parse(path):
     if os.path.isdir(path):
         return Project(path)
     else:

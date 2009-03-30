@@ -89,9 +89,7 @@ class uFullRender(libpry.TmpDirMixin, libpry.AutoTree):
         app = doc.Doc("doctree")
         t = self["tmpdir"]
         app.render(t)
-        
         assert "notcopied" in app.root.namespace["data"]
-
         assert not os.path.isfile(os.path.join(t, "_notcopied.html"))
         assert os.path.isfile(os.path.join(t, "include.css"))
         assert os.path.isdir(os.path.join(t, "autocopy"))
