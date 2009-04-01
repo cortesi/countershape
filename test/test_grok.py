@@ -1,21 +1,24 @@
-import tokenize
+import tokenize, os.path
 import libpry
 import countershape.grok
 
 class u_TokenIter(libpry.AutoTree):
     def test_iter(self):
-        gen = tokenize.generate_tokens(open("grok/one.py").readline)
+        gen = tokenize.generate_tokens(open(os.path.join("grok","one.py")).readline)
         f = countershape.grok._TokenIter(gen)
         n = f.next()
+        print "n: ", n
         assert len(n) == 2
         f.push([("ONE", "TWO")])
         n = f.next()
+        print "n: ", n
         assert n == ("ONE", "TWO")
         n = f.next()
+        print "n: ", n
         assert n[0] == "STRING"
 
     def test_termination(self):
-        gen = tokenize.generate_tokens(open("grok/empty.py").readline)
+        gen = tokenize.generate_tokens(open(os.path.join("grok","empty.py")).readline)
         f = countershape.grok._TokenIter(gen)
         n = f.next()
         assert n == ("DEDENT", "")
@@ -206,7 +209,7 @@ class u_TokProc(libpry.AutoTree):
         assert len(list(itr)) == 1
 
     def ttest_dump(self):
-        f = open("grok/one.py")
+        f = open(os.path.join("grok","one.py"))
         for i in tokenize.generate_tokens(f.readline):
             name = tokenize.tok_name[i[0]]
             print (name, i[1])
@@ -214,7 +217,7 @@ class u_TokProc(libpry.AutoTree):
 
 class uModule(libpry.AutoTree):
     def setUp(self):
-        self.mod = countershape.grok.Module("grok/one.py", "one.py")
+        self.mod = countershape.grok.Module(os.path.join("grok","one.py"), "one.py")
 
     def test_klass_signature(self):
         assert self.mod["Foo"].signature() == "Foo(one, two=\"two\")"
@@ -224,7 +227,7 @@ class uModule(libpry.AutoTree):
         assert self.mod["Short"].signatureDoc()
 
     def test_tokenize(self):
-        f = countershape.grok.parse("grok/one.py")
+        f = countershape.grok.parse(os.path.join("grok","one.py"))
         assert "docstring" in f.doc
         assert f["nested"]
         assert f["global_variable"].value == "(func(func(10))+10, 12)"
@@ -246,7 +249,7 @@ class uModule(libpry.AutoTree):
         assert not f["Foo"]["meth2"].doc
 
     def test_noargs(self):
-        f = countershape.grok.parse("grok/one.py")
+        f = countershape.grok.parse(os.path.join("grok","one.py"))
         assert not f["NoClassDoc"].namespace.keys() == ("__str__")
 
     def test_reprs(self):
@@ -255,7 +258,7 @@ class uModule(libpry.AutoTree):
         repr(self.mod["global_variable"])
 
     def test_empty(self):
-        countershape.grok.Module("grok/empty.py", "empty.py")
+        countershape.grok.Module(os.path.join("grok","empty.py"), "empty.py")
 
     def test_variables(self):
         assert len(list(self.mod.variables())) == 3
@@ -283,7 +286,7 @@ class uModule(libpry.AutoTree):
         assert len(list(f.functions(True))) == 7
 
     def test_flags(self):
-        f = countershape.grok.parse("grok/one.py")
+        f = countershape.grok.parse(os.path.join("grok","one.py"))
         assert "include" in f["func"].flags
         assert "include" in f["Foo"].flags
         
@@ -351,7 +354,7 @@ class uFunc(libpry.AutoTree):
 
 class uProjectCShape(libpry.AutoTree):
     def setUpAll(self):
-        self.p = countershape.grok.parse("../countershape")
+        self.p = countershape.grok.parse(os.path.join("..","countershape"))
 
     def test_call(self):
         self.p("model.BaseApplication.testing")
