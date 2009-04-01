@@ -254,7 +254,7 @@ class uPageModel(libpry.AutoTree):
         assert self.t.getPage(os.path.join(".","page"))
 
     def test_getPage_nostate(self):
-        libpry.raises("relative page link", self.t.getPage, os.path.join("page","end"))
+        libpry.raises("relative page link", self.t.getPage, os.path.join(".","page","end"))
 
     def test_getPageParent(self):
         state.page = self.s1
