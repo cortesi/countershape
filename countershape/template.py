@@ -126,8 +126,8 @@ class _TemplateMixin:
         kwargs.update(_ns())
         kwargs.update(self._getNS())
         kwargs.update(self.nsDict)
-        s = self.block(**kwargs)
-        return unicode(markup[self.markup](s)) if self.markup else s
+        s = self.block.render(**kwargs)
+        return unicode(markup[self.markup](s)) if self.markup else str(s)
 
     def __call__(self, *args, **kwargs):
         kwargs.update(_ns())
