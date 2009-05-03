@@ -1,3 +1,4 @@
+import os.path
 import countershape
 from countershape import model
 import libpry
@@ -21,7 +22,7 @@ class uNS(testpages.DummyState):
     def setUp(self):
         self.d = countershape.doc.DocRoot("doctree")
         self.application = countershape.doc.Doc(self.d)
-        self.pageName = "/test.html"
+        self.pageName = os.path.join(os.path.sep,"test.html")
         testpages.DummyState.setUp(self)
 
     def test_syntax_next(self):

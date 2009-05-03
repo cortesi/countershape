@@ -70,7 +70,7 @@ class uWalkTree(libpry.AutoTree):
         s = set(utils.walkTree("doctree"))
         assert not "README" in s
         assert "copy" in s
-        assert "foo/index.py" in s
+        assert os.path.join("foo","index.py") in s
 
 
 class uOrderedSet(libpry.AutoTree):

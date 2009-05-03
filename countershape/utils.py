@@ -72,9 +72,9 @@ def isStringLike(anobj):
         # Avoid succeeding expensively if anobj is large.
         anobj[:0]+''
     except:
-        return 0
+        return False
     else:
-        return 1
+        return True
 
 
 def isSequenceLike(anobj):
@@ -84,21 +84,21 @@ def isSequenceLike(anobj):
     """
     if not hasattr(anobj, "next"):
         if isStringLike(anobj):
-            return 0
+            return False
         try:
             anobj[:0]
         except:
-            return 0
-    return 1
+            return False
+    return True
 
 
 def isNumeric(obj):
     try:
         obj + 0
     except:
-        return 0
+        return False
     else:
-        return 1
+        return True
 
 
 fileExcludePatterns = ["*.svn*", "*/*.swp", "*/*.swo", "*/README"]
