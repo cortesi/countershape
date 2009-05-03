@@ -6,13 +6,14 @@ class u_TokenIter(libpry.AutoTree):
     def test_iter(self):
         gen = tokenize.generate_tokens(open("grok/one.py").readline)
         f = countershape.grok._TokenIter(gen)
-        n = f.next()
-        assert len(n) == 2
+        pre = f.next()
+        assert len(pre) == 2
+        f.push([pre])
         f.push([("ONE", "TWO")])
         n = f.next()
         assert n == ("ONE", "TWO")
         n = f.next()
-        assert n[0] == "STRING"
+        n = pre
 
     def test_termination(self):
         gen = tokenize.generate_tokens(open("grok/empty.py").readline)
