@@ -95,7 +95,7 @@ class _TokProc:
                     return acc
             if n[0] == "COMMENT":
                 comment.append(n)
-            elif n[0] != "DEDENT":
+            elif n[0] not in ("DEDENT", "NL"):
                 comment = []
 
     def _getArgs(self, toks):
@@ -216,7 +216,7 @@ class _TokProc:
 
             if i[0] == "COMMENT":
                 comment.append(i[1])
-            elif not i[0] == "DEDENT":
+            elif i[0] not in ("DEDENT", "NL"):
                 comment = []
 
     def __hash__(self):
@@ -230,7 +230,7 @@ class Variable(_TokProc):
     def __init__(self, name, comment, tok):
         self.name = name
         if comment:
-            self.doc = " ".join([i.lstrip("#") for i in comment])
+            self.doc = "\n".join([i.lstrip("#").rstrip() for i in comment])
         else:
             doc = ""
         val = []

@@ -658,10 +658,10 @@ class uModule(libpry.AutoTree):
         assert len(list(self.mod.classes())) == 6
 
     def test_doc(self):
-        assert self.mod["global_variable"].doc == ' Multiline\n  comment\n'
-        assert self.mod["variable"].doc == ' variabledoc\n  multiline\n'
+        assert self.mod["global_variable"].doc == ' Multiline\n comment'
+        assert self.mod["variable"].doc == ' variabledoc\n multiline'
         assert "classvardoc" in self.mod["Foo"]["classvar"].doc
-        assert self.mod["Foo"]["classvar"].doc == ' classvardoc\n  multiline\n'
+        assert self.mod["Foo"]["classvar"].doc == ' classvardoc\n multiline'
 
     def test_class_str(self):
         assert str(list(self.mod.classes())[2])

@@ -21,8 +21,7 @@ def func(arg):
 
 # Multiline
 # comment
-global_variable = (func(func(10)) + 10, 12)
-
+global_variable = (func(func(10)) + 10, 12) 
 global_variable2 = (
     func(func(10)) + 10, 12
 )
