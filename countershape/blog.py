@@ -3,24 +3,77 @@ import os.path, re, datetime, urllib
 import html, model, doc, utils, template
 import rssgen
 
+
+class Disqus:
+    def __init__(self, account):
+        self.account = account
+
+    def indexPostfix(self):
+        """
+            Page postfix for the index page.
+        """
+        return html.rawstr(
+            """
+                <script type="text/javascript">
+                //<![CDATA[
+                (function() {
+                        var links = document.getElementsByTagName('a');
+                        var query = '?';
+                        for(var i = 0; i < links.length; i++) {
+                            if(links[i].href.indexOf('#disqus_thread') >= 0) {
+                                query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+                            }
+                        }
+                        document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/hatfulofhollow/get_num_replies.js' + query + '"></' + 'script>');
+                    })();
+                //]]>
+                </script>
+            """
+        )
+
+    def inlinePostfix(self, post):
+        """
+            Postfix for blog posts appearing inline on a page with other posts
+            (i.e. the index page).
+        """
+        return html.rawstr("<a href=\"%s#disqus_thread\">Comments</a>"%model.UrlTo(post))
+
+    def soloPostfix(self, post):
+        """
+            Postfix for blog posts appearing alone on a page (i.e. the
+            permalink destination).
+        """
+        return html.rawstr("""
+            <div id="disqus_thread"></div>
+            <script type="text/javascript" src="http://disqus.com/forums/%s/embed.js">
+            </script>
+            <noscript>
+                <a href="http://%s.disqus.com/?url=%s">View the discussion thread.</a>
+            </noscript>
+        """%(self.account, self.account, post.permalink))
+
+
 class _PostRenderer(html._Renderable):
     """
         Lazy post renderer.
     """
-    def __init__(self, post, markup):
-        self.post, self.markup = post, markup
+    def __init__(self, post, postfix):
+        self.post, self.postfix = post, postfix
         self.src = os.path.abspath(post.src)
-    
+
     def __str__(self):
         with utils.InDir(os.path.dirname(self.src)):
             title = html.H1(model.LinkTo(self.post))
             date = html.H2(self.post.time.strftime("%d %B %Y"))
-            head = html.DIV(title, date, _class="posthead")
-            body = html.DIV(
-                       template.Template(self.markup, self.post.data),
+            blocks = []
+            blocks.append(html.DIV(title, date, _class="posthead"))
+            blocks.append(html.DIV(
+                       template.Template(self.post.findAttr("markup"), self.post.data),
                        _class="postbody"
-                   )
-            return str(html.DIV(head, body, _class="post"))
+                   ))
+            if self.postfix:
+                blocks.append(self.postfix)
+            return str(html.DIV(*blocks, _class="post"))
 
 
 class Post(doc._DocHTMLPage):
@@ -34,11 +87,12 @@ class Post(doc._DocHTMLPage):
     """
     _TimeFmt = "%Y-%m-%d %H:%M"
     _metaRe = re.compile(r"(\w+):(.*)")
-    def __init__(self, src):
+    def __init__(self, src, blog):
         """
             :title Title of this post.
             :time DateTime object - publication time
         """
+        self.blog = blog
         self.title, self.time, self.data, self.short = self.fromPath(src)
         name = os.path.basename(src) + ".html"
         doc._DocHTMLPage.__init__(
@@ -49,6 +103,11 @@ class Post(doc._DocHTMLPage):
             t = self._timeToStr(datetime.datetime.now())
             self.time = self._timeFromStr(t)
             self.changed = True
+
+    @property
+    def permalink(self):
+        path = [x.name for x in self.structuralPath()]
+        return urllib.basejoin(self.blog.url, "/".join(path))
 
     @classmethod
     def _timeToStr(klass, time):
@@ -127,19 +186,27 @@ class Post(doc._DocHTMLPage):
     def _prime(self, app):
         doc._DocHTMLPage._prime(self, app)
         dt = self.findAttr("contentName")
-        self.namespace[dt] = _PostRenderer(self, self.findAttr("markup"))
+        if self.blog.postfix:
+            postfix = self.blog.postfix.soloPostfix(self)
+        else:
+            postfix = None
+        self.namespace[dt] = _PostRenderer(self, postfix)
 
     def __repr__(self):
         return "Post(%s, \"%s\")"%(self.time.strftime("%d %B %Y"), self.title)
 
 
 class BlogDirectory(doc.Directory):
+    def __init__(self, base, src, blog):
+        doc.Directory.__init__(self, base, src)
+        self.blog = blog
+
     def defaultAction(self, src):
         src = os.path.normpath(src)
         if os.path.isdir(src):
-            return BlogDirectory(os.path.basename(src), src)
+            return BlogDirectory(os.path.basename(src), src, self.blog)
         elif not "." in os.path.basename(src):
-            return Post(src)
+            return Post(src, self.blog)
         else:
             return doc.Directory.defaultAction(self, src)
 
@@ -149,14 +216,19 @@ class BlogDirectory(doc.Directory):
 
 
 class IndexPage(doc._DocHTMLPage):
-    def __init__(self, name, title, blogdir, posts):
+    def __init__(self, name, title, posts, blog, postfix):
         doc._DocHTMLPage.__init__(self, name, title)
-        self.blogdir, self.posts = blogdir, posts
+        self.posts, self.blog, self.postfix = posts, blog, postfix
 
     def _getIndex(self):
         out = html.Group()
-        for i in self.blogdir.sortedPosts()[:self.posts]:
-            out.addChild(_PostRenderer(i, self.findAttr("markup")))
+        for i in self.blog.blogdir.sortedPosts()[:self.posts]:
+            if self.blog.postfix:
+                postfix = self.blog.postfix.inlinePostfix(i)
+            else:
+                postfix = None
+            out.addChild(_PostRenderer(i, postfix))
+        out.addChild(self.postfix)
         return out
 
     def _getLayoutComponent(self, attr):
@@ -170,15 +242,15 @@ class IndexPage(doc._DocHTMLPage):
 
 
 class ArchivePage(doc._DocHTMLPage):
-    def __init__(self, name, title, blogdir):
+    def __init__(self, name, title, blog):
         doc._DocHTMLPage.__init__(self, name, title)
-        self.blogdir = blogdir
+        self.blog = blog
 
     def _getArchive(self):
         monthyear = None
         output = html.DIV(_class="archive")
         postlst = []
-        for i in self.blogdir.sortedPosts():
+        for i in self.blog.blogdir.sortedPosts():
             my = i.time.strftime("%B %Y")
             if my != monthyear:
                 if postlst:
@@ -209,31 +281,29 @@ class ArchivePage(doc._DocHTMLPage):
 
 class RSSPage(model.BasePage, doc._DocMixin):
     structural = False
-    def __init__(self, name, title, blogdir, posts, blogname, description, url):
-        self.name, self.title = name, title
-        self.blogdir, self.posts, self.blogname = blogdir, posts, blogname
-        self.description, self.url = description, url
+    def __init__(self, name, title, posts, blog):
+        self.name, self.title, self.posts = name, title, posts
+        self.blog = blog
         self.src = "."
         model.BasePage.__init__(self)
 
     def _getRSS(self):
         items = []
-        for i in self.blogdir.sortedPosts()[:10]:
+        for i in self.blog.blogdir.sortedPosts()[:10]:
             path = [x.name for x in i.structuralPath()]
-            link = urllib.basejoin(self.url, "/".join(path))
             items.append(
                 rssgen.RSSItem(
                     title = i.title,
                     description = i.short or i.data,
-                    link = link,
-                    guid = rssgen.Guid(link),
+                    link = i.permalink,
+                    guid = rssgen.Guid(i.permalink),
                     pubDate = i.time
                 )
             )
         rss = rssgen.RSS2(
-            title = self.blogname,
-            link = self.url,
-            description = self.description,
+            title = self.blog.blogname,
+            link = self.blog.url,
+            description = self.blog.blogdesc,
             items = items
         )
         return rss.to_xml()
@@ -246,29 +316,31 @@ class RSSPage(model.BasePage, doc._DocMixin):
 
 
 class Blog:
-    def __init__(self, blogname, blogdesc, url, base, src):
+    def __init__(self, blogname, blogdesc, url, base, src, postfix=None):
         src = os.path.abspath(src)
         self.blogname, self.url, self.base, self.src = blogname, url, base, src
         self.blogdesc = blogdesc
+        self.postfix = postfix
         if not os.path.isdir(src):
             raise model.ApplicationError("Blog source is not a directory: %s"%src)
-        self.blogdir = BlogDirectory(base, src)
+        self.blogdir = BlogDirectory(base, src, self)
 
     def index(self, name, title, posts=10):
-        return IndexPage(name, title, self.blogdir, posts)
+        if self.postfix:
+            p = self.postfix.indexPostfix()
+        else:
+            p = ""
+        return IndexPage(name, title, posts, self, p)
         
     def archive(self, name, title):
-        return ArchivePage(name, title, self.blogdir)
+        return ArchivePage(name, title, self)
 
     def rss(self, name, title, posts=10):
         return RSSPage(
             name,
             title,
-            self.blogdir,
             posts,
-            self.blogname,
-            self.blogdesc,
-            self.url
+            self
         )
 
     def __call__(self):

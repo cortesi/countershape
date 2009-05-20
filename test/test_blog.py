@@ -11,15 +11,28 @@ class TestRoot(model.BaseRoot):
     namespace = doc.DocRoot._baseNS
 
 
+class TestPostfix:
+    def inline(self):
+        return "inline"
+
+    def solo(self):
+        return "solo"
+
+
+class DummyBlog:
+    postfix = None
+
+
 class uPost(libpry.AutoTree):
     def setUp(self):
         self.post = self.getPost()
+        self.post.postfix = TestPostfix()
 
     def test_repr(self):
         repr(self.post)
 
     def getPost(self):
-        return blog.Post("blogpages/testpost")
+        return blog.Post("blogpages/testpost", DummyBlog())
 
     def test_cmp(self):
         p = self.getPost()
@@ -65,7 +78,6 @@ class uPost(libpry.AutoTree):
         title, time, data, short = blog.Post.fromStr(data)
         check(title, time, data, short)
 
-
     def test_fromStr_err(self):
         libpry.raises("not a valid post", blog.Post.fromStr, "")
         libpry.raises("invalid metadata", blog.Post.fromStr, "title\nmetadata")
@@ -89,7 +101,7 @@ class uPost(libpry.AutoTree):
         assert self.post.data == data
 
     def test_toStr_noshort(self):
-        p = blog.Post("blogpages/testpost_noshort")
+        p = blog.Post("blogpages/testpost_noshort", DummyBlog())
         title, time, data, short = blog.Post.fromStr(p.toStr())
         assert p.short == short
         assert p.title == title
@@ -104,10 +116,10 @@ class uRewriteTests(libpry.TmpDirMixin, libpry.AutoTree):
         shutil.copytree("testblog", self.bdir)
 
     def test_rewrite(self):
-        post = blog.Post(os.path.join(self.bdir, "posthree"))
+        post = blog.Post(os.path.join(self.bdir, "posthree"), DummyBlog())
         assert post.changed
         post.rewrite()
-        post = blog.Post(os.path.join(self.bdir, "posthree"))
+        post = blog.Post(os.path.join(self.bdir, "posthree"), DummyBlog())
         assert not post.changed
 
 
@@ -116,7 +128,7 @@ class uBlogDirectory(libpry.AutoTree):
         a = doc.Doc(
                 TestRoot(
                     [
-                        blog.BlogDirectory("testblog")
+                        blog.BlogDirectory("testblog", None, DummyBlog())
                     ]
                 )
             )
@@ -126,9 +138,11 @@ class uBlogDirectory(libpry.AutoTree):
 class uBlog(libpry.TmpDirMixin, libpry.AutoTree):
     def setUp(self):
         libpry.TmpDirMixin.setUp(self)
-        self.b = blog.Blog("Blog Title", "blog description", "http://foo", "posts", "testblog")
-        self.a = doc.Doc(
-                TestRoot(
+        self.b = blog.Blog(
+                    "Blog Title", "blog description", "http://foo", "posts", "testblog",
+                    blog.Disqus("test"),
+                )
+        r = TestRoot(
                     [
                         self.b(),
                         self.b.index("index.html", "Blog"),
@@ -136,7 +150,8 @@ class uBlog(libpry.TmpDirMixin, libpry.AutoTree):
                         self.b.rss("rss.xml", "RS"),
                     ]
                 )
-            )
+        r.postfix = TestPostfix()
+        self.a = doc.Doc(r)
 
     def tearDown(self):
         self.a._resetState()
