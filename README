@@ -1,4 +1,22 @@
 
+Introduction
+========
+
+Countershape is a compact framework for generating static documentation and
+websites.
+
+Documentation is available at <a href="http://dev.nullcube.com">http://dev.nullcube.com</a>
+
+Source is hosted at <a href="http://github.com/cortesi/countershape">http://github.com/cortesi/countershape</a>
+
+Features
+========
+
+    * Loveable
+
+Requirements
+=========
+
 Countershape requires the following modules:
 
     - TinyTree
@@ -22,3 +40,12 @@ Optional modules:
     - Pry to run the test suite
         http://dev.nullcube.com
 
+
+Documentation
+========
+
+Documentation and a basic guide with sample source code is provided
+with the source distribution.
+
+The documentation is at  ./doc-src and the example files
+at ./examples.
