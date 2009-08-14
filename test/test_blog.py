@@ -109,10 +109,9 @@ class uPost(libpry.AutoTree):
         assert p.data == data
 
 
-class uRewriteTests(libpry.TmpDirMixin, libpry.AutoTree):
+class uRewriteTests(libpry.AutoTree):
     def setUp(self):
-        libpry.TmpDirMixin.setUp(self)
-        self.bdir = os.path.join(self["tmpdir"], "blog")
+        self.bdir = os.path.join(self.tmpdir(), "blog")
         shutil.copytree("testblog", self.bdir)
 
     def test_rewrite(self):
@@ -135,11 +134,14 @@ class uBlogDirectory(libpry.AutoTree):
         #a.root.dump()
 
 
-class uBlog(libpry.TmpDirMixin, libpry.AutoTree):
+class uBlog(libpry.AutoTree):
     def setUp(self):
-        libpry.TmpDirMixin.setUp(self)
         self.b = blog.Blog(
-                    "Blog Title", "blog description", "http://foo", "posts", "testblog",
+                    "Blog Title",
+                    "blog description",
+                    "http://foo",
+                    "posts",
+                    "testblog",
                     blog.Disqus("test"),
                 )
         r = TestRoot(
@@ -163,7 +165,7 @@ class uBlog(libpry.TmpDirMixin, libpry.AutoTree):
         )
 
     def test_render(self):
-        self.a.render(self["tmpdir"])
+        self.a.render(self.tmpdir())
 
     def test_call(self):
         assert self.b()
@@ -179,10 +181,12 @@ class uBlog(libpry.TmpDirMixin, libpry.AutoTree):
         a._getArchive()
 
     def test_index(self):
-        a = self.b.index("name", "my title")
-        assert a.name == "name"
-        assert a.title == "my title"
-        a._getIndex()
+        p = self.b.index("name", "my title")
+        countershape.state.application = self.a
+        countershape.state.page = p
+        assert p.name == "name"
+        assert p.title == "my title"
+        p._getIndex()
 
     def test_index_repr(self):
         a = self.b.index("name", "my title")

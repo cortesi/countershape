@@ -34,23 +34,19 @@ class uPython(libpry.AutoTree):
         d = doc.PythonModule("name", "title", "testmod")
 
 
-class u_DocHTMLPage(libpry.AutoTree, libpry.TmpDirMixin):
+class u_DocHTMLPage(libpry.AutoTree):
     def setUp(self):
         self.application = doc.Doc(
             TestRoot([
                 DummyPage()
             ])
         )
-        libpry.TmpDirMixin.setUp(self)
-
-    def tearDown(self):
-        libpry.TmpDirMixin.tearDown(self)
 
     def test_repr(self):
         repr(countershape.state.page)
 
 
-class uRenderTests(libpry.AutoTree, libpry.TmpDirMixin):
+class uRenderTests(libpry.AutoTree):
     def setUp(self):
         self.application = doc.Doc(
             TestRoot([
@@ -61,20 +57,15 @@ class uRenderTests(libpry.AutoTree, libpry.TmpDirMixin):
                 doc.PythonModule("testmod")
             ])
         )
-        libpry.TmpDirMixin.setUp(self)
-
-    def tearDown(self):
-        libpry.TmpDirMixin.tearDown(self)
 
     def test_render(self):
-        self.application.render(self["tmpdir"])
-        assert os.path.isfile(os.path.join(self["tmpdir"], "test.html"))
-        assert os.path.isfile(os.path.join(self["tmpdir"], "copy"))
-        assert os.path.isfile(os.path.join(self["tmpdir"], "copy2"))
-        assert os.path.isdir(os.path.join(self["tmpdir"], "testmod"))
-        assert os.path.isfile(
-                    os.path.join(self["tmpdir"], "testmod_index.html")
-               )
+        t = self.tmpdir()
+        self.application.render(t)
+        assert os.path.isfile(os.path.join(t, "test.html"))
+        assert os.path.isfile(os.path.join(t, "copy"))
+        assert os.path.isfile(os.path.join(t, "copy2"))
+        assert os.path.isdir(os.path.join(t, "testmod"))
+        assert os.path.isfile(os.path.join(t, "testmod_index.html"))
 
 class uBunch(libpry.AutoTree):
     def test_load(self):
@@ -84,10 +75,10 @@ class uBunch(libpry.AutoTree):
         assert l.getDict()["c"] == 22
 
 
-class uFullRender(libpry.TmpDirMixin, libpry.AutoTree):
+class uFullRender(libpry.AutoTree):
     def test_render(self):
         app = doc.Doc("doctree")
-        t = self["tmpdir"]
+        t = self.tmpdir()
         app.render(t)
         assert "notcopied" in app.root.namespace["data"]
         assert not os.path.isfile(os.path.join(t, "_notcopied.html"))
@@ -97,11 +88,11 @@ class uFullRender(libpry.TmpDirMixin, libpry.AutoTree):
 
     def test_render_newdir(self):
         app = doc.Doc("doctree")
-        t = self["tmpdir"]
+        t = self.tmpdir()
         app.render(os.path.join(t, "newdir"))
 
 
-class uDocRoot(libpry.TmpDirMixin, libpry.AutoTree):
+class uDocRoot(libpry.AutoTree):
     def test_render(self):
         libpry.raises(SyntaxError, doc.Doc, doc.DocRoot("doctree_err"))
 

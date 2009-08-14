@@ -45,12 +45,15 @@ class Disqus:
         """
         return html.rawstr("""
             <div id="disqus_thread"></div>
+            <script type="text/javascript">
+                disqus_url = "%s";
+            </script>
             <script type="text/javascript" src="http://disqus.com/forums/%s/embed.js">
             </script>
             <noscript>
                 <a href="http://%s.disqus.com/?url=%s">View the discussion thread.</a>
             </noscript>
-        """%(self.account, self.account, post.permalink))
+        """%(post.permalink, self.account, self.account, post.permalink))
 
 
 class _PostRenderer(html._Renderable):

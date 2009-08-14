@@ -5,10 +5,10 @@ import libpry
 import countershape
 import countershape.utils as utils
 
-class uInDir(libpry.TmpDirMixin, libpry.AutoTree):
+class uInDir(libpry.AutoTree):
     def test_one(self):
         old = os.getcwd()
-        with utils.InDir(self["tmpdir"]):
+        with utils.InDir(self.tmpdir()):
             assert os.getcwd() != old
         assert os.getcwd() == old
 
