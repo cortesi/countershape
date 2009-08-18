@@ -1,5 +1,6 @@
 from countershape.doc import *
 
+ns.docTitle = "API Reference"
 pages = [
     Page("blog.html", "blog"),
     Page("doc.html", "doc"),
