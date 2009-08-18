@@ -1,4 +1,203 @@
+Countershape includes a powerful set of tools auto-generate static documentation
+from Python Source Code.
 
-Countershape includes a powerful set of tools for generating static
-documentation.
+<!--(block |pySyntax)-->
+import countershape
+import countershape.grok
+ns.parse = countershape.grok.parse("path-to-source")
+ns.parse("class-name")
+<!--(end)-->
 
+<h2>
+""" DOCSTRINGS are interpreted directly as documentation for a class or function with the following featureset """
+</h2>
+
+In addition to using pygments for color-coding source code, countershape also supports these additional features.
+
+    - Bold Text
+    - Automated Variable Documentation
+    - Lists
+
+<h2>Bold Text</h2>
+You can bold text by using a leading colon ":" and the subsequent text on the line will be placed on the subsequent line
+
+Sample Python Source
+
+<!--(block |pySyntax)-->
+class LinkTo(html._Renderable):
+    """
+        A lazily evaluated link to a page in this application, created using
+        the _link_ attribute for the destination page.
+    """
+    _cubictemp_unescaped = True
+    def __init__(self, page):
+        """
+            :page Page specification
+        """
+        html._Renderable.__init__(self)
+        self.page = page
+
+    def _getLink(self):
+        p = state.application.getPage(self.page)
+        if not p:
+            s = "Link to unknown page: %s."%self.page
+            raise ApplicationError(s)
+        l = p.link()
+        l.page = p
+        return l
+
+    def __call__(self):
+        """
+            This method complies with the _Renderable interface, although we
+            don't return a LinkTo object - we return the link object itself.
+        """
+        return self._getLink()
+
+    def __str__(self):
+        return unicode(self._getLink())
+        <!--(end)-->
+        
+Sample rendering
+<div class="grokdoc_class">
+    <div class="grokdoc_class_title"><div class="grokdoc">
+        <pre>
+            <span class="k">class</span> <span class="nc">LinkTo</span><span class="p">(</span><span class="n">html</span><span class="o">.</span><span class="n">_Renderable</span><span class="p">)</span>
+        </pre>
+    </div> 
+</div>
+<div class="grokdoc_description"><div>
+<p>A lazily evaluated link to a page in this application, created using
+       the <em>link</em> attribute for the destination page.</p>
+</div>
+<div class="grokdoc_function">
+    <div class="grokdoc_function_title">
+        <div class="grokdoc">
+            <pre><span class="k">def</span> <span class="nf">__init__</span>
+                    <span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">page</span><span class="p">)</span>
+            </pre>
+        </div>
+    </div>
+<div class="grokdoc_description"><dl><dt>page</dt><dd>Page specification</dd></dl></div></div><div class="grokdoc_function"><div class="grokdoc_function_title"><div class="grokdoc"><pre><span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</pre></div>
+ 
+</div><div class="grokdoc_description"><p>
+            This method complies with the _Renderable interface, although we
+            don't return a LinkTo object - we return the link object itself.
+        </p></div></div><div class="grokdoc_function"><div class="grokdoc_function_title"><div class="grokdoc"><pre><span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</pre></div>
+ 
+</div></div></div></div>
+
+<div class="grokdoc_description"><div><p>
+        A lazily evaluated URL to a page in this application.
+    </p></div><div class="grokdoc_function"><div class="grokdoc_function_title"><div class="grokdoc"><pre><span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pageSpec</span><span class="p">,</span> <span class="n">anchor</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
+</pre></div>
+
+
+<h2>Automated Variable Documentation</h2>
+
+Countershape can interpret documentation for variables declared before function declarations and 
+use comments above the variable definitions as descriptions for the variable/value settings.
+
+Sample Code Source
+
+<!--(block |pySyntax)-->
+class BasePage(tinytree.Tree):
+    """
+        Objects inheriting from this class should over-ride the run() method,
+        which will be called with the arguments of the page submission as
+        keywords. 
+    """
+    # Name of page (possibly not unique)
+    name = None
+    # Name of page presented in menus, etc.
+    title = None
+    # Is this page at the root of the application tree?
+    root = False
+    # True if page is not directly callable
+    internal = False
+    # True if page will appear in the site indexes and menus
+    structural = False
+    def __init__(self, children = None):
+        if state.page and not state.application.testing:
+            raise ApplicationError(
+                    "Page object instantiated during page call. Last page: %s"%state.page.name
+                )
+        tinytree.Tree.__init__(self, children)
+        if not self.name:
+            self.name = self.__class__.__name__
+        self.link = Link(self)
+<!--(end)-->
+
+Sample Rendering
+
+<div class="grokdoc_class"><div class="grokdoc_class_title"><div class="grokdoc"><pre><span class="k">class</span> <span class="nc">BasePage</span><span class="p">(</span><span class="n">tinytree</span><span class="o">.</span><span class="n">Tree</span><span class="p">)</span>
+</pre></div>
+ 
+</div><div class="grokdoc_description"><div><p>
+        Objects inheriting from this class should over-ride the run() method,
+        which will be called with the arguments of the page submission as
+        keywords. 
+    </p></div><table class="grokdoc_vartable"><tr><td><div class="grokdoc"><pre><span class="n">name</span> <span class="o">=</span> <span class="bp">None</span>
+</pre></div>
+ 
+</td><td><p> Name of page (possibly not unique)</p></td></tr><tr><td><div class="grokdoc"><pre><span class="n">title</span> <span class="o">=</span> <span class="bp">None</span>
+</pre></div>
+ 
+</td><td><p> Name of page presented in menus, etc.</p></td></tr><tr><td><div class="grokdoc"><pre><span class="n">root</span> <span class="o">=</span> <span class="bp">False</span>
+</pre></div>
+ 
+</td><td><p> Is this page at the root of the application tree?</p></td></tr><tr><td><div class="grokdoc"><pre><span class="n">internal</span> <span class="o">=</span> <span class="bp">False</span>
+</pre></div>
+ 
+</td><td><p> True if page is not directly callable</p></td></tr><tr><td><div class="grokdoc"><pre><span class="n">structural</span> <span class="o">=</span> <span class="bp">False</span>
+</pre></div>
+ 
+</td><td><p> True if page will appear in the site indexes and menus</p></td></tr></table><div class="grokdoc_function"><div class="grokdoc_function_title"><div class="grokdoc"><pre><span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">children</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
+</pre></div>
+ 
+</div></div>
+
+<h2>Lists</h2>
+
+Programming and documentation invariably ends up with long lists of things.
+Countershape helps with documentation by allowing lists to be interpreted.
+
+<!--(block |pySyntax)-->
+    def getPage(self, page):
+        """
+            :page Either a page object, or a string path specification.
+
+            Find a page specified using minimally unique path information. Note
+            that the path used is the _structural_ path - non-structural pages
+            are not taken into account.
+
+            Examples:
+
+                /foo       - A node named "foo" on the structural root.
+                
+                foo        - Any node named "foo". If there is more than one, this
+                             will raise an Ambiguous Link error.
+                             
+                ./foo      - A descendant of the current page named foo.
+                
+                ^/foo      - An ancestor of the current page named foo.
+                
+                -/foo      - A sibling of the current page named foo.
+                
+                $/foo      - A page in the same subtree as the current page.
+                             This means that the page is either a descendant,
+                             or a sibling or an ancestor of the current page.
+        """
+        return self.getPageFrom(state.page, page)
+<!--(end)-->
+<div class="grokdoc_function"><div class="grokdoc_function_title"><div class="grokdoc"><pre><span class="k">def</span> <span class="nf">getPage</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">page</span><span class="p">)</span>
+</pre></div>
+ 
+</div><div class="grokdoc_description"><dl><dt>page</dt><dd><p>Either a page object, or a string path specification.</p></dd></dl><p>            Find a page specified using minimally unique path information. Note
+            that the path used is the <em>structural</em> path - non-structural pages
+            are not taken into account.</p><p>            Examples:</p><p>                /foo       - A node named "foo" on the structural root.</p><p>                foo        - Any node named "foo". If there is more than one, this
+                             will raise an Ambiguous Link error.</p><p>                ./foo      - A descendant of the current page named foo.</p><p>                ^/foo      - An ancestor of the current page named foo.</p><ul><li><p>/foo      - A sibling of the current page named foo.</p></li></ul><p>                $/foo      - A page in the same subtree as the current page.
+                             This means that the page is either a descendant,
+                             or a sibling or an ancestor of the current page.
+        </p></div></div>

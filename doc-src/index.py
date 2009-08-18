@@ -9,7 +9,7 @@ ns.docTitle = "Countershape Manual"
 ns.docMaintainer = "Aldo Cortesi"
 ns.docMaintainerEmail = "dev@nullcube.com"
 ns.copyright = "Copyright Nullcube 2007"
-ns.head = countershape.template.File(None, "_header.html")
+ns.head = countershape.template.File(None, "_banner.html")
 ns.sidebar = countershape.widgets.SiblingPageIndex(
             '/index.html', 
             exclude=['countershape']
@@ -19,8 +19,8 @@ ns.parse = countershape.grok.parse("../countershape")
 pages = [
     Page("index.html", "Introduction"),
     Page("structure.html", "Document Structure"),
-    Page("code.html", "Documenting Code"),
-    Page("api.html", "API Reference"),
+    Page("doc.html", "Documenting Code"),
+    Page("api/apiref.html", "API Reference"),
     Directory("api"),
     PythonModule("../countershape", "Source"),
     Page("admin.html", "Administrivia")
