@@ -212,7 +212,7 @@ class _Text(_Chunk):
     )
     _markupRe = re.compile(
         r"""
-            ((?:__\w.*?\w__) | (?:_\w.*?\w_))
+            ((?:\b__\w.*?\w__\b) | (?:\b_\w.*?\w_\b))
         """,
         re.MULTILINE|re.VERBOSE|re.DOTALL
     )
