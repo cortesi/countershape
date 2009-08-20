@@ -25,3 +25,10 @@ pages = [
     PythonModule("../countershape", "Source"),
     Page("admin.html", "Administrivia")
 ]
+
+ns.imgBanner = countershape.html.IMG(
+    src=countershape.model.UrlTo("countershape.png"),
+    width="280",
+    height="77",
+    align="right"
+    )
