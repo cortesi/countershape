@@ -121,7 +121,7 @@ except ImportError:
 
 
 class _TemplateMixin:
-    def __str__(self):
+    def __unicode__(self):
         kwargs = {}
         kwargs.update(_ns())
         kwargs.update(self._getNS())
