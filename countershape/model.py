@@ -328,11 +328,16 @@ class BaseApplication(object):
             Examples:
 
                 /foo       - A node named "foo" on the structural root.
+                
                 foo        - Any node named "foo". If there is more than one, this
                              will raise an Ambiguous Link error.
+                             
                 ./foo      - A descendant of the current page named foo.
+                
                 ^/foo      - An ancestor of the current page named foo.
+                
                 -/foo      - A sibling of the current page named foo.
+                
                 $/foo      - A page in the same subtree as the current page.
                              This means that the page is either a descendant,
                              or a sibling or an ancestor of the current page.
