@@ -228,13 +228,18 @@ class Directory(StaticDirectory, _DocMixin):
             # FIXME: we need to over-ride files with the same
             # name further up the tree
             if src.endswith(".css") or src.endswith(".js"):
-                urlpath = src[len(self.application.root.src):]
+                if os.path.isabs(src):
+                    _, mydir = os.path.split(self.src)
+                    _, fname = os.path.split(src)
+                    urlpath = os.path.join(mydir, fname)
+                else:
+                    urlpath = src[len(self.application.root.src):]
                 self.stdHeaders.append(
                     model.UrlTo(urlpath)
                 )
             return Copy(src)
         else:
-            return Directory(os.path.basename(src) ,src)
+            return Directory(os.path.basename(src), src)
 
     def __repr__(self):
         return "Directory(%s)"%self.name
