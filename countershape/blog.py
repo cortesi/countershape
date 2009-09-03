@@ -76,7 +76,7 @@ class _PostRenderer(html._Renderable):
                    ))
             if self.postfix:
                 blocks.append(self.postfix)
-            return str(html.DIV(*blocks, _class="post"))
+            return str(html.DIV(*blocks, **dict(_class="post")))
 
 
 class Post(doc._DocHTMLPage):
