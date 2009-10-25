@@ -295,6 +295,8 @@ class Doc(model.BaseApplication):
                         os.makedirs(newdir)
                 out = self(i)
                 f = open(os.path.join(destination, *path), "w")
+                if isinstance(out, unicode):
+                    out = out.encode("utf-8")
                 f.write(out)
 
     def __call__(self, page):
