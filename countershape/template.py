@@ -101,9 +101,9 @@ markup = dict(
 
 #begin nocover
 try:
-    import markdown
+    import markdown2
     def md(txt):
-        return markdown.markdown(txt)
+        return markdown2.markdown(txt)
     markup["markdown"] = md
 except ImportError:
     pass
