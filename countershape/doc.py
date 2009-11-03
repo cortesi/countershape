@@ -256,6 +256,7 @@ class DocRoot(Directory):
     markup = "textish"
     _baseNS = dict(
         pySyntax            = template.pySyntax,
+        cSyntax             = template.cSyntax,
         pyTracebackSyntax   = template.pyTracebackSyntax,
         cssSyntax           = template.cssSyntax,
         htmlSyntax          = template.htmlSyntax,
