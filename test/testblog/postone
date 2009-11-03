@@ -9,3 +9,10 @@ here
 is
 some
 Content.
+
+Unicode: Hölldobler
+
+<!--(block here)-->
+    here
+<!--(end)-->
+@!here!@

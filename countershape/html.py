@@ -55,7 +55,7 @@ class RawStr(_Renderable):
         _Renderable.__init__(self)
         self.s = s
 
-    def __str__(self):
+    def __unicode__(self):
         return unicode(self.s)
 
 
@@ -64,8 +64,8 @@ class Str(_Renderable):
         _Renderable.__init__(self)
         self.s = s
 
-    def __str__(self):
-        return utils.escape(self.s)
+    def __unicode__(self):
+        return unicode(utils.escape(self.s))
     
 
 class _Tag(_Renderable):

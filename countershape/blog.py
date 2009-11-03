@@ -1,5 +1,5 @@
 from __future__ import with_statement
-import os.path, re, datetime, urllib
+import os.path, re, datetime, urllib, codecs
 import html, model, doc, utils, template
 import rssgen
 
@@ -64,7 +64,7 @@ class _PostRenderer(html._Renderable):
         self.post, self.postfix = post, postfix
         self.src = os.path.abspath(post.src)
 
-    def __str__(self):
+    def __unicode__(self):
         with utils.InDir(os.path.dirname(self.src)):
             title = html.H1(model.LinkTo(self.post))
             date = html.H2(self.post.time.strftime("%d %B %Y"))
@@ -76,7 +76,7 @@ class _PostRenderer(html._Renderable):
                    ))
             if self.postfix:
                 blocks.append(self.postfix)
-            return str(html.DIV(*blocks, **dict(_class="post")))
+            return unicode(html.DIV(*blocks, _class="post"))
 
 
 class Post(doc._DocHTMLPage):
@@ -122,7 +122,7 @@ class Post(doc._DocHTMLPage):
 
     @classmethod
     def fromPath(klass, path):
-        s = file(path).read()
+        s = codecs.open(path, "r", "utf-8").read()
         return klass.fromStr(s)
 
     @classmethod
