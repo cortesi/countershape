@@ -18,8 +18,8 @@ ns.parse = countershape.grok.parse("../countershape")
 
 pages = [
     Page("index.html", "Introduction"),
-    Page("structure/structure.html", "Document Structure"),
-    Directory("structure"),
+    Page("markup/markup.html", "Document Structure"),
+    Directory("markup"),
     Page("doc.html", "Documenting Code"),
     Page("api/apiref.html", "API Reference"),
     Directory("api"),
