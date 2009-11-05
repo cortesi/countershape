@@ -1,5 +1,5 @@
 from countershape.doc import *
-this.markdown = "rst"
+#this.markdown = "textish"
 pages = [
     Page("character.html", "Character"),
     Page("corner.html", "Corner"),
