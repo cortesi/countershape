@@ -1,0 +1,89 @@
+: Corner Cases
+----
+
+Cases where textish is not performing as user-expected, although it may be reasonably expected that this is 'correct-code' behaviour.
+
+:: Text Formatting
+---
+
+Undscores within names is a frequent occurrence in filenames and configuration settings. The problem highlights itself in textish (and markdown) when multiple underscores are used on a "line."
+
+Graphics disappear, and text are "_incorrect_".
+
+It is (is it) indicative that processing continues within a &lt;pre&gt; block
+
+>> This_name_Should_not << be emphasised (three underscores)
+
+>> This_name_Should << not be emphasised (two underscores)
+
+The following img tags use two underscores, such as hello($underscore)there($underscore)friend.png is an inbox with a down green arrow, hello($underscore)($underscore)there($underscore)($underscore)friend.png is an inbox with an outgoing yellow button.
+
+::: Inline with text
+----
+<img src="hello_there_friend.png" title="Well done" alt="Graphic Not Shown" />
+<img src="hello__there__friend.png" title="Did you find me" alt="Graphic got STRONGed?" />
+
+::: div block - img using closing tag
+---
+
+<blockquote>
+  img using a _closing tag_ <- this should not textished processed inside a pre block?
+
+  <img src="hello_there_friend.png" title="Did you find me" alt="Graphic got EMed?" />
+
+  <img src="hello__there__friend.png" title="Did you find me" alt="Graphic got STRONGed?" />
+
+
+  img not using closing tag
+
+  <img src="hello_there_friend.png" title="Did you find me" alt="Graphic got EMed?" >
+
+  <img src="hello__there__friend.png" title="Did you find me" alt="Graphic got STRONGed?" >
+
+</blockquote>
+
+::: Pre block - img using closing tag
+---
+
+<pre>
+  img using a _closing tag_ <- this should not textished processed inside a pre block?
+  <img src="hello_there_friend.png" title="Did you find me" alt="Graphic got EMed?" />
+  <img src="hello__there__friend.png" title="Did you find me" alt="Graphic got STRONGed?" />
+
+
+  img not using closing tag
+  <img src="hello_there_friend.png" title="Did you find me" alt="Graphic got EMed?" >
+  <img src="hello__there__friend.png" title="Did you find me" alt="Graphic got STRONGed?" >
+</pre>
+
+::: Pre block using class=" ... " - img using closing tag
+----
+
+<pre class="highlight">
+  img tag using __closing tag__ <- this should not be stronged inside a html block?
+  <img src="hello_there_friend.png" title="Did you find me" alt="Graphic got EMed?" />
+  <img src="hello__there__friend.png" title="Did you find me" alt="Graphic got STRONGed?" />
+
+
+  img not using closing tag
+  <img src="hello_there_friend.png" title="Did you find me" alt="Graphic got EMed?" >
+  <img src="hello__there__friend.png" title="Did you find me" alt="Graphic got STRONGed?" >
+</pre>
+
+::: Compilation Problems
+---
+
+This is the scenario of not closing tags correctly.
+
+<pre>
+Pre block which is not closed correctly (i.e. has a starting block within)
+
+Apparently __ALL__ text after this is invisible in Opera.
+<code></pre>
+
+Opera sucks!! Unrestrained Standards compliance SUCKS!!
+
+Opera tries to render the rest 'code' fragment inside the 'pre' block, which just closed effectively making everything disappear until there's some closure?'
+</code>
+
+At which point further text re-appear magically. Another example of the failure in dogmatic, fundamentalism.
