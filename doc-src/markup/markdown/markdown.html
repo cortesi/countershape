@@ -1,6 +1,6 @@
 # Introduction
 
-Markdown is a text-to-HTML conversion tool for web writers.
+<blockquote><a href="http://daringfireball.net/projects/markdown/">Markdown</a>  is a text-to-HTML conversion tool for web writers.
 Markdown allows you to write using an easy-to-read, easy-to-write
 plain text format, then convert it to structurally valid XHTML (or HTML).
 
@@ -9,6 +9,20 @@ and (2) a software tool, written in Perl, that converts the plain text
 formatting to HTML. See the Syntax page for details pertaining to
 Markdown s formatting syntax. You can try it out, right now, using the online
 <a href="http://daringfireball.net/projects/markdown/dingus">Dingus.</a>
+</blockquote>
 
-The Basic and Syntax pages exposes how countershape converts the 'official'
-markdown syntax as per 2009.11.05
+# Countershape Support
+
+As evident from this page, not all features of Markdown is supported. The <a href="markdown/basics.html">Basic</a> and <a href="markdown/syntax.html">Syntax</a>
+pages exposes how countershape converts the 'published' markdown syntax as per 2009.11.05
+
+The <a href="markdown/basics.html">Basic</a>  page require no changes from the <a href="http://daringfireball.net/projects/markdown/basics.text">original markdown text</a>.
+
+The <a href="markdown/syntax.html">Syntax</a> page requires some changes from the <a href="http://daringfireball.net/projects/markdown/syntax.text">original markdown text</a> including:
+
+    - removing non-ascii characters
+    
+    - converting some &lt; symbols to their HTML Entities (e.g. &lt; becomes &amp;lt;)
+    
+    - converting some &amp; symbols to their HTML Entities (e.g. &amp; becomes &amp;amp;)
+    
