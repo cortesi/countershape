@@ -42,6 +42,9 @@ Optional modules:
     - Pry to run the test suite
         http://dev.nullcube.com
 
+    - Python Markdown2
+        http://code.google.com/p/python-markdown2/
+
 
 Documentation
 ========
@@ -51,3 +54,4 @@ with the source distribution.
 
 The documentation is at  ./doc-src and the example files
 at ./examples.
+
