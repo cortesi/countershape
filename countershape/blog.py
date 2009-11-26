@@ -1,5 +1,5 @@
 from __future__ import with_statement
-import os.path, re, datetime, urllib, codecs
+import os.path, re, datetime, urllib, codecs, functools
 import html, model, doc, utils, template
 import rssgen
 
@@ -115,7 +115,8 @@ class _PostRenderer(html._Renderable):
     """
     def __init__(self, post, *postfixes):
         """
-            Postfixes are already rendered at this point.
+            postfixes: A list of callables, which will be called with no
+            arguments.
         """
         self.post, self.postfixes = post, postfixes
         self.src = os.path.abspath(post.src)
@@ -131,7 +132,7 @@ class _PostRenderer(html._Renderable):
                        _class="postbody"
                    ))
             for i in self.postfixes:
-                blocks.append(i)
+                blocks.append(i())
             return unicode(html.DIV(*blocks, _class="post"))
 
 
@@ -245,7 +246,7 @@ class Post(doc._DocHTMLPage):
     def _prime(self, app):
         doc._DocHTMLPage._prime(self, app)
         dt = self.findAttr("contentName")
-        postfixes = [i.solo(self) for i in self.blog.postfixes]
+        postfixes = [functools.partial(i.solo, self) for i in self.blog.postfixes]
         self.namespace[dt] = _PostRenderer(self, *postfixes)
 
     def __repr__(self):
@@ -279,7 +280,7 @@ class IndexPage(doc._DocHTMLPage):
     def _getIndex(self):
         out = html.Group()
         for i in self.blog.blogdir.sortedPosts()[:self.posts]:
-            ps = [j.inline(i) for j in self.blog.postfixes]
+            ps = [functools.partial(j.inline, i) for j in self.blog.postfixes]
             out.addChild(_PostRenderer(i, *ps))
         for i in self.blog.postfixes:
             out.addChild(i.index(self))
@@ -335,6 +336,7 @@ class ArchivePage(doc._DocHTMLPage):
 
 class RSSPage(model.BasePage, doc._DocMixin):
     structural = False
+    NUM = 10
     def __init__(self, name, title, posts, blog):
         self.name, self.title, self.posts = name, title, posts
         self.blog = blog
@@ -343,7 +345,7 @@ class RSSPage(model.BasePage, doc._DocMixin):
 
     def _getRSS(self):
         items = []
-        for i in self.blog.blogdir.sortedPosts()[:10]:
+        for i in self.blog.blogdir.sortedPosts()[:self.NUM]:
             path = [x.name for x in i.structuralPath()]
             items.append(
                 rssgen.RSSItem(
