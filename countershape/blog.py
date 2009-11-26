@@ -3,15 +3,76 @@ import os.path, re, datetime, urllib, codecs
 import html, model, doc, utils, template
 import rssgen
 
+class _Postfix:
+    """
+        Defines a postfix added to blog posts and the index page.
+    """
+    def index(self, page):
+        """
+            Page postfix for the index page - will appear once at the bottom of
+            the index page.
+        """
+        return ""
 
-class Disqus:
+    def inline(self, post):
+        """
+            Postfix for blog posts appearing inline on a page with other posts
+            (i.e. the index page). Will appear after each post.
+        """
+        return ""
+
+    def solo(self, post):
+        """
+            Postfix for blog posts appearing alone on a page (i.e. the
+            permalink destination).
+        """
+        return ""
+
+
+class RecentPosts(_Postfix):
+    TITLE = "Recent posts:"
+    CSS_PREFIX = "recent"
+    def __init__(self, num):
+        self.num = num
+
+    def _makeList(self, posts):
+        monthyear = None
+        output = html.DIV(_class=self.CSS_PREFIX)
+        output.addChild(html.H1(self.TITLE))
+        postlst = []
+        for i in posts:
+            postlst.append(
+                html.Group(
+                    html.SPAN(
+                        model.LinkTo(i),
+                        _class="%s-post"%self.CSS_PREFIX
+                    ),
+                    " ",
+                    html.SPAN(
+                        i.time.strftime("%d %b %Y"),
+                        _class="%s-date"%self.CSS_PREFIX
+                    )
+                )
+            )
+        if postlst:
+            output.addChild(html.UL(postlst))
+        return output
+
+    def index(self, idx):
+        posts = idx.blog.blogdir.sortedPosts()
+        return self._makeList(posts[idx.posts:idx.posts+self.num])
+
+    def solo(self, post):
+        posts = list(post.blog.blogdir.sortedPosts())
+        posts.remove(post)
+        return self._makeList(posts[:self.num+1])
+
+
+class Disqus(_Postfix):
     def __init__(self, account):
         self.account = account
 
-    def indexPostfix(self):
-        """
-            Page postfix for the index page.
-        """
+    def index(self, page):
         return html.rawstr(
             """
                 <script type="text/javascript">
@@ -31,18 +92,10 @@ class Disqus:
             """
         )
 
-    def inlinePostfix(self, post):
-        """
-            Postfix for blog posts appearing inline on a page with other posts
-            (i.e. the index page).
-        """
+    def inline(self, post):
         return html.rawstr("<a href=\"%s#disqus_thread\">Comments</a>"%model.UrlTo(post))
 
-    def soloPostfix(self, post):
-        """
-            Postfix for blog posts appearing alone on a page (i.e. the
-            permalink destination).
-        """
+    def solo(self, post):
         return html.rawstr("""
             <div id="disqus_thread"></div>
             <script type="text/javascript">
@@ -60,8 +113,11 @@ class _PostRenderer(html._Renderable):
     """
         Lazy post renderer.
     """
-    def __init__(self, post, postfix):
-        self.post, self.postfix = post, postfix
+    def __init__(self, post, *postfixes):
+        """
+            Postfixes are already rendered at this point.
+        """
+        self.post, self.postfixes = post, postfixes
         self.src = os.path.abspath(post.src)
 
     def __unicode__(self):
@@ -74,8 +130,8 @@ class _PostRenderer(html._Renderable):
                        template.Template(self.post.findAttr("markup"), self.post.data),
                        _class="postbody"
                    ))
-            if self.postfix:
-                blocks.append(self.postfix)
+            for i in self.postfixes:
+                blocks.append(i)
             return unicode(html.DIV(*blocks, _class="post"))
 
 
@@ -189,11 +245,8 @@ class Post(doc._DocHTMLPage):
     def _prime(self, app):
         doc._DocHTMLPage._prime(self, app)
         dt = self.findAttr("contentName")
-        if self.blog.postfix:
-            postfix = self.blog.postfix.soloPostfix(self)
-        else:
-            postfix = None
-        self.namespace[dt] = _PostRenderer(self, postfix)
+        postfixes = [i.solo(self) for i in self.blog.postfixes]
+        self.namespace[dt] = _PostRenderer(self, *postfixes)
 
     def __repr__(self):
         return "Post(%s, \"%s\")"%(self.time.strftime("%d %B %Y"), self.title)
@@ -219,19 +272,17 @@ class BlogDirectory(doc.Directory):
 
 
 class IndexPage(doc._DocHTMLPage):
-    def __init__(self, name, title, posts, blog, postfix):
+    def __init__(self, name, title, posts, blog, *postfixes):
         doc._DocHTMLPage.__init__(self, name, title)
-        self.posts, self.blog, self.postfix = posts, blog, postfix
+        self.posts, self.blog, self.postfixes = posts, blog, postfixes
 
     def _getIndex(self):
         out = html.Group()
         for i in self.blog.blogdir.sortedPosts()[:self.posts]:
-            if self.blog.postfix:
-                postfix = self.blog.postfix.inlinePostfix(i)
-            else:
-                postfix = None
-            out.addChild(_PostRenderer(i, postfix))
-        out.addChild(self.postfix)
+            ps = [j.inline(i) for j in self.blog.postfixes]
+            out.addChild(_PostRenderer(i, *ps))
+        for i in self.blog.postfixes:
+            out.addChild(i.index(self))
         return out
 
     def _getLayoutComponent(self, attr):
@@ -319,21 +370,21 @@ class RSSPage(model.BasePage, doc._DocMixin):
 
 
 class Blog:
-    def __init__(self, blogname, blogdesc, url, base, src, postfix=None):
+    def __init__(self, blogname, blogdesc, url, base, src, *postfixes):
+        """
+            postfixes: A set of Postfix objects, which will be appended in the
+            relevant places in the specified order.
+        """
         src = os.path.abspath(src)
         self.blogname, self.url, self.base, self.src = blogname, url, base, src
         self.blogdesc = blogdesc
-        self.postfix = postfix
+        self.postfixes = postfixes
         if not os.path.isdir(src):
             raise model.ApplicationError("Blog source is not a directory: %s"%src)
         self.blogdir = BlogDirectory(base, src, self)
 
     def index(self, name, title, posts=10):
-        if self.postfix:
-            p = self.postfix.indexPostfix()
-        else:
-            p = ""
-        return IndexPage(name, title, posts, self, p)
+        return IndexPage(name, title, posts, self, *self.postfixes)
         
     def archive(self, name, title):
         return ArchivePage(name, title, self)

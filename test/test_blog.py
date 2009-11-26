@@ -20,7 +20,7 @@ class TestPostfix:
 
 
 class DummyBlog:
-    postfix = None
+    postfixes = []
 
 
 class uPost(libpry.AutoTree):
@@ -143,6 +143,7 @@ class uBlog(libpry.AutoTree):
                     "posts",
                     "testblog",
                     blog.Disqus("test"),
+                    blog.RecentPosts(5),
                 )
         r = TestRoot(
                     [
