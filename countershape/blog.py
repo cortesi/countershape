@@ -30,7 +30,7 @@ class _Postfix:
 
 
 class RecentPosts(_Postfix):
-    TITLE = "Recent posts:"
+    TITLE = "More posts:"
     CSS_PREFIX = "recent"
     def __init__(self, num):
         self.num = num
