@@ -1,7 +1,63 @@
 from __future__ import with_statement
-import os.path, re, datetime, urllib, codecs, functools
+import os.path, re, datetime, urllib, codecs, functools, textwrap
 import html, model, doc, utils, template
 import rssgen
+import cubictemp
+
+
+class Links:
+    """
+        A template processor for maintaining a link log. A link log is set of
+        entries of the following format, separated by one or more empty line:
+
+        http://url/
+        Multiple line title
+
+        Description that maybe multiple lines, or indeed multiple
+        paragraphs.
+    """
+    def __init__(self, post):
+        self.post = post
+
+    def parse(self, txt):
+        txt = txt.expandtabs()
+        txt = textwrap.dedent(txt)
+
+        entries = []
+        current = None
+        whiltespace = 0
+        r = re.compile(r"^\s*\n*", re.MULTILINE)
+        for i in re.split(r, txt):
+            si = i.strip()
+            if not si:
+                continue
+            elif si.startswith("http://") or si.startswith("https://"):
+                if current:
+                    entries.append(current)
+                current = {}
+                parts = si.split("\n", 1)
+                current["link"] = parts[0].strip()
+                current["title"] = parts[1]
+            else:
+                if current:
+                    c = current.get("body")
+                    if not c:
+                        current["body"] = si
+                    else:
+                        current["body"] = c + "\n\n" + si
+        if current:
+            entries.append(current)
+        return entries
+
+    def __call__(self, str):
+        parts = self.parse(str)
+        t = template.Template(
+                self.post.findAttr("markup"),
+                file(utils.data.path("resources/links.html")).read(),
+                links = parts
+            )
+        return unicode(t)
+
 
 class _Postfix:
     """
@@ -127,8 +183,13 @@ class _PostRenderer(html._Renderable):
             date = html.H2(self.post.time.strftime("%d %B %Y"))
             blocks = []
             blocks.append(html.DIV(title, date, _class="posthead"))
+            links = Links(self.post)
             blocks.append(html.DIV(
-                       template.Template(self.post.findAttr("markup"), self.post.data),
+                       template.Template(
+                            self.post.findAttr("markup"),
+                            self.post.data,
+                            links = links
+                        ),
                        _class="postbody"
                    ))
             for i in self.postfixes:
