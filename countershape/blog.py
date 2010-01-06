@@ -411,7 +411,7 @@ class RSSPage(model.BasePage, doc._DocMixin):
             items.append(
                 rssgen.RSSItem(
                     title = i.title,
-                    description = i.short or i.data,
+                    description = i.short or i.title,
                     link = i.permalink,
                     guid = rssgen.Guid(i.permalink),
                     pubDate = i.time
