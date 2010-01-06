@@ -16,8 +16,8 @@ class Links:
         Description that maybe multiple lines, or indeed multiple
         paragraphs.
     """
-    def __init__(self, post):
-        self.post = post
+    def __init__(self, markup):
+        self.markup = markup
 
     def parse(self, txt):
         txt = txt.expandtabs()
@@ -38,6 +38,7 @@ class Links:
                 parts = si.split("\n", 1)
                 current["link"] = parts[0].strip()
                 current["title"] = parts[1]
+                current["body"] = None
             else:
                 if current:
                     c = current.get("body")
@@ -51,10 +52,19 @@ class Links:
 
     def __call__(self, str):
         parts = self.parse(str)
+        links = []
+        for i in parts:
+            links.append(
+                dict(
+                    title = template.Template(self.markup, i["title"]),
+                    body = template.Template(self.markup, i["body"]) if i["body"] else None,
+                    link = i["link"],
+                )
+            )
         t = template.Template(
-                self.post.findAttr("markup"),
+                self.markup,
                 file(utils.data.path("resources/links.html")).read(),
-                links = parts
+                links = links
             )
         return unicode(t)
 
@@ -183,7 +193,7 @@ class _PostRenderer(html._Renderable):
             date = html.H2(self.post.time.strftime("%d %B %Y"))
             blocks = []
             blocks.append(html.DIV(title, date, _class="posthead"))
-            links = Links(self.post)
+            links = Links(self.post.findAttr("markup"))
             blocks.append(html.DIV(
                        template.Template(
                             self.post.findAttr("markup"),

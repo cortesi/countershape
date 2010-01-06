@@ -221,7 +221,7 @@ class uLinks(libpry.AutoTree):
             text
             text
         """
-        l = blog.Links(None)
+        l = blog.Links("markdown")
         e = l.parse(txt)
         assert len(e) == 2
         assert e[0]["title"] == "title title"
@@ -229,6 +229,16 @@ class uLinks(libpry.AutoTree):
         assert e[0]["body"] == "text\ntext"
         assert e[1]["body"] == 'text\ntext\n\ntext\ntext'
         assert l.parse("") == []
+
+        nobod = """
+            http://test.org
+            title title
+
+            http://test2.org
+            title2 title2
+        """
+        e = l.parse(nobod)
+        assert e[0]["body"] is None
 
 
 

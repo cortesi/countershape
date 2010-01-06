@@ -1,10 +1,15 @@
-<div class="links_block">
-    <div class="links_link">
-        <!--(for i in links)-->
+<!--(block bodyblock)-->
+<div class="links_body">
+    @!body!@
+</div>
+<!--(end)-->
+<ul class="links_block">
+    <!--(for i in links)-->
+        <li>
             <div class="links_title">
                 <a href="@!i["link"]!@">@!i["title"]!@</a>
             </div>
-            @!i["body"]!@
-        <!--(end)-->
-    </div>
-</div>
+            $!bodyblock(body=i["body"]) if i["body"] else ""!$
+        </li>
+    <!--(end)-->
+</ul>
