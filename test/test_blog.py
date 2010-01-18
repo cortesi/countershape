@@ -20,7 +20,7 @@ class TestPostfix:
 
 
 class DummyBlog:
-    postfix = None
+    postfixes = []
 
 
 class uPost(libpry.AutoTree):
@@ -143,6 +143,7 @@ class uBlog(libpry.AutoTree):
                     "posts",
                     "testblog",
                     blog.Disqus("test"),
+                    blog.RecentPosts(5),
                 )
         r = TestRoot(
                     [
@@ -202,9 +203,49 @@ class uBlog(libpry.AutoTree):
         repr(a)
 
 
+class uLinks(libpry.AutoTree):
+    def test_parse(self):
+        txt = """
+            http://test.org
+            title title
+
+            text
+            text
+
+            http://test2.org
+            title2 title2
+
+            text
+            text
+
+            text
+            text
+        """
+        l = blog.Links("markdown")
+        e = l.parse(txt)
+        assert len(e) == 2
+        assert e[0]["title"] == "title title"
+        assert e[0]["link"] == "http://test.org"
+        assert e[0]["body"] == "text\ntext"
+        assert e[1]["body"] == 'text\ntext\n\ntext\ntext'
+        assert l.parse("") == []
+
+        nobod = """
+            http://test.org
+            title title
+
+            http://test2.org
+            title2 title2
+        """
+        e = l.parse(nobod)
+        assert e[0]["body"] is None
+
+
+
 tests = [
+    uLinks(),
     uPost(),
     uBlogDirectory(),
     uBlog(),
-    uRewriteTests()
+    uRewriteTests(),
 ]
