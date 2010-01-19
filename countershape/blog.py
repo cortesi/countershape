@@ -218,13 +218,14 @@ class Post(doc._DocHTMLPage):
     """
     _TimeFmt = "%Y-%m-%d %H:%M"
     _metaRe = re.compile(r"(\w+):(.*)")
+    _validOptions = set(["fullrss"])
     def __init__(self, src, blog):
         """
             :title Title of this post.
             :time DateTime object - publication time
         """
         self.blog = blog
-        self.title, self.time, self.data, self.short = self.fromPath(src)
+        self.title, self.time, self.data, self.short, self.options = self.fromPath(src)
         name = os.path.basename(src) + ".html"
         doc._DocHTMLPage.__init__(
             self, name, self.title, src=src
@@ -263,6 +264,7 @@ class Post(doc._DocHTMLPage):
         title, time = None, None
         lines = utils.BuffIter(text.lstrip().splitlines())
         short = None
+        options = set()
         for i in lines:
             i = i.strip()
             if not i:
@@ -285,6 +287,12 @@ class Post(doc._DocHTMLPage):
                             lines.push(j)
                             short = "\n".join(v).strip()
                             break
+                elif name == "options":
+                    for j in value.strip().split():
+                        if j in klass._validOptions:
+                            options.add(j)
+                        else:
+                            raise ValueError("Invalid option: %s"%j)
                 else:
                     raise ValueError("Invalid metadata: %s"%i)
             else:
@@ -292,7 +300,7 @@ class Post(doc._DocHTMLPage):
         data = "\n".join(list(lines))
         if not title:
             raise ValueError, "Not a valid post - no title found."
-        return title, time, data, short
+        return title, time, data, short, options
 
     def toStr(self):
         """
@@ -418,10 +426,14 @@ class RSSPage(model.BasePage, doc._DocMixin):
         items = []
         for i in self.blog.blogdir.sortedPosts()[:self.NUM]:
             path = [x.name for x in i.structuralPath()]
+            if "fullrss" in i.options:
+                description = i.data
+            else:
+                description = i.short or i.title
             items.append(
                 rssgen.RSSItem(
                     title = i.title,
-                    description = i.short or i.title,
+                    description = description,
                     link = i.permalink,
                     guid = rssgen.Guid(i.permalink),
                     pubDate = i.time

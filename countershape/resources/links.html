@@ -6,9 +6,7 @@
 <ul class="links_block">
     <!--(for i in links)-->
         <li>
-            <div class="links_title">
-                <a href="@!i["link"]!@">@!i["title"]!@</a>
-            </div>
+            <div class="links_title"><a href="@!i["link"]!@">@!i["title"]!@</a></div>
             $!bodyblock(body=i["body"]) if i["body"] else ""!$
         </li>
     <!--(end)-->
