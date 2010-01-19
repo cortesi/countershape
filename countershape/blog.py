@@ -427,7 +427,8 @@ class RSSPage(model.BasePage, doc._DocMixin):
         for i in self.blog.blogdir.sortedPosts()[:self.NUM]:
             path = [x.name for x in i.structuralPath()]
             if "fullrss" in i.options:
-                description = i.data
+                r = _PostRenderer(i)
+                description = unicode(r)
             else:
                 description = i.short or i.title
             items.append(
