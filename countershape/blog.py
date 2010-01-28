@@ -218,7 +218,7 @@ class Post(doc._DocHTMLPage):
     """
     _TimeFmt = "%Y-%m-%d %H:%M"
     _metaRe = re.compile(r"(\w+):(.*)")
-    _validOptions = set(["fullrss"])
+    _validOptions = set(["fullrss", "draft"])
     def __init__(self, src, blog):
         """
             :title Title of this post.
@@ -359,6 +359,8 @@ class IndexPage(doc._DocHTMLPage):
     def _getIndex(self):
         out = html.Group()
         for i in self.blog.blogdir.sortedPosts()[:self.posts]:
+            if "draft" in i.options:
+                continue
             ps = [functools.partial(j.inline, i) for j in self.blog.postfixes]
             out.addChild(_PostRenderer(i, *ps))
         for i in self.blog.postfixes:
@@ -385,6 +387,8 @@ class ArchivePage(doc._DocHTMLPage):
         output = html.DIV(_class="archive")
         postlst = []
         for i in self.blog.blogdir.sortedPosts():
+            if "draft" in i.options:
+                continue
             my = i.time.strftime("%B %Y")
             if my != monthyear:
                 if postlst:
@@ -425,6 +429,8 @@ class RSSPage(model.BasePage, doc._DocMixin):
     def _getRSS(self):
         items = []
         for i in self.blog.blogdir.sortedPosts()[:self.NUM]:
+            if "draft" in i.options:
+                continue
             path = [x.name for x in i.structuralPath()]
             if "fullrss" in i.options:
                 r = _PostRenderer(i)
