@@ -1,5 +1,5 @@
 from __future__ import with_statement
-import os.path, re, datetime, urllib, codecs, functools, textwrap
+import os.path, re, datetime, urllib, codecs, functools, textwrap, tempfile
 import html, model, doc, utils, template
 import rssgen
 import cubictemp
@@ -319,8 +319,12 @@ class Post(doc._DocHTMLPage):
         return "\n".join(meta)
 
     def rewrite(self):
-        f = open(self.src, "w")
+        # We do it this way to make sure we don't destroy data on error.
+        name = tempfile.mktemp()
+        f = open(name, "w")
         f.write(self.toStr())
+        f.close()
+        os.rename(name, self.src)
 
     def _prime(self, app):
         doc._DocHTMLPage._prime(self, app)
