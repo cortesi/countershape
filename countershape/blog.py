@@ -1,5 +1,5 @@
 from __future__ import with_statement
-import os.path, re, datetime, urllib, codecs, functools, textwrap, tempfile
+import os.path, re, datetime, urllib, codecs, functools, textwrap, tempfile, shutil
 import html, model, doc, utils, template
 import rssgen
 import cubictemp
@@ -324,7 +324,7 @@ class Post(doc._DocHTMLPage):
         f = open(name, "w")
         f.write(self.toStr())
         f.close()
-        os.rename(name, self.src)
+        shutil.move(name, self.src)
 
     def _prime(self, app):
         doc._DocHTMLPage._prime(self, app)
