@@ -169,7 +169,12 @@ class _PostRenderer(html._Renderable):
 
     def __unicode__(self):
         with utils.InDir(os.path.dirname(self.src)):
-            title = html.H1(model.LinkTo(self.post))
+            if self.post.url:
+                title = html.H1(
+                    html.A(self.post.title, href=self.post.url)
+                )
+            else:
+                title = html.H1(model.LinkTo(self.post))
             date = html.H2(self.post.time.strftime("%d %B %Y"))
             blocks = []
             blocks.append(html.DIV(title, date, _class="posthead"))
@@ -433,7 +438,7 @@ class RSSPage(model.BasePage, doc._DocMixin):
             if "draft" in i.options:
                 continue
             path = [x.name for x in i.structuralPath()]
-            if "fullrss" in i.options:
+            if ("fullrss" in i.options) or i.url:
                 r = _PostRenderer(i)
                 description = unicode(r)
             else:
@@ -442,7 +447,7 @@ class RSSPage(model.BasePage, doc._DocMixin):
                 rssgen.RSSItem(
                     title = i.title,
                     description = description,
-                    link = i.permalink,
+                    link = i.url or i.permalink,
                     guid = rssgen.Guid(i.permalink),
                     pubDate = i.time
                 )
