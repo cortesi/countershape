@@ -96,6 +96,10 @@ class _Postfix:
 
 
 class RecentPosts(_Postfix):
+    """
+        A postfix that shows a list of recent posts, excluding link posts (i.e.
+        posts with a specified url option).
+    """
     TITLE = "More posts:"
     CSS_PREFIX = "recent"
     def __init__(self, num):
@@ -107,19 +111,20 @@ class RecentPosts(_Postfix):
         output.addChild(html.H1(self.TITLE))
         postlst = []
         for i in posts:
-            postlst.append(
-                html.Group(
-                    html.SPAN(
-                        model.LinkTo(i),
-                        _class="%s-post"%self.CSS_PREFIX
-                    ),
-                    " ",
-                    html.SPAN(
-                        i.time.strftime("%d %b %Y"),
-                        _class="%s-date"%self.CSS_PREFIX
+            if not i.url:
+                postlst.append(
+                    html.Group(
+                        html.SPAN(
+                            model.LinkTo(i),
+                            _class="%s-post"%self.CSS_PREFIX
+                        ),
+                        " ",
+                        html.SPAN(
+                            i.time.strftime("%d %b %Y"),
+                            _class="%s-date"%self.CSS_PREFIX
+                        )
                     )
                 )
-            )
         if postlst:
             output.addChild(html.UL(postlst))
         return output
