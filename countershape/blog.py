@@ -139,40 +139,20 @@ class Disqus(_Postfix):
         self.account = account
 
     def index(self, page):
-        return html.rawstr(
-            """
-                <script type="text/javascript">
-                //<![CDATA[
-                (function() {
-                        var links = document.getElementsByTagName('a');
-                        var query = '?';
-                        for(var i = 0; i < links.length; i++) {
-                            if(links[i].href.indexOf('#disqus_thread') >= 0) {
-                                query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
-                            }
-                        }
-                        document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/hatfulofhollow/get_num_replies.js' + query + '"></' + 'script>');
-                    })();
-                //]]>
-                </script>
-            """
-        )
+        return html.rawstr(cubictemp.File(
+            utils.data.path("resources/disqus_index.html"),
+            account = self.account
+        ))
 
     def inline(self, post):
         return html.rawstr("<a href=\"%s#disqus_thread\">Comments</a>"%model.UrlTo(post))
 
     def solo(self, post):
-        return html.rawstr("""
-            <div id="disqus_thread"></div>
-            <script type="text/javascript">
-                disqus_url = "%s";
-            </script>
-            <script type="text/javascript" src="http://disqus.com/forums/%s/embed.js">
-            </script>
-            <noscript>
-                <a href="http://%s.disqus.com/?url=%s">View the discussion thread.</a>
-            </noscript>
-        """%(post.permalink, self.account, self.account, post.permalink))
+        return html.rawstr(cubictemp.File(
+            utils.data.path("resources/disqus_solo.html"),
+            permalink = post.permalink,
+            account = self.account
+        ))
 
 
 class _PostRenderer(html._Renderable):
@@ -225,7 +205,7 @@ class Post(doc._DocHTMLPage):
             :time DateTime object - publication time
         """
         self.blog = blog
-        self.title, self.time, self.data, self.short, self.options = self.fromPath(src)
+        self.title, self.time, self.data, self.short, self.options, self.url = self.fromPath(src)
         name = os.path.basename(src) + ".html"
         doc._DocHTMLPage.__init__(
             self, name, self.title, src=src
@@ -265,6 +245,7 @@ class Post(doc._DocHTMLPage):
         lines = utils.BuffIter(text.lstrip().splitlines())
         short = None
         options = set()
+        url = None
         for i in lines:
             i = i.strip()
             if not i:
@@ -278,6 +259,8 @@ class Post(doc._DocHTMLPage):
                 value = match.group(2)
                 if name == "time":
                     time = klass._timeFromStr(value)
+                elif name == "url":
+                    url = value.strip()
                 elif name == "short":
                     v = [value]
                     for j in lines:
@@ -300,21 +283,26 @@ class Post(doc._DocHTMLPage):
         data = "\n".join(list(lines))
         if not title:
             raise ValueError, "Not a valid post - no title found."
-        return title, time, data, short, options
+        return title, time, data, short, options, url
 
-    def toStr(self):
+    @classmethod
+    def toStr(klass, title, time, data, short, options, url):
         """
             Return a string representation of this post.
         """
         meta = [
-            self.title,
-            "time: %s"%self._timeToStr(self.time),
+            title,
+            "time: %s"%klass._timeToStr(time),
         ]
-        if self.short:
-            meta.append("short: %s"%self.short)
+        if short:
+            meta.append("short: %s"%short)
+        if options:
+            meta.append("options: %s"%(",".join(options)))
+        if url:
+            meta.append("url: %s"%url)
         meta += [
                 "",
-                self.data
+                data
             ]
         return "\n".join(meta)
 
@@ -322,7 +310,16 @@ class Post(doc._DocHTMLPage):
         # We do it this way to make sure we don't destroy data on error.
         name = tempfile.mktemp()
         f = open(name, "w")
-        f.write(self.toStr())
+        f.write(
+            self.toStr(
+                self.title,
+                self.time,
+                self.data,
+                self.short,
+                self.options,
+                self.url
+            )
+        )
         f.close()
         shutil.move(name, self.src)
 
