@@ -1,0 +1,39 @@
+To render a HTML syntax coloured version of your code is a two
+step process
+
+    - Setup parsing
+    - Display parsing
+    
+:: Setup Parsing
+----
+
+To set up parsing for your source code, insert
+the following code into your _index.py_
+
+<!--(block |pySyntax)-->
+import countershape
+import countershape.grok
+ns.parse = countershape.grok.parse("path-to-source")
+ns.parse("class-name")
+<!--(end)-->
+
+
+:: Display parsing
+----
+
+To display the rendered version of the parse instruction above, 
+enter something like the following in your _html_ page.
+
+@ !parse("class_file")! @
+
+For example:
+
+<!--(block |pySyntax)-->
+import countershape
+import countershape.grok
+ns.parse = countershape.grok.parse("../countershape")
+<!--(end)-->
+
+@ !parse("blog")! @
+
+@!parse("blog")!@

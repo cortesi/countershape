@@ -1,10 +1,19 @@
 import countershape
 from countershape import Page, Directory, PythonModule
 import countershape.grok
-
+from countershape.doc import *
 
 this.layout = countershape.Layout("_layout.html")
-this.markdown = "rst"
+#this.markdown = "textish"
+#this.markup =None
+this.titlePrefix = "Countershape "
+
+this.stdHeaders = [
+    model.UrlTo("media/css/reset-fonts-grids-base.css"),
+    model.UrlTo("media/css/docstyle-default.css"),
+    model.UrlTo("media/css/docstyle-customised.css"),
+    model.UrlTo("media/css/syntax.css"),
+]
 ns.docTitle = "Countershape Manual"
 ns.docMaintainer = "Aldo Cortesi"
 ns.docMaintainerEmail = "dev@nullcube.com"
@@ -17,15 +26,36 @@ ns.sidebar = countershape.widgets.SiblingPageIndex(
 ns.parse = countershape.grok.parse("../countershape")
 
 pages = [
-    Page("index.html", "Introduction"),
-    Page("markup/markup.html", "Document Markup"),
+    Page("index.html", 
+        title="Introduction",
+        pageTitle="Introduction to Countershape"
+        ),
+        
+    Page("markup/markup.html", 
+        title="Document Markup",
+        pageTitle="Document Markup Options"
+        ),
     Directory("markup"),
-    Page("code/code.html", "Documenting Code"),
+    
+    Page("code/code.html", 
+        title="Documenting Code",
+        pageTitle="Documenting Code"
+        ),
     Directory("code"),
-    Page("api/apiref.html", "API Reference"),
+    
+    Page("api/apiref.html", 
+        title="API Reference",
+        pageTitle="API Reference"
+        ),
     Directory("api"),
-    PythonModule("../countershape", "Source"),
-    Page("admin.html", "Administrivia")
+    
+    PythonModule("../countershape", 
+        title="Source"),
+        
+    Page("admin.html", 
+        title="Administrivia",
+        pageTitle="Novella Administrivia")
+    
 ]
 
 ns.imgBanner = countershape.html.IMG(

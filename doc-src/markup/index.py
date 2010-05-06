@@ -1,11 +1,18 @@
 from countershape.doc import *
-this.markdown = "rst"
 
-ns.docTitle = "Document Structure"
 pages = [
-    Page("textish/textish.html", "Textish"),
-    Directory("textish"),
-    Page("markdown/markdown.html", "Markdown"),
-    Directory("markdown"),
-    
-]
+            Page(
+                "markdown/markdown.html",
+                title="Markdown",
+                pageTitle = "Mark Up with MarkDown"
+            ),
+            Directory("markdown"),
+            
+            Page(
+                "textish/textish.html",
+                title="Textish",
+                pageTitle = "Mark Up with MarkDown"
+            ),
+            Directory("textish"),
+        ]
+        
