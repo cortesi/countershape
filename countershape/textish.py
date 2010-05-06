@@ -291,7 +291,10 @@ class _Wrap(_Collection):
         return "<%s>"%self.__class__.__name__[1:]
 
     def __str__(self):
-        l = [unicode(i) for i in self.children]
+        try:
+            l=[unicode(i) for i in self.children]
+        except UnicodeDecodeError:
+            l=[unicode(str(i),'latin-1','ignore') for i in self.children]
         return "<%s>%s</%s>"%(self.tag, "".join(l), self.tag)
                 
 
@@ -403,7 +406,10 @@ class Textish(tinytree.Tree):
             getattr(i, meth)(*args, **kwargs)
 
     def __str__(self):
-        l = [unicode(i) for i in self.children]
+        try:
+            l=[unicode(i) for i in self.children]
+        except UnicodeDecodeError:
+            l=[unicode(str(i),'latin-1','ignore') for i in self.children]
         return "".join(l)
 
     def __repr__(self):

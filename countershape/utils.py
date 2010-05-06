@@ -149,7 +149,11 @@ class OrderedSet(list):
             return list.__setitem__(self, index, obj)
 
     def __str__(self):
-        return "\n".join([unicode(i) for i in self])
+        try:
+            l=[unicode(i) for i in self]
+        except UnicodeDecodeError:
+            l=[unicode(str(i),'latin-1','ignore') for i in self]
+        return "\n".join(l)
 
 
 class BuffIter:

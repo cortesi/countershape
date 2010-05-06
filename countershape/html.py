@@ -47,7 +47,11 @@ class _Renderable(tinytree.Tree):
         return x
 
     def __str__(self):
-        return "".join([unicode(i) for i in self.children])
+        try:
+            l=[unicode(i) for i in self.children]
+        except UnicodeDecodeError:
+            l=[unicode(str(i),'latin-1','ignore') for i in self.children]
+        return "".join(l)
 
 
 class RawStr(_Renderable):
@@ -137,10 +141,14 @@ class FullTag(_Tag):
         )
 
     def __str__(self):
+        try:
+            l=[unicode(i) for i in self.children]
+        except UnicodeDecodeError:
+            l=[unicode(str(i),'latin-1','ignore') for i in self.children]
         return "<%s%s>%s</%s>"%(
             self.name,
             self._makeAttrs(),
-            "".join([unicode(i) for i in self.children]),
+            "".join(l),
             self.name
         )
 

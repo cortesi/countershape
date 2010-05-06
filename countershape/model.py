@@ -206,7 +206,10 @@ class BasePage(tinytree.Tree):
         return utils.urlCat(*(backtrack + toPath[common:]))
 
     def __call__(self):
-        bod = [unicode(i) for i in self.run()]
+        try:
+            bod=[unicode(i) for i in self.run()]
+        except UnicodeEncodeError:
+            bod=[unicode(str(i),'latin-1', 'ignore') for i in self.run()]
         yield "".join(bod)
 
     def __repr__(self):
