@@ -96,6 +96,10 @@ class _Postfix:
 
 
 class RecentPosts(_Postfix):
+    """
+        A postfix that shows a list of recent posts, excluding link posts (i.e.
+        posts with a specified url option).
+    """
     TITLE = "More posts:"
     CSS_PREFIX = "recent"
     def __init__(self, num):
@@ -107,19 +111,20 @@ class RecentPosts(_Postfix):
         output.addChild(html.H1(self.TITLE))
         postlst = []
         for i in posts:
-            postlst.append(
-                html.Group(
-                    html.SPAN(
-                        model.LinkTo(i),
-                        _class="%s-post"%self.CSS_PREFIX
-                    ),
-                    " ",
-                    html.SPAN(
-                        i.time.strftime("%d %b %Y"),
-                        _class="%s-date"%self.CSS_PREFIX
+            if not i.url:
+                postlst.append(
+                    html.Group(
+                        html.SPAN(
+                            model.LinkTo(i),
+                            _class="%s-post"%self.CSS_PREFIX
+                        ),
+                        " ",
+                        html.SPAN(
+                            i.time.strftime("%d %b %Y"),
+                            _class="%s-date"%self.CSS_PREFIX
+                        )
                     )
                 )
-            )
         if postlst:
             output.addChild(html.UL(postlst))
         return output
@@ -139,40 +144,20 @@ class Disqus(_Postfix):
         self.account = account
 
     def index(self, page):
-        return html.rawstr(
-            """
-                <script type="text/javascript">
-                //<![CDATA[
-                (function() {
-                        var links = document.getElementsByTagName('a');
-                        var query = '?';
-                        for(var i = 0; i < links.length; i++) {
-                            if(links[i].href.indexOf('#disqus_thread') >= 0) {
-                                query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
-                            }
-                        }
-                        document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/hatfulofhollow/get_num_replies.js' + query + '"></' + 'script>');
-                    })();
-                //]]>
-                </script>
-            """
-        )
+        return html.rawstr(cubictemp.File(
+            utils.data.path("resources/disqus_index.html"),
+            account = self.account
+        ))
 
     def inline(self, post):
         return html.rawstr("<a href=\"%s#disqus_thread\">Comments</a>"%model.UrlTo(post))
 
     def solo(self, post):
-        return html.rawstr("""
-            <div id="disqus_thread"></div>
-            <script type="text/javascript">
-                disqus_url = "%s";
-            </script>
-            <script type="text/javascript" src="http://disqus.com/forums/%s/embed.js">
-            </script>
-            <noscript>
-                <a href="http://%s.disqus.com/?url=%s">View the discussion thread.</a>
-            </noscript>
-        """%(post.permalink, self.account, self.account, post.permalink))
+        return html.rawstr(cubictemp.File(
+            utils.data.path("resources/disqus_solo.html"),
+            permalink = post.permalink,
+            account = self.account
+        ))
 
 
 class _PostRenderer(html._Renderable):
@@ -189,7 +174,12 @@ class _PostRenderer(html._Renderable):
 
     def __unicode__(self):
         with utils.InDir(os.path.dirname(self.src)):
-            title = html.H1(model.LinkTo(self.post))
+            if self.post.url:
+                title = html.H1(
+                    html.A(self.post.title, href=self.post.url)
+                )
+            else:
+                title = html.H1(model.LinkTo(self.post))
             date = html.H2(self.post.time.strftime("%d %B %Y"))
             blocks = []
             blocks.append(html.DIV(title, date, _class="posthead"))
@@ -225,7 +215,7 @@ class Post(doc._DocHTMLPage):
             :time DateTime object - publication time
         """
         self.blog = blog
-        self.title, self.time, self.data, self.short, self.options = self.fromPath(src)
+        self.title, self.time, self.data, self.short, self.options, self.url = self.fromPath(src)
         name = os.path.basename(src) + ".html"
         doc._DocHTMLPage.__init__(
             self, name, self.title, src=src
@@ -265,6 +255,7 @@ class Post(doc._DocHTMLPage):
         lines = utils.BuffIter(text.lstrip().splitlines())
         short = None
         options = set()
+        url = None
         for i in lines:
             i = i.strip()
             if not i:
@@ -278,6 +269,8 @@ class Post(doc._DocHTMLPage):
                 value = match.group(2)
                 if name == "time":
                     time = klass._timeFromStr(value)
+                elif name == "url":
+                    url = value.strip()
                 elif name == "short":
                     v = [value]
                     for j in lines:
@@ -300,21 +293,26 @@ class Post(doc._DocHTMLPage):
         data = "\n".join(list(lines))
         if not title:
             raise ValueError, "Not a valid post - no title found."
-        return title, time, data, short, options
+        return title, time, data, short, options, url
 
-    def toStr(self):
+    @classmethod
+    def toStr(klass, title, time, data, short, options, url):
         """
             Return a string representation of this post.
         """
         meta = [
-            self.title,
-            "time: %s"%self._timeToStr(self.time),
+            title,
+            "time: %s"%klass._timeToStr(time),
         ]
-        if self.short:
-            meta.append("short: %s"%self.short)
+        if short:
+            meta.append("short: %s"%short)
+        if options:
+            meta.append("options: %s"%(",".join(options)))
+        if url:
+            meta.append("url: %s"%url)
         meta += [
                 "",
-                self.data
+                data
             ]
         return "\n".join(meta)
 
@@ -322,7 +320,16 @@ class Post(doc._DocHTMLPage):
         # We do it this way to make sure we don't destroy data on error.
         name = tempfile.mktemp()
         f = open(name, "w")
-        f.write(self.toStr())
+        f.write(
+            self.toStr(
+                self.title,
+                self.time,
+                self.data,
+                self.short,
+                self.options,
+                self.url
+            )
+        )
         f.close()
         shutil.move(name, self.src)
 
@@ -436,7 +443,7 @@ class RSSPage(model.BasePage, doc._DocMixin):
             if "draft" in i.options:
                 continue
             path = [x.name for x in i.structuralPath()]
-            if "fullrss" in i.options:
+            if ("fullrss" in i.options) or i.url:
                 r = _PostRenderer(i)
                 description = unicode(r)
             else:
@@ -445,7 +452,7 @@ class RSSPage(model.BasePage, doc._DocMixin):
                 rssgen.RSSItem(
                     title = i.title,
                     description = description,
-                    link = i.permalink,
+                    link = i.url or i.permalink,
                     guid = rssgen.Guid(i.permalink),
                     pubDate = i.time
                 )
