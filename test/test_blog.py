@@ -39,8 +39,28 @@ class uPost(libpry.AutoTree):
         p2 = self.getPost()
         assert p != p2
 
+
+    def test_roundtrip(self):
+        data = """
+            my title
+            short: this is the 
+            short description
+            of this post
+            time: 1977-11-24 14:05
+            options: fullrss
+            url: http://fooo
+
+            this
+            is
+            data
+        """
+        d = blog.Post.fromStr(data)
+        p = blog.Post.toStr(*d)
+        assert blog.Post.fromStr(p) == d
+
+
     def test_fromStr(self):
-        def check(title, time, data, short):
+        def check(title, time, data, short, options):
             assert title == "my title"
             assert time == datetime.datetime(1977, 11, 24, 14, 05)
             d = data.strip()
@@ -49,6 +69,7 @@ class uPost(libpry.AutoTree):
             d = short.strip()
             assert d.startswith("this is the")
             assert d.endswith("this post")
+            assert "fullrss" in options
 
         data = """
             my title
@@ -56,17 +77,19 @@ class uPost(libpry.AutoTree):
             short description
             of this post
             time: 1977-11-24 14:05
+            options: fullrss
 
             this
             is
             data
         """
-        title, time, data, short = blog.Post.fromStr(data)
-        check(title, time, data, short)
+        title, time, data, short, options, link = blog.Post.fromStr(data)
+        check(title, time, data, short, options)
 
         data = """
             my title
             time: 1977-11-24 14:05
+            options: fullrss
             short: this is the 
             short description
             of this post
@@ -75,16 +98,40 @@ class uPost(libpry.AutoTree):
             is
             data
         """
-        title, time, data, short = blog.Post.fromStr(data)
-        check(title, time, data, short)
+        title, time, data, short, options, link = blog.Post.fromStr(data)
+        check(title, time, data, short, options)
+
+
+        data = """
+            my title
+            time: 1977-11-24 14:05
+            options: fullrss
+            short: this is the 
+            short description
+            of this post
+
+            this
+            is
+            data
+        """
+        title, time, data, short, options, link = blog.Post.fromStr(data)
+        check(title, time, data, short, options)
 
     def test_fromStr_err(self):
         libpry.raises("not a valid post", blog.Post.fromStr, "")
         libpry.raises("invalid metadata", blog.Post.fromStr, "title\nmetadata")
         libpry.raises("invalid metadata", blog.Post.fromStr, "title\nmetadata: foo")
+        data = """
+            my title
+            time: 1977-11-24 14:05
+            options: unknown
+
+            data
+        """
+        libpry.raises("invalid option", blog.Post.fromStr, data)
 
     def test_fromPath(self):
-        title, time, data, short = blog.Post.fromPath("testblog/postone")
+        title, time, data, short, options, link = blog.Post.fromPath("testblog/postone")
         assert title == "Title One"
         assert short == "multi\nline\nshort"
 
@@ -93,8 +140,15 @@ class uPost(libpry.AutoTree):
         assert self.post._timeToStr(time) == "1977-11-24 14:05"
 
     def test_toStr(self):
-        s = self.post.toStr()
-        title, time, data, short = blog.Post.fromStr(s)
+        s = self.post.toStr (
+            self.post.title,
+            self.post.time,
+            self.post.data,
+            self.post.short,
+            self.post.options,
+            self.post.url
+        )
+        title, time, data, short, options, url = blog.Post.fromStr(s)
         assert self.post.short == short
         assert self.post.title == title
         assert self.post.time == time
@@ -102,7 +156,14 @@ class uPost(libpry.AutoTree):
 
     def test_toStr_noshort(self):
         p = blog.Post("blogpages/testpost_noshort", DummyBlog())
-        title, time, data, short = blog.Post.fromStr(p.toStr())
+        title, time, data, short, options, url = blog.Post.fromStr(p.toStr(
+            p.title,
+            p.time,
+            p.data,
+            p.short,
+            p.options,
+            p.url
+        ))
         assert p.short == short
         assert p.title == title
         assert p.time == time

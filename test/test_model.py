@@ -317,6 +317,25 @@ class uPageModel(libpry.AutoTree):
         assert str(model.UrlTo("one")) == "one"
 
 
+class uPage(libpry.AutoTree):
+    def test_isDocDescendantOf(self):
+        one = testpages.TPage("one")
+        two = testpages.TPage("two")
+        r = model.BaseRoot(
+                [
+                    one,
+                    testpages.TPage("dir", internal=True), [
+                        two
+                    ]
+                ]
+            )
+        t = testpages.TestApplication(r)
+        assert not two.isDescendantOf(one)
+        assert two.isDocDescendantOf(one)
+        assert two.isDocDescendantOf(r)
+        assert r.isDescendantOf(two)
+
+
 class uPageModelErrors(libpry.AutoTree):
     def test_ambiguouschild(self):
         r = model.BaseRoot([
@@ -417,6 +436,7 @@ class uApplicationError(libpry.AutoTree):
 
 
 tests = [
+    uPage(),
     uPageInstantiate(),
     uHeader(),
     uHTMLPage(),

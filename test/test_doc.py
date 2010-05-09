@@ -181,6 +181,20 @@ class TestRoot(model.BaseRoot):
     namespace = countershape.doc.DocRoot._baseNS
 
 
+class uOptions(libpry.AutoTree):
+    def test_all(self):
+        o = doc.Options(
+            [
+                "one",
+                "three=four"
+            ]
+        )
+        assert o.one
+        assert not o.two
+        assert o.three == "four"
+        o.four = "five"
+        assert o.four == "five"
+        str(o)
 
 
 tests = [
@@ -194,4 +208,7 @@ tests = [
     uFullRender(),
     uBunch(),
     uDocRoot(),
+    uOptions()
+
+
 ]

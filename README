@@ -33,8 +33,8 @@ Optional modules:
     - docutils for RST markup support.
         http://docutils.sourceforge.net/
 
-    - python-markdown for Markdown markup support.
-        http://pygments.org/
+    - python-markdown2 for Markdown markup support.
+        http://code.google.com/p/python-markdown2/
 
     - Pygments for syntax highlighting
         http://pygments.org/
@@ -53,5 +53,6 @@ Documentation and a basic guide with sample source code is provided
 with the source distribution.
 
 The documentation is at  ./doc-src and the example files
+at ./examples.
 at ./examples.
 

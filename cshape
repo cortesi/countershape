@@ -12,6 +12,10 @@ class CSDoc:
         parser.add_option("-s", "--structure",
                           action="store_true", dest="structure", default=False,
                           help="Show site structure.")
+        parser.add_option("-o", "--option", type="str",
+                          action="append", dest="options",
+                          default = [],
+                          help="Add option to document namespace."),
         parser.add_option("-d", "--dummy",
                           action="store_true", dest="dummy", default=False,
                           help="Perform a dummy run - don't render any files.")
@@ -27,7 +31,7 @@ class CSDoc:
             if os.path.abspath(args[0]) == os.path.abspath(args[1]):
                 parser.error("Refusing to render documentation source onto itself.")
 
-        d = doc.Doc(args[0])
+        d = doc.Doc(args[0], options.options)
         if options.structure:
             d.root.dump()
         elif not options.dummy:

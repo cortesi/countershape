@@ -4,6 +4,38 @@ import model, utils, html, state, template, widgets
 
 _ConfFile = "index.py"
 
+class Options:
+    """
+        An Options object, injected into the namespace as "options".
+
+        On the commandline, options are specified either as "name=value" pairs,
+        or just as names, in which case the value is True. 
+    """
+    def __init__(self, lst):
+        self.__dict__["opts"] = {}
+        for i in lst:
+            parts = i.split("=", 1)
+            if len(parts) == 1:
+                self.__dict__["opts"][i] = True
+            else:
+                self.__dict__["opts"][parts[0]] = parts[1]
+
+    def __getattr__(self, attr):
+        if "opts" in self.__dict__:
+            if attr in self.__dict__["opts"]:
+                return self.__dict__["opts"][attr]
+        return False
+
+    def __setattr__(self, attr, value):
+        self.__dict__["opts"][attr] = value
+
+    def __str__(self):
+        r = []
+        for k, v in self.__dict__["opts"].items():
+            r.append("%s=%s"%(k, v))
+        return "\n".join(r)
+            
+
 class _Bunch:
     def __init__(self, **kwds):
         self.__dict__.update(kwds)
@@ -179,6 +211,7 @@ class Directory(StaticDirectory, _DocMixin):
     """
         A directory that auto-constructs its contents.
     """
+    internal = True
     excludePatterns = utils.fileExcludePatterns + ["*/%s"%_ConfFile, "*/_*"]
     def __init__(self, name, src=None, namespace=None):
         self.stdHeaders = []
@@ -263,11 +296,14 @@ class DocRoot(Directory):
         jsSyntax            = template.jsSyntax,
         cubescript          = template.cubescript,
     )
-    def __init__(self, src):
+    def __init__(self, src, options=[]):
         """
             src:    Path to the top of the document tree.
+            options: A list of name=value flags, with values optional.
         """
-        Directory.__init__(self, src, namespace=self._baseNS.copy())
+        namespace = self._baseNS.copy()
+        namespace["options"] = Options(options)
+        Directory.__init__(self, src, namespace=namespace)
 
     def __repr__(self):
         return "DocRoot(%s)"%self.name
@@ -277,9 +313,9 @@ class Doc(model.BaseApplication):
     """
         Document rendering application.
     """
-    def __init__(self, root):
+    def __init__(self, root, options=[]):
         if utils.isStringLike(root):
-            d = DocRoot(root)
+            d = DocRoot(root, options)
         else:
             d = root
         model.BaseApplication.__init__(self, d)
