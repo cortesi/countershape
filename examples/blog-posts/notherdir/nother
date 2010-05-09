@@ -1,6 +1,9 @@
 Nother post
 short: This is a short summary of the post
 
-<img src="@!urlTo("posts/beware.jpg")!@">
+<img src="@!urlTo("media/images/beware.jpg")!@">
 
 Another post.
+
+Note, that the first 'posting' will generate
+the date for this post.

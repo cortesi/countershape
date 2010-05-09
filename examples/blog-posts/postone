@@ -8,7 +8,7 @@ This is a heading
 
 With some content.
 
-<img src="@!urlTo("posts/beware.jpg")!@">
+<img src="@!urlTo("media/images/beware.jpg")!@">
 
 Included inline:
 
