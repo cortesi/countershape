@@ -1,0 +1,300 @@
+/*------------------------------------------------------------------------------------------------------------*/
+
+pre a {float:none; }
+pre a img {float: left; }
+
+
+img.center {
+	text-align: center;
+	display: block;
+}
+/*code {position: relative; left: 0; font: 1em "Courier New", Courier, mono; }*/
+
+pre, code {
+	display:block;
+	font: 1em 'Courier New', Courier, Fixed, monospace;
+	font-size : 100%;
+	color: #000;
+	background : #fff url(../images/preback.jpg) repeat left top;
+	overflow : auto;
+	text-align:left;
+	border : 1px solid #99cc66; /*highlight color */
+	padding : 0px 20px 0 30px;
+	margin:1em 0 1em 0;
+	line-height:17px;
+    max-width:		90%;
+    whitespace: nowrap;
+}
+pre.highlight {
+    border-bottom:      1px solid #CCCCCC;
+    border-top:         1px solid #CCCCCC;
+    padding:            10px;
+    background:         #F8F8F8 none repeat scroll 0% 0%;
+    margin-bottom:      10px;
+    overflow:           auto;
+    font-size:          90%;
+    max-width:		90%;
+    whitespace: nowrap;
+}
+pre.diagram {
+    border-bottom:      1px solid #CCCCCC;
+    border-top:         1px solid #CCCCCC;
+    padding:            10px;
+    background:         #F8F8F8 none repeat scroll 0% 0%;
+    margin-bottom:      10px;
+    overflow:           auto;
+	text-align:		    center;
+    font-size:          90%;
+    whitespace: nowrap;
+}
+
+pre.screen-output {
+    color: #555;
+    border-left: 22px solid #99cc66; 
+    margin: 0 1em; 
+    padding: 0 1em;
+    background: url();
+    padding : 0px 20px 0 30px;
+    margin:1em 0 1em 0;
+    line-height:17px;
+    max-width:		90%;
+    whitespace: nowrap;
+}
+pre.config-file {
+    border-bottom:    1px solid #CCCCCC;
+    border-top:         	1px solid #CCCCCC;
+    padding:            	10px;
+    background:         #F8F8F8 none repeat scroll 0% 0%;
+	background : #fff url(../images/preback.jpg) repeat left top;
+    margin-bottom:    10px;
+    overflow:		auto;
+    font-size:		90%;
+    max-width:		90%;
+    max-height:         640px;
+
+    border-bottom:    1px solid #CCCCCC;
+    border-top:          1px solid #CCCCCC;
+    white-space: pre;
+    /* white-space:nowrap; */
+	padding :   0px 20px 0 30px;
+	margin:     1em 0 1em 0;
+    color: 			#000;
+    /* overflow: 		auto; */
+    font: 			normal 12px consolas, "bitstream vera sans mono", monaco "lucida console", "courier new", courier, serif;
+	font: 1em 'Courier New', Courier, Fixed, monospace;
+	font-size : 100%;
+    /* max-width:		80%; */
+	line-height:17px;
+
+    max-width:		90%;
+    whitespace: nowrap;
+
+}
+pre.command-line {
+    border-bottom:      1px solid #CCCCCC;
+    border-top:         1px solid #CCCCCC;
+    white-space: 		pre;
+	padding :           0px 20px 0 30px;
+	margin:             1em 0 1em 0;
+    color: 			    blue;
+    background: 	    #fff url(../images/preback-warm.jpg) repeat left top;
+    /* overflow: 		auto; */
+    font: 			    normal 12px consolas, "bitstream vera sans mono", monaco "lucida console", "courier new", courier, serif;
+	font:               1em 'Courier New', Courier, Fixed, monospace;
+	font-size : 100%;
+    /* max-width:		80%; */
+	line-height:17px;
+    /* white-space:nowrap; */
+    max-width:		90%;
+    whitespace: nowrap;
+}
+
+blockquote {
+	padding: 10px 10px 1px 10px; 
+	margin: 0 0 24px 0;
+	border-left: 5px solid #ccc; 
+}
+/*------------------------------------------------------------------------------------------------------------*/
+tr {
+    display: table-row;
+    vertical-align: top;
+
+}
+
+table {
+  border: solid 1px black;
+  width: 90%;
+}
+table.caption {
+    background-color:     #c1ffc1;
+    border: solid 1px #a0ffa0;
+    border-bottom: 1px solid #888;
+}
+th { // Pink
+    padding: .2em .3em;
+    margin: .2em .2em;
+    background-color: #ffc1c1;
+    border: solid 2px #ff7070;
+    font-size: 92%;
+}
+td { // light purple grey
+    font-size: 8pt;
+    overflow: auto;
+    padding: .5em .5em 0em .5em;
+	// background : white;
+    border: 1pt dashed black;
+	// border: 1px dashed #2f6fab;
+	color: black;
+	background-color: #f9f9f9;
+    background: #f9f9f9;
+	line-height: 1.1em;
+}
+
+td.pre, td.code {
+	display:block;
+	font: 1em 'Courier New', Courier, Fixed, monospace;
+	font-size : 100%;
+	color: #000;
+	background : #fff url(../images/preback.jpg) repeat left top;
+	overflow : auto;
+	text-align:left;
+	border : 1px solid #99cc66; /*highlight color */
+	padding : 0px 20px 0 30px;
+	margin:1em 0 1em 0;
+	line-height:17px;
+    max-width:		90%;
+    whitespace: nowrap;
+}
+/*------------------------------------------------------------------------------------------------------------*/
+
+ol.withroman {
+    list-style-type: lower-roman;
+}
+
+ol {
+  list-style-type: lower-roman;
+}
+
+ul {
+    list-style-type: square;
+}
+
+HTML {
+	OVERFLOW-Y: scroll; MARGIN-BOTTOM: 0.1em; HEIGHT: 100%
+}
+* {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: 0px; PADDING-TOP: 0px
+}
+BODY {
+	BACKGROUND: #ededed; 
+	MARGIN: 0px 0px 30px; 
+	FONT: 12px 'Lucida Grande', Verdana, Arial, Sans-Serif; 
+	COLOR: #444; 
+	TEXT-ALIGN: center
+}
+#page {
+	BORDER-RIGHT: #ddd 1px solid; PADDING-RIGHT: 0px; 
+	BORDER-TOP: #ddd 1px; PADDING-LEFT: 0px; 
+	BACKGROUND: white; PADDING-BOTTOM: 10px; MARGIN: 0px auto; 
+	BORDER-LEFT: #ddd 1px solid; WIDTH: 90%; PADDING-TOP: 20px; 
+	BORDER-BOTTOM: #ddd 1px solid; 
+	POSITION: relative; 
+	TEXT-ALIGN: left
+}
+* HTML #page {
+	WIDTH: 90%
+}
+#header {
+	PADDING-RIGHT: 0px; 
+	PADDING-LEFT: 0px; 
+	BACKGROUND: #3371a3; 
+	PADDING-BOTTOM: 0px; 
+	MARGIN: 0px; 
+	PADDING-TOP: 20px; 
+	POSITION: relative; 
+	HEIGHT: 100px;
+	text-align: right
+}
+#footer {
+	PADDING-RIGHT: 0px; 
+	PADDING-LEFT: 0px; 
+	BACKGROUND: #3371a3; 
+	PADDING-BOTTOM: 0px; 
+	MARGIN: 0px; 
+	PADDING-TOP: 0px; 
+	POSITION: relative; 
+	HEIGHT: 50px;
+	COLOR: white; 
+	TEXT-DECORATION: none;
+	text-align: center
+}
+#primary {
+	PADDING-RIGHT: 0px; 
+	DISPLAY: inline; 
+	PADDING-LEFT: 0px; 
+	FLOAT: left; 
+	PADDING-BOTTOM: 10px; 
+	MARGIN: 0px 10px 0px 30px; 
+	WIDTH: 500px; 
+	PADDING-TOP: 20px
+}
+
+H1 {
+	FONT-FAMILY: 'Trebuchet MS', Verdana, Sans-Serif;
+	font-weight: bold;
+	font-size: 2.5em;
+	padding-bottom: .75em;
+	border-bottom: 5px;
+}
+H2 {
+	FONT-FAMILY: 'Trebuchet MS', Verdana, Sans-Serif;
+	font-weight: bold;
+	font-size: 2em;
+	padding-bottom: .25em;
+}
+H3 {
+	FONT-FAMILY: 'Trebuchet MS', Verdana, Sans-Serif;
+	font-weight: bold;
+	font-size: 1.5em;
+	padding-bottom: .1em;
+}
+H4 {
+	FONT-FAMILY: 'Trebuchet MS', Verdana, Sans-Serif;
+	font-weight: bold;
+	font-size: 1em;
+}
+#header H1 {
+	PADDING-RIGHT: 40px;
+	PADDING-LEFT: 40px;
+	FONT-WEIGHT: bold;
+	FONT-SIZE: 3em;
+	PADDING-BOTTOM: 0px;
+	MARGIN: 0px;
+	PADDING-TOP: 15px;
+	LETTER-SPACING: -1px;
+	COLOR: white; 
+	TEXT-DECORATION: none
+}
+#header H1 A {
+	COLOR: white; 
+	TEXT-DECORATION: none
+}
+#header H1 A:hover {
+	COLOR: white; 
+	TEXT-DECORATION: none
+}
+#header H1 A:visited {
+	COLOR: white; 
+	TEXT-DECORATION: none
+}
+#header .description {
+	COLOR: white; 
+	TEXT-DECORATION: none
+}
+#header H1 A:hover {
+	TEXT-DECORATION: underline
+}
+#header .description {
+	FONT-SIZE: 1em; 
+	MARGIN: 0px 40px
+}
