@@ -205,6 +205,19 @@ class BasePage(tinytree.Tree):
         backtrack = [".."]*((len(fromPath) - 1)-common)
         return utils.urlCat(*(backtrack + toPath[common:]))
 
+    def isDocDescendantOf(self, other):
+        """
+            Check if this page is a document index descendant of other. This is
+            like "isDescendantOf" in tinytree, but includes adjacent internal
+            pages and their descendants.
+        """
+        if other.isDescendantOf(self):
+            return True
+        elif other.getNext() in other.siblings() and other.getNext().internal:
+            return other.getNext().isDescendantOf(self)
+        else:
+            return False
+
     def __call__(self):
         bod = [unicode(i) for i in self.run()]
         yield "".join(bod)

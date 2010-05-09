@@ -20,7 +20,7 @@ class NavBar(html._Renderable):
             i = state.application.getPage(i)
             if (not i.structural) or i.internal:
                 continue
-            if state.page.isDescendantOf(i):
+            if state.page.isDocDescendantOf(i):
                 a = html.LI(
                     html.A(i.title, href=model.UrlTo(i), _class="selected"),
                     _class = "selected",
@@ -153,7 +153,7 @@ class PageTrail:
                 if crumb.internal:
                     trailList.append(crumb.name)
                 else:
-                    trailList.append(unicode(model.LinkTo(crumb.name)))
+                    trailList.append(unicode(model.LinkTo(crumb.path)))
         trailList.reverse()
         return " -> ".join(trailList)
 

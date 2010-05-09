@@ -211,6 +211,7 @@ class Directory(StaticDirectory, _DocMixin):
     """
         A directory that auto-constructs its contents.
     """
+    internal = True
     excludePatterns = utils.fileExcludePatterns + ["*/%s"%_ConfFile, "*/_*"]
     def __init__(self, name, src=None, namespace=None):
         self.stdHeaders = []
