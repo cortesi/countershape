@@ -1,5 +1,5 @@
 from countershape.doc import *
-this.markdown = "markdown"
+this.markup = "markdown"
 
 pages = [
     Page("basics.html", "Basics"),
