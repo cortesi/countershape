@@ -383,11 +383,7 @@ class BaseApplication(object):
                 s = "Relative page link '%s' outside of page call context."%toPage
                 raise ApplicationError(s)
             path = []
-            for i in os.path.normpath(toPage).split(os.path.sep):
-                if i:
-                    if i == ".":
-                        continue
-                    path.append(i)
+            path = [i for i in os.path.normpath(toPage).split(os.path.sep) if i and i != "."]
             if not path:
                 return self.root
             pname = path.pop()
