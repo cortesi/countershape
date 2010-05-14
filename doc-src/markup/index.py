@@ -9,6 +9,13 @@ pages = [
             Directory("markdown"),
             
             Page(
+                "rest/rest.html",
+                title="reStructuredText",
+                pageTitle = "reStructuredText"
+            ),           
+            Directory("rest"),
+            
+            Page(
                 "textish/textish.html",
                 title="Textish",
                 pageTitle = "Mark Up with MarkDown"
