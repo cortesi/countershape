@@ -331,7 +331,7 @@ class Doc(model.BaseApplication):
                     if not os.path.exists(newdir):
                         os.makedirs(newdir)
                 out = self(i)
-                f = open(os.path.join(destination, *path), "w")
+                f = open(os.path.join(destination, *path), "wb")
                 if isinstance(out, unicode):
                     out = out.encode("utf-8")
                 f.write(out)
