@@ -115,13 +115,13 @@ class Page(_DocHTMLPage):
         Pages are always guaranteed to have a Directory object parent.
     """ 
     def __init__(self, name, title=None, namespace=None, src=None, pageTitle=None):
-        self.textfile=['text','txt','md','rst','rest','']
-        self.htmlext=os.path.extsep+'html'
+        htmlextensions=['html','htm']
+        htmlext=os.path.extsep+'html'
         filename_ext=os.path.splitext(name)
         self.fileext=None
-        if len(filename_ext[1])==0 or (len(filename_ext[1])>0 and filename_ext[1][1:] in self.textfile): 
+        if len(filename_ext[1])==0 or (len(filename_ext[1])>0 and (filename_ext[1][1:]).lower() not in htmlextensions): 
             self.fileext=filename_ext[1]
-            name = "%s%s"%(filename_ext[0],self.htmlext)
+            name = "%s%s"%(filename_ext[0],htmlext)
         _DocHTMLPage.__init__(self, name, title, namespace, src, pageTitle)
 
     def _prime(self, app):
