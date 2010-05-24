@@ -1,5 +1,5 @@
 from __future__ import with_statement
-import os, os.path, re, fnmatch, shutil, shlex, string
+import os, os.path, re, fnmatch, shutil, shlex, string,  codecs
 import model, utils, html, state, template, widgets
 
 _ConfFile = "index.py"
@@ -132,7 +132,10 @@ class Page(_DocHTMLPage):
             if self.fileext is not None:
                 filename = os.path.splitext(os.path.join(self.src))[0]+self.fileext
                 self.src = filename
-            s = open(os.path.join(self.src)).read()
+            try:
+                s = codecs.open(os.path.join(self.src), "r", "utf-8").read()
+            except UnicodeDecodeError:
+                s = codecs.open(os.path.join(self.src), "r", "latin-1").read()            
             self.namespace[dt] = template.Template(self.findAttr("markup"), s)
             self.namespace[dt].name = self.src
 
