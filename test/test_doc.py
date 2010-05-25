@@ -146,7 +146,7 @@ class uPage(testpages.DummyState):
         self.d.namespace["foo"] = "bar"
         self.d._getNamespace()
         assert self.d.namespace["foo"] == "bar"
-        assert self.d.namespace["body"].txt == "mynameis@!this.name!@\n"
+        assert self.d.namespace["body"].txt == "mynameis@!this.name!@\r\n"
 
 
 class uStaticDirectory(libpry.AutoTree):

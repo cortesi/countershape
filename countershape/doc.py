@@ -136,7 +136,15 @@ class Page(_DocHTMLPage):
                 s = codecs.open(os.path.join(self.src), "r", "utf-8").read()
             except UnicodeDecodeError:
                 s = codecs.open(os.path.join(self.src), "r", "latin-1").read()            
-            self.namespace[dt] = template.Template(self.findAttr("markup"), s)
+            if self.fileext is not None:
+                if self.fileext.lower() in [".md", ".markdown"]:
+                    self.namespace[dt] = template.Template("markdown", s)
+                elif (self.fileext).lower() in [".rst", ".rest"]:
+                    self.namespace[dt] = template.Template(self.fileext[1:], s)
+                else:
+                    self.namespace[dt] = template.Template(self.findAttr("markup"), s)
+            else:
+                self.namespace[dt] = template.Template(self.findAttr("markup"), s)
             self.namespace[dt].name = self.src
 
     def __repr__(self):

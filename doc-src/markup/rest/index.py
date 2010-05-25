@@ -2,19 +2,19 @@ from countershape.doc import *
 this.markup = "rst"
 
 pages = [
-    Page("quickstart.html",
+    Page("quickstart.text",
         title="Quick Start",
         pageTitle=""
         ),
-    Page("restructuredtext.html",
+    Page("restructuredtext.text",
         title="Restructured Text",
         pageTitle=""
         ),
-    Page("cheatsheet.html",
+    Page("cheatsheet.text",
         title="Cheat Sheet",
         pageTitle=""
         ),
-    Page("README.html",
+    Page("README.text",
         title="Readme",
         pageTitle=""
         ),

@@ -2,14 +2,14 @@ from countershape.doc import *
 
 pages = [
             Page(
-                "markdown/markdown.html",
+                "markdown/markdown.md",
                 title="Markdown",
                 pageTitle = "Mark Up with MarkDown"
             ),
             Directory("markdown"),
             
             Page(
-                "rest/rest.html",
+                "rest/rest.rst",
                 title="reStructuredText",
                 pageTitle = "reStructuredText"
             ),           

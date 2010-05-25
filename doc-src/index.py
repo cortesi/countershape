@@ -31,7 +31,7 @@ pages = [
         pageTitle="Introduction to Countershape"
         ),
         
-    Page("markup/markup.html", 
+    Page("markup/markup.md", 
         title="Document Markup",
         pageTitle="Document Markup Options"
         ),
