@@ -128,21 +128,20 @@ class Page(_DocHTMLPage):
         _DocHTMLPage._prime(self, app)
         dt = self.findAttr("contentName")
         if not dt in self.namespace:
-            filename = ""
             if self.fileext is not None:
-                filename = os.path.splitext(os.path.join(self.src))[0]+self.fileext
-                self.src = filename
+                filepath = os.path.splitext(os.path.join(self.src))[0]+self.fileext
+            else:
+                filepath = self.src
+                
             try:
-                s = codecs.open(os.path.join(self.src), "r", "utf-8").read()
+                s = codecs.open(os.path.join(filepath), "r", "utf-8").read()
             except UnicodeDecodeError:
-                s = codecs.open(os.path.join(self.src), "r", "latin-1").read()            
-            if self.fileext is not None:
-                if self.fileext.lower() in [".md", ".markdown"]:
+                s = codecs.open(os.path.join(filepath), "r", "latin-1").read()            
+                
+            if self.fileext is not None and self.fileext.lower() in [".md", ".markdown"]:
                     self.namespace[dt] = template.Template("markdown", s)
-                elif (self.fileext).lower() in [".rst", ".rest"]:
-                    self.namespace[dt] = template.Template(self.fileext[1:], s)
-                else:
-                    self.namespace[dt] = template.Template(self.findAttr("markup"), s)
+            elif self.fileext is not None and (self.fileext).lower() in [".rst", ".rest"]:
+                    self.namespace[dt] = template.Template("rst", s)
             else:
                 self.namespace[dt] = template.Template(self.findAttr("markup"), s)
             self.namespace[dt].name = self.src
