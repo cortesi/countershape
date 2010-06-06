@@ -159,7 +159,7 @@ class Copy(model.BasePage, _DocMixin):
     def __repr__(self):
         return "Copy(%s)"%self.name
 
-    def __call__(self, *args, **kwargs):
+    def render(self, *args, **kwargs):
         return file(self.src, "rb").read()
 
 

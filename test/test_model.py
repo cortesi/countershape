@@ -378,7 +378,7 @@ class uPageModelErrors(libpry.AutoTree):
 
 
 class TException(testpages.TPage):
-    def __call__(self, *args, **kwargs):
+    def render(self, *args, **kwargs):
         raise ValueError("An exception")
 
 

@@ -218,7 +218,7 @@ class BasePage(tinytree.Tree):
         else:
             return False
 
-    def __call__(self):
+    def render(self):
         try:
             bod=[unicode(i) for i in self.run()]
         except UnicodeEncodeError:
@@ -305,7 +305,7 @@ class HTMLPage(BasePage):
         else:
             return meth
 
-    def __call__(self):
+    def render(self):
         layout = self.findAttr("layout", self.defaultLayout)
         return unicode(layout(self))
 
@@ -474,7 +474,7 @@ class BaseApplication(object):
 
     def __call__(self, page):
         self.pre(page)
-        d = page()
+        d = page.render()
         self.post(page)
         return d
 

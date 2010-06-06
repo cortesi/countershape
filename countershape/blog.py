@@ -475,7 +475,7 @@ class RSSPage(model.BasePage, doc._DocMixin):
     def __repr__(self):
         return "RSS(%s)"%self.name
 
-    def __call__(self, *args, **kwargs):
+    def render(self, *args, **kwargs):
         return self._getRSS()
 
 
