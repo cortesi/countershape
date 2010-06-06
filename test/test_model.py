@@ -131,7 +131,7 @@ class uBaseApplication(testpages.RenderTester):
 
     def test_pageexception(self):
         p = self.application.getPage("one")
-        libpry.raises("an exception", list, self.application(p))
+        libpry.raises("an exception", self.application, p)
 
 
 class uApplication(testpages.DummyState):

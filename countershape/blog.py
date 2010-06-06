@@ -476,7 +476,7 @@ class RSSPage(model.BasePage, doc._DocMixin):
         return "RSS(%s)"%self.name
 
     def __call__(self, *args, **kwargs):
-        yield self._getRSS()
+        return self._getRSS()
 
 
 class Blog:

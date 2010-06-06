@@ -223,7 +223,7 @@ class BasePage(tinytree.Tree):
             bod=[unicode(i) for i in self.run()]
         except UnicodeEncodeError:
             bod=[unicode(str(i),'latin-1', 'ignore') for i in self.run()]
-        yield "".join(bod)
+        return "".join(bod)
 
     def __repr__(self):
         return "Page(%s)"%self.name
@@ -232,8 +232,6 @@ class BasePage(tinytree.Tree):
 class Header(object):
     def __init__(self, page):
         self.page = page
-        self._js = utils.OrderedSet()
-        self._css = utils.OrderedSet()
         self._jsPath = utils.OrderedSet()
         self._cssPath = utils.OrderedSet()
 
@@ -264,9 +262,7 @@ class Header(object):
         return "\n".join(
                     [
                         unicode(self._cssPath),
-                        unicode(self._css),
                         unicode(self._jsPath),
-                        unicode(self._js),
                     ]
                 )
 
@@ -279,7 +275,6 @@ class HTMLPage(BasePage):
     """
     defaultLayout = layout.Layout()
     structural = True
-    selfcontained = False
     def pageTitle(self, *args, **kwargs):
         return self.title or self.name
 
@@ -312,7 +307,7 @@ class HTMLPage(BasePage):
 
     def __call__(self):
         layout = self.findAttr("layout", self.defaultLayout)
-        yield unicode(layout(self))
+        return unicode(layout(self))
 
     def __repr__(self):
         return "HTMLPage(%s)"%self.name
@@ -479,7 +474,7 @@ class BaseApplication(object):
 
     def __call__(self, page):
         self.pre(page)
-        for d in page():
-            yield d
+        d = page()
         self.post(page)
+        return d
 

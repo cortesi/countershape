@@ -160,7 +160,7 @@ class Copy(model.BasePage, _DocMixin):
         return "Copy(%s)"%self.name
 
     def __call__(self, *args, **kwargs):
-        yield file(self.src, "rb").read()
+        return file(self.src, "rb").read()
 
 
 class PythonPage(_DocHTMLPage):
@@ -358,5 +358,5 @@ class Doc(model.BaseApplication):
                 f.write(out)
 
     def __call__(self, page):
-        return list(model.BaseApplication.__call__(self, page))[0]
+        return model.BaseApplication.__call__(self, page)
         
