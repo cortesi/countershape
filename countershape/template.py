@@ -1,5 +1,5 @@
 import cubictemp, tinytree
-import model, state, html, widgets, textish
+import model, state, html, widgets
 
 #begin nocover
 try:
@@ -94,33 +94,6 @@ def _ns():
         htmlescape          = cubictemp.escape
     )
 
-markup = dict(
-    textish = textish.Textish
-)
-
-
-#begin nocover
-try:
-    import markdown2
-    def md(txt):
-        return markdown2.markdown(txt)
-    markup["markdown"] = md
-except ImportError:
-    pass
-#end nocover
-
-
-#begin nocover
-try:
-    import docutils.core
-    def rst(txt):
-        d = docutils.core.publish_parts(txt, writer_name = "html4css1")
-        return d["fragment"]
-    markup["rst"] = rst
-except ImportError:
-    pass
-#end nocover
-
 
 class _TemplateMixin:
     def __unicode__(self):
@@ -129,7 +102,7 @@ class _TemplateMixin:
         kwargs.update(self._getNS())
         kwargs.update(self.nsDict)
         s = self.block.render(**kwargs)
-        return unicode(markup[self.markup](s)) if self.markup else unicode(s)
+        return unicode(self.markup(s)) if self.markup else unicode(s)
 
     def __call__(self, *args, **kwargs):
         kwargs.update(_ns())

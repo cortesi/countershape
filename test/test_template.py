@@ -1,6 +1,6 @@
 import os.path
 import countershape
-from countershape import model
+from countershape import model, markup
 import libpry
 import testpages
 
@@ -64,18 +64,11 @@ class uTemplate(testpages.DummyState):
         assert "urlToTestPage" in s
         assert "nameTestPage" in s
 
-    def test_textish(self):
-        s = """
-            _this is bold_
-        """
-        t = countershape.template.Template("textish", s)
-        assert "<em>" in str(t)
-
 
 class uMarkdown(testpages.DummyState):
     def test_str(self):
         s = """name@!this.name!@name"""
-        t = countershape.template.Template("markdown", s, this=countershape.state.page)
+        t = countershape.template.Template(markup.Markdown(), s, this=countershape.state.page)
         s = str(t)
         assert "TestPage" in s
         assert "<p>" in s
@@ -84,7 +77,7 @@ class uMarkdown(testpages.DummyState):
 class uRst(testpages.DummyState):
     def test_str(self):
         s = """name@!this.name!@name"""
-        t = countershape.template.Template("rst", s, this=countershape.state.page)
+        t = countershape.template.Template(markup.RST(), s, this=countershape.state.page)
         s = str(t)
         assert "TestPage" in s
         assert "<p>" in s
@@ -117,9 +110,9 @@ tests = [
     uFileTemplate()
 ]
 
-if countershape.template.markup.has_key("markdown"):
+if hasattr(countershape.markup, "Markdown"):
     tests.append(uMarkdown())
-if countershape.template.markup.has_key("rst"):
+if hasattr(countershape.markup, "RST"):
     tests.append(uRst())
 
 

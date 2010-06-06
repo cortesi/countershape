@@ -5,3 +5,4 @@ from widgets import ParentPageIndex, PageTrail
 from blog import Post, IndexPage, ArchivePage, RSSPage, Blog
 from template import File, Template
 from layout import Layout
+import markup

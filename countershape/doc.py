@@ -1,6 +1,6 @@
 from __future__ import with_statement
 import os, os.path, re, fnmatch, shutil, shlex, string,  codecs
-import model, utils, html, state, template, widgets
+import model, utils, html, state, template, widgets, markup
 
 _ConfFile = "index.py"
 
@@ -307,7 +307,7 @@ class DocRoot(Directory):
     structural = False
     # Default namespace tag for file content
     contentName = "body"
-    markup = "textish"
+    markup = markup.Default()
     _baseNS = dict(
         pySyntax            = template.pySyntax,
         cSyntax             = template.cSyntax,
