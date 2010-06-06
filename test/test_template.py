@@ -72,6 +72,18 @@ class uMarkdown(testpages.DummyState):
         s = str(t)
         assert "TestPage" in s
         assert "<p>" in s
+    
+    def test_options(self):
+        s = """__one__name@!this.name!@name"""
+        t = countershape.template.Template(
+                markup.Markdown(extras=["code-friendly"]), 
+                s, 
+                this=countershape.state.page
+            )
+        s = str(t)
+        assert "__one__" in s
+
+
 
 
 class uRst(testpages.DummyState):
