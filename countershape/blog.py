@@ -208,14 +208,14 @@ class Post(doc._DocHTMLPage):
     """
     _TimeFmt = "%Y-%m-%d %H:%M"
     _metaRe = re.compile(r"(\w+):(.*)")
-    _validOptions = set(["fullrss", "draft"])
+    _validOptions = set(["fullrss", "draft", "top"])
     def __init__(self, src, blog):
         """
             :title Title of this post.
             :time DateTime object - publication time
         """
         self.blog = blog
-        self.title, self.time, self.data, self.short, self.options, self.url = self.fromPath(src)
+        self.title, self.time, self.data, self.short, self.options, self.url, self.tags = self.fromPath(src)
         name = os.path.basename(src) + ".html"
         doc._DocHTMLPage.__init__(
             self, name, self.title, src=src
@@ -255,6 +255,7 @@ class Post(doc._DocHTMLPage):
         lines = utils.BuffIter(text.lstrip().splitlines())
         short = None
         options = set()
+        tags = set()
         url = None
         for i in lines:
             i = i.strip()
@@ -286,6 +287,9 @@ class Post(doc._DocHTMLPage):
                             options.add(j)
                         else:
                             raise ValueError("Invalid option: %s"%j)
+                elif name == "tags":
+                    for j in value.split(","):
+                        tags.add(j.strip())
                 else:
                     raise ValueError("Invalid metadata: %s"%i)
             else:
@@ -293,10 +297,10 @@ class Post(doc._DocHTMLPage):
         data = "\n".join(list(lines))
         if not title:
             raise ValueError, "Not a valid post - no title found."
-        return title, time, data, short, options, url
+        return title, time, data, short, options, url, tags
 
     @classmethod
-    def toStr(klass, title, time, data, short, options, url):
+    def toStr(klass, title, time, data, short, options, url, tags):
         """
             Return a string representation of this post.
         """
@@ -308,6 +312,8 @@ class Post(doc._DocHTMLPage):
             meta.append("short: %s"%short)
         if options:
             meta.append("options: %s"%(",".join(options)))
+        if tags:
+            meta.append("tags: %s"%(",".join(tags)))
         if url:
             meta.append("url: %s"%url)
         meta += [
@@ -327,7 +333,8 @@ class Post(doc._DocHTMLPage):
                 self.data,
                 self.short,
                 self.options,
-                self.url
+                self.url,
+                self.tags
             )
         )
         f.close()

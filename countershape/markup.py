@@ -17,7 +17,7 @@ try:
                 link_patterns, 
                 use_file_vars
             )
-        
+
         def __call__(self, txt):
             return self.markdowner.convert(txt)
 except ImportError:

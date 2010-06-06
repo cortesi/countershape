@@ -60,7 +60,7 @@ class uPost(libpry.AutoTree):
 
 
     def test_fromStr(self):
-        def check(title, time, data, short, options):
+        def check(title, time, data, short, options, tags):
             assert title == "my title"
             assert time == datetime.datetime(1977, 11, 24, 14, 05)
             d = data.strip()
@@ -70,6 +70,7 @@ class uPost(libpry.AutoTree):
             assert d.startswith("this is the")
             assert d.endswith("this post")
             assert "fullrss" in options
+            assert "one" in tags
 
         data = """
             my title
@@ -78,18 +79,20 @@ class uPost(libpry.AutoTree):
             of this post
             time: 1977-11-24 14:05
             options: fullrss
+            tags: one, two
 
             this
             is
             data
         """
-        title, time, data, short, options, link = blog.Post.fromStr(data)
-        check(title, time, data, short, options)
+        title, time, data, short, options, link, tags = blog.Post.fromStr(data)
+        check(title, time, data, short, options, tags)
 
         data = """
             my title
             time: 1977-11-24 14:05
             options: fullrss
+            tags: one, two
             short: this is the 
             short description
             of this post
@@ -98,14 +101,15 @@ class uPost(libpry.AutoTree):
             is
             data
         """
-        title, time, data, short, options, link = blog.Post.fromStr(data)
-        check(title, time, data, short, options)
+        title, time, data, short, options, link, tags = blog.Post.fromStr(data)
+        check(title, time, data, short, options, tags)
 
 
         data = """
             my title
             time: 1977-11-24 14:05
             options: fullrss
+            tags: one, two
             short: this is the 
             short description
             of this post
@@ -114,8 +118,8 @@ class uPost(libpry.AutoTree):
             is
             data
         """
-        title, time, data, short, options, link = blog.Post.fromStr(data)
-        check(title, time, data, short, options)
+        title, time, data, short, options, link, tags = blog.Post.fromStr(data)
+        check(title, time, data, short, options, tags)
 
     def test_fromStr_err(self):
         libpry.raises("not a valid post", blog.Post.fromStr, "")
@@ -131,7 +135,8 @@ class uPost(libpry.AutoTree):
         libpry.raises("invalid option", blog.Post.fromStr, data)
 
     def test_fromPath(self):
-        title, time, data, short, options, link = blog.Post.fromPath("testblog/postone")
+        title, time, data, short, options, link, tags = blog.Post.fromPath("testblog/postone")
+        assert not tags
         assert title == "Title One"
         assert short == "multi\nline\nshort"
 
@@ -146,28 +151,32 @@ class uPost(libpry.AutoTree):
             self.post.data,
             self.post.short,
             self.post.options,
-            self.post.url
+            self.post.url,
+            self.post.tags
         )
-        title, time, data, short, options, url = blog.Post.fromStr(s)
+        title, time, data, short, options, url, tags = blog.Post.fromStr(s)
         assert self.post.short == short
         assert self.post.title == title
         assert self.post.time == time
         assert self.post.data == data
+        assert self.post.tags == tags
 
     def test_toStr_noshort(self):
         p = blog.Post("blogpages/testpost_noshort", DummyBlog())
-        title, time, data, short, options, url = blog.Post.fromStr(p.toStr(
+        title, time, data, short, options, url, tags = blog.Post.fromStr(p.toStr(
             p.title,
             p.time,
             p.data,
             p.short,
             p.options,
-            p.url
+            p.url,
+            p.tags
         ))
         assert p.short == short
         assert p.title == title
         assert p.time == time
         assert p.data == data
+        assert p.tags == tags
 
 
 class uRewriteTests(libpry.AutoTree):
