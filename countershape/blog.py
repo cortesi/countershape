@@ -97,7 +97,7 @@ class _Postfix:
 
 class RecentPosts(_Postfix):
     """
-        A postfix that shows a list of recent posts, excluding link posts (i.e.
+        A postfix that shows a list of recent top posts, excluding link posts (i.e.
         posts with a specified url option).
     """
     TITLE = "More posts:"
@@ -105,13 +105,15 @@ class RecentPosts(_Postfix):
     def __init__(self, num):
         self.num = num
 
-    def _makeList(self, posts):
+    def _makeList(self, posts, num):
         monthyear = None
         output = html.DIV(_class=self.CSS_PREFIX)
         output.addChild(html.H1(self.TITLE))
         postlst = []
         for i in posts:
-            if not i.url:
+            if num < -1:
+                break
+            if not i.url and "top" in i.options:
                 postlst.append(
                     html.Group(
                         html.SPAN(
@@ -125,18 +127,19 @@ class RecentPosts(_Postfix):
                         )
                     )
                 )
+                num -= 1
         if postlst:
             output.addChild(html.UL(postlst))
         return output
 
     def index(self, idx):
         posts = idx.blog.blogdir.sortedPosts()
-        return self._makeList(posts[idx.posts:idx.posts+self.num])
+        return self._makeList(posts[idx.posts:], self.num)
 
     def solo(self, post):
         posts = list(post.blog.blogdir.sortedPosts())
         posts.remove(post)
-        return self._makeList(posts[:self.num+1])
+        return self._makeList(posts, self.num)
 
 
 class Disqus(_Postfix):
