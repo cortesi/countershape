@@ -107,7 +107,7 @@ class _PostList(_Postfix):
         for i in posts:
             if not num:
                 break
-            if not i.url and "top" in i.options:
+            if not i.url:
                 postlst.append(
                     html.Group(
                         html.SPAN(
@@ -157,7 +157,13 @@ class RecentPosts(_PostList):
             for i in related_posts:
                 if i in posts:
                     posts.remove(i)
-            parts.append(self._makeList(posts, self.recent, self.RECENT_TITLE))
+            parts.append(
+                self._makeList(
+                    [i for i in posts if "top" in i.options],
+                    self.recent,
+                    self.RECENT_TITLE
+                )
+            )
         return html.DIV(*parts)
 
 
