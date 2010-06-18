@@ -34,11 +34,41 @@ class uPost(libpry.AutoTree):
     def getPost(self):
         return blog.Post("blogpages/testpost", DummyBlog())
 
+    def test_related(self):
+        class Dummy:
+            def __init__(self, id, *tags):
+                self.id = id
+                self.tags = set(tags)
+
+        p = blog.Post("blogpages/testpost", DummyBlog())
+        p.tags = set(["one", "two", "three"])
+
+        r = p.related(
+            [
+                Dummy("a", "one"),
+                Dummy("b", "one", "two"),
+                Dummy("b", "nop")
+            ],
+            1
+        )
+        assert len(r) == 1
+        assert r[0].id == "b"
+
+        r = p.related(
+            [
+                Dummy("a", "one"),
+                Dummy("b", "one", "two"),
+                Dummy("b", "nop")
+            ],
+            5
+        )
+        assert len(r) == 2
+        assert r[0].id == "b"
+
     def test_cmp(self):
         p = self.getPost()
         p2 = self.getPost()
         assert p != p2
-
 
     def test_roundtrip(self):
         data = """
@@ -57,7 +87,6 @@ class uPost(libpry.AutoTree):
         d = blog.Post.fromStr(data)
         p = blog.Post.toStr(*d)
         assert blog.Post.fromStr(p) == d
-
 
     def test_fromStr(self):
         def check(title, time, data, short, options, tags):
@@ -214,6 +243,7 @@ class uBlog(libpry.AutoTree):
                     "testblog",
                     blog.Disqus("test"),
                     blog.RecentPosts(5),
+                    blog.RelatedPosts(5),
                 )
         r = TestRoot(
                     [

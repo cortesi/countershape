@@ -95,13 +95,7 @@ class _Postfix:
         return ""
 
 
-class RecentPosts(_Postfix):
-    """
-        A postfix that shows a list of recent top posts, excluding link posts (i.e.
-        posts with a specified url option).
-    """
-    TITLE = "More posts:"
-    CSS_PREFIX = "recent"
+class _PostList(_Postfix):
     def __init__(self, num):
         self.num = num
 
@@ -132,6 +126,17 @@ class RecentPosts(_Postfix):
             output.addChild(html.UL(postlst))
         return output
 
+
+class RecentPosts(_PostList):
+    """
+        A postfix that shows a list of recent top posts, excluding link posts (i.e.
+        posts with a specified url option).
+    """
+    TITLE = "More posts:"
+    CSS_PREFIX = "recent"
+    def __init__(self, num):
+        self.num = num
+
     def index(self, idx):
         posts = idx.blog.blogdir.sortedPosts()
         return self._makeList(posts[idx.posts:], self.num)
@@ -140,6 +145,26 @@ class RecentPosts(_Postfix):
         posts = list(post.blog.blogdir.sortedPosts())
         posts.remove(post)
         return self._makeList(posts, self.num)
+
+
+class RelatedPosts(_PostList):
+    """
+        A postfix that shows a list of recent top posts, excluding link posts (i.e.
+        posts with a specified url option).
+    """
+    TITLE = "Related posts:"
+    CSS_PREFIX = "recent"
+    def __init__(self, num):
+        self.num = num
+
+    def index(self, idx):
+        return ""
+
+    def solo(self, post):
+        posts = list(post.blog.blogdir.sortedPosts())
+        posts = post.related(posts, self.num)
+        return self._makeList(posts, self.num)
+
 
 
 class Disqus(_Postfix):
@@ -342,6 +367,19 @@ class Post(doc._DocHTMLPage):
         )
         f.close()
         shutil.move(name, self.src)
+
+    def related(self, posts, num):
+        """
+            Searches a list of posts for related posts. Ranks posts descending
+            by how related they are, based on the number of tag matches.
+        """
+        related = []
+        for i in posts:
+            l = len(self.tags.intersection(i.tags))
+            if l > 0:
+                related.append((l, i))
+        related.sort(reverse=True)
+        return [i[1] for i in related[:num]]
 
     def _prime(self, app):
         doc._DocHTMLPage._prime(self, app)
