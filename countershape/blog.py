@@ -99,13 +99,13 @@ class _PostList(_Postfix):
     def __init__(self, num):
         self.num = num
 
-    def _makeList(self, posts, num):
+    def _makeList(self, posts, num, title):
         monthyear = None
         output = html.DIV(_class=self.CSS_PREFIX)
-        output.addChild(html.H1(self.TITLE))
+        output.addChild(html.H1(title))
         postlst = []
         for i in posts:
-            if num < -1:
+            if not num:
                 break
             if not i.url and "top" in i.options:
                 postlst.append(
@@ -124,47 +124,41 @@ class _PostList(_Postfix):
                 num -= 1
         if postlst:
             output.addChild(html.UL(postlst))
-        return output
+            return output
+        else:
+            return ""
 
+    
 
 class RecentPosts(_PostList):
     """
         A postfix that shows a list of recent top posts, excluding link posts (i.e.
         posts with a specified url option).
     """
-    TITLE = "More posts:"
+    RECENT_TITLE = "More posts:"
+    RELATED_TITLE = "Related:"
     CSS_PREFIX = "recent"
-    def __init__(self, num):
-        self.num = num
+    def __init__(self, recent, related):
+        self.recent, self.related = recent, related
 
     def index(self, idx):
         posts = idx.blog.blogdir.sortedPosts()
-        return self._makeList(posts[idx.posts:], self.num)
+        return self._makeList(posts[idx.posts:], self.recent, self.RECENT_TITLE)
 
     def solo(self, post):
         posts = list(post.blog.blogdir.sortedPosts())
         posts.remove(post)
-        return self._makeList(posts, self.num)
-
-
-class RelatedPosts(_PostList):
-    """
-        A postfix that shows a list of recent top posts, excluding link posts (i.e.
-        posts with a specified url option).
-    """
-    TITLE = "Related posts:"
-    CSS_PREFIX = "recent"
-    def __init__(self, num):
-        self.num = num
-
-    def index(self, idx):
-        return ""
-
-    def solo(self, post):
-        posts = list(post.blog.blogdir.sortedPosts())
-        posts = post.related(posts, self.num)
-        return self._makeList(posts, self.num)
-
+        parts = []
+        related_posts = []
+        if self.related:
+            related_posts = post.related(posts, self.related)
+            parts.append(self._makeList(related_posts, self.related, self.RELATED_TITLE))
+        if self.recent:
+            for i in related_posts:
+                if i in posts:
+                    posts.remove(i)
+            parts.append(self._makeList(posts, self.recent, self.RECENT_TITLE))
+        return html.DIV(*parts)
 
 
 class Disqus(_Postfix):

@@ -242,8 +242,7 @@ class uBlog(libpry.AutoTree):
                     "posts",
                     "testblog",
                     blog.Disqus("test"),
-                    blog.RecentPosts(5),
-                    blog.RelatedPosts(5),
+                    blog.RecentPosts(5, 5),
                 )
         r = TestRoot(
                     [
