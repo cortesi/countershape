@@ -82,6 +82,7 @@ def _ns():
         linkTo              = model.LinkTo,
         aLink               = model.ALink,
         urlTo               = model.UrlTo,
+        getPage             = state.application.getPage,
         top                 = model.Top(),
         siblingIndex        = widgets.SiblingPageIndex(),
         parentIndex         = widgets.ParentPageIndex(),
