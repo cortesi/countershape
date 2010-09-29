@@ -7,7 +7,7 @@ class Layout:
     """
     bodyClass = ""
     components = ("pageTitle", "body", "header")
-    def __init__(self, path = None):
+    def __init__(self, path = None, **kwargs):
         if path:
             body = template.File(False, path)
         else:
@@ -16,7 +16,7 @@ class Layout:
                             content = "text/html; charset=utf-8"
                         )
         meta["http-equiv"] = "Content-Type"
-        htmlBody = html.BODY(body)
+        htmlBody = html.BODY(body, **kwargs)
         if self.bodyClass:
             htmlBody["class"] = self.bodyClass
         self.frame = html.Group(
