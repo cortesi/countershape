@@ -141,7 +141,7 @@ class Page(_DocHTMLPage):
             if self.fileext is not None and self.fileext.lower() in [".md", ".markdown", ".mdtext"]:
                     self.namespace[dt] = template.Template(markup.Markdown(), s)
             elif self.fileext is not None and (self.fileext).lower() in [".rst", ".rest", ".rstext"]:
-                    self.namespace[dt] = template.Template(markup.RST, s)
+                    self.namespace[dt] = template.Template(markup.RST(), s)
             else:
                 self.namespace[dt] = template.Template(self.findAttr("markup"), s)
             self.namespace[dt].name = self.src
