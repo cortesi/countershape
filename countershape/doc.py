@@ -147,7 +147,7 @@ class Page(_DocHTMLPage):
             self.namespace[dt].name = self.src
 
     def __repr__(self):
-        return "DocTemplate(%s)"%self.name
+        return "Page(%s)"%self.name
 
 
 class Copy(model.BasePage, _DocMixin):
