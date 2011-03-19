@@ -256,9 +256,18 @@ class Header(object):
             raise ValueError, s
 
     def __str__(self):
-        for i in reversed(list(self.page.attrsToRoot("stdHeaders"))):
+        sofar = set()
+        adds = []
+        for i in list(self.page.attrsToRoot("stdHeaders")):
+            thispage = []
             for j in i:
-                self.path(j)
+                _, base = os.path.split(j.pageSpec)
+                if not base in sofar:
+                    thispage.append(j)
+                    sofar.add(base)
+            adds.extend(reversed(thispage))
+        for i in reversed(adds):
+            self.path(i)
         return "\n".join(
                     [
                         unicode(self._cssPath),

@@ -279,15 +279,8 @@ class Directory(StaticDirectory, _DocMixin):
             explicitly excluded by excludePatterns.
         """
         if os.path.isfile(src):
-            # FIXME: we need to over-ride files with the same
-            # name further up the tree
             if src.endswith(".css") or src.endswith(".js"):
-                if os.path.isabs(src):
-                    _, mydir = os.path.split(self.src)
-                    _, fname = os.path.split(src)
-                    urlpath = os.path.join(mydir, fname)
-                else:
-                    urlpath = src[len(self.application.root.src):]
+                urlpath = src[len(self.application.root.src):]
                 self.stdHeaders.append(
                     model.UrlTo(urlpath)
                 )
