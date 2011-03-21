@@ -44,16 +44,16 @@ class _PageIndex(html._Renderable):
     activeClass = "active"
     inactiveClass = "inactive"
 
-    def __init__(self, node=None, depth=None, divclass="pageindex",
+    def __init__(self, nodespec=None, depth=None, divclass="pageindex",
                  exclude=(), currentActive=False):
         """
-            node: Page node to build the page index from.
+            nodespec: Subclass-dependent page node specification.
             depth: Depth to which index should be built.
             divclass: Class set on enclosing DIV.
             exclude: Sequence of pages to exclude from index.
             currentActive: Only set the active tag on the current page.
         """
-        self.node, self.depth = node, depth
+        self.nodespec, self.depth = nodespec, depth
         self.divclass, self.exclude = divclass, exclude
         self.currentActive = currentActive
 
@@ -108,7 +108,7 @@ class _PageIndex(html._Renderable):
 
     def __str__(self):
         exclude = [state.application.getPage(i) for i in self.exclude]
-        nodes = self._getNodes(state.application.getPage(self.node or state.page))
+        nodes = self._getNodes()
         d = html.DIV(
             self._mkUL(nodes, exclude, self.depth),
             _class=self.divclass
@@ -116,24 +116,29 @@ class _PageIndex(html._Renderable):
         return unicode(d)
 
 
-class _ExtendedParentPageIndex(_PageIndex):
-    def _getNodes(self, node):
+class ExtendedParentPageIndex(_PageIndex):
+    def _getNodes(self):
+        node = state.application.getPage(self.nodespec or state.page)
         nodes = node.findForwards(lambda x: x.title).siblings()
         nodes = [node] + [i for i in nodes if i.title]
         return nodes
-ExtendedParentPageIndex = _ExtendedParentPageIndex()
 
 
-class _SiblingPageIndex(_PageIndex):
-    def _getNodes(self, node):
+class SiblingPageIndex(_PageIndex):
+    def _getNodes(self):
+        node = state.application.getPage(self.nodespec or state.page)
         return [i for i in node.siblings() if i.structural]
-SiblingPageIndex = _SiblingPageIndex()
 
 
-class _ParentPageIndex(_PageIndex):
-    def _getNodes(self, node):
+class ParentPageIndex(_PageIndex):
+    def _getNodes(self):
+        node = state.application.getPage(self.nodespec or state.page)
         return [node]
-ParentPageIndex = _ParentPageIndex()
+
+
+class PageIndex(_PageIndex):
+    def _getNodes(self):
+        return [state.application.getPage(i) for i in self.nodespec]
 
 
 class PageTrail:

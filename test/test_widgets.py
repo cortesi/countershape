@@ -46,11 +46,6 @@ class uPageIndex(testpages.DummyState):
         assert "one-one" in p
         assert "three" in p
 
-    def test_str_naked(self):
-        p = str(SiblingPageIndex)
-        assert "one-one" in p
-        assert "three" in p
-
     def test_parent(self):
         p = str(ParentPageIndex("one"))
         assert "one-one" in p
