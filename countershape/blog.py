@@ -484,6 +484,10 @@ class RSSPage(model.BasePage, doc._DocMixin):
         self.blog = blog
         self.src = "."
         model.BasePage.__init__(self)
+        self.absolute_domain = blog.url
+        self.namespace = {
+            "syntax": template.DummySyntax,
+        }
 
     def _getRSS(self):
         items = []

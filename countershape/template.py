@@ -1,6 +1,16 @@
 import cubictemp, tinytree
 import model, state, html, widgets
 
+
+
+class DummySyntax:
+    def __init__(self, *args, **kwargs):
+        pass
+
+    def __call__(self, txt):
+        return "%s\n"%unicode(txt)
+
+
 #begin nocover
 try:
     import pygments, pygments.lexers, pygments.formatters
@@ -42,15 +52,7 @@ try:
                     )
                 )
 except ImportError:
-    class Syntax:
-        def __init__(self, *args, **kwargs):
-            pass
-
-        def withConf(self, *args, **kwargs):
-            return Syntax()
-
-        def __call__(self, txt):
-            return "%s\n"%unicode(txt)
+    Syntax = DummySyntax
 #end nocover
     
 

@@ -11,6 +11,41 @@ import utils, state
 class ApplicationError(Exception): pass
 
 
+class UrlTo:
+    """
+        A lazily evaluated URL to a page in this application.
+    """
+    _cubictemp_unescaped = True
+    def __init__(self, pageSpec, anchor=None):
+        """
+            :pageSpec A Countershape page specification
+            :anchor Anchor to add to URL
+        """
+        self.pageSpec = pageSpec
+        self.anchor = anchor
+
+    def __str__(self):
+        to = state.application.getPage(self.pageSpec)
+        if not to:
+            s = "Link to unknown page: %s."%self.pageSpec
+            raise ApplicationError(s)
+        if to.internal:
+            s = "URL request to internal page: %s."%to.name
+            raise ApplicationError(s)
+
+        absdomain = state.page.findAttr("absolute_domain", None)
+        if absdomain:
+            u = to.absolutePath()
+            u = utils.urlCat(absdomain, u)
+        else:
+            rel = state.page.relativePath([i.name for i in to.structuralPath()])
+            u = utils.makeURL(rel)
+
+        if self.anchor:
+            u = u + "#%s"%self.anchor
+        return u
+
+
 class Link(html._Renderable):
     """
         A standard href link.
@@ -34,32 +69,18 @@ class Link(html._Renderable):
         return unicode(html.A(content, href=url))
 
 
-class UrlTo:
+class ALink(html._Renderable):
     """
-        A lazily evaluated URL to a page in this application.
+        Lazy simple A HREF link.
     """
-    _cubictemp_unescaped = True
-    def __init__(self, pageSpec, anchor=None):
-        """
-            :pageSpec A Countershape page specification
-            :anchor Anchor to add to URL
-        """
-        self.pageSpec = pageSpec
-        self.anchor = anchor
+    _cubictemp_unescaped = 1
+    def __init__(self, page, txt, anchor=None):
+        self.page, self.txt, self.anchor = page, txt, anchor
+        html._Renderable.__init__(self)
 
     def __str__(self):
-        to = state.application.getPage(self.pageSpec)
-        if not to:
-            s = "Link to unknown page: %s."%self.pageSpec
-            raise ApplicationError(s)
-        if to.internal:
-            s = "URL request to internal page: %s."%to.name
-            raise ApplicationError(s)
-        rel = state.page.relativePath([i.name for i in to.structuralPath()])
-        u = utils.makeURL(rel)
-        if self.anchor:
-            u = u + "#%s"%self.anchor
-        return u
+        url = UrlTo(self.page, anchor=self.anchor)
+        return unicode(html.A(self.txt, href=url))
 
 
 class LinkTo(html._Renderable):
@@ -93,20 +114,6 @@ class LinkTo(html._Renderable):
 
     def __str__(self):
         return unicode(self._getLink())
-
-
-class ALink(html._Renderable):
-    """
-        Lazy simple A HREF link.
-    """
-    _cubictemp_unescaped = 1
-    def __init__(self, page, txt, anchor=None):
-        self.page, self.txt, self.anchor = page, txt, anchor
-        html._Renderable.__init__(self)
-
-    def __str__(self):
-        url = UrlTo(self.page, anchor=self.anchor)
-        return unicode(html.A(self.txt, href=url))
 
 
 class Top:
@@ -190,6 +197,10 @@ class BasePage(tinytree.Tree):
     def top(self):
         l = len(self.structuralPath()) - 1
         return (os.path.sep).join([".."]*l)
+
+    def absolutePath(self):
+        p = [i.name for i in self.structuralPath()]
+        return utils.urlCat(*p)
 
     def relativePath(self, toPath):
         """
