@@ -49,6 +49,7 @@ try:
     htmlSyntax          = Syntax(pygments.lexers.HtmlLexer())
     jsSyntax            = Syntax(pygments.lexers.JavascriptLexer())
     cSyntax             = Syntax(pygments.lexers.CLexer())
+    xmlSyntax           = Syntax(pygments.lexers.XmlLexer())
 except ImportError:
     class Syntax:
         def __init__(self, *args, **kwargs):
@@ -65,6 +66,7 @@ except ImportError:
     htmlSyntax          = Syntax(pygments.lexers.HtmlLexer())
     jsSyntax            = Syntax(pygments.lexers.JavascriptLexer())
     cSyntax             = Syntax(pygments.lexers.CLexer())
+    xmlSyntax             = Syntax(pygments.lexers.CLexer())
 #end nocover
     
 

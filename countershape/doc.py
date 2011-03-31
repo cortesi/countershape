@@ -308,6 +308,7 @@ class DocRoot(Directory):
         cssSyntax           = template.cssSyntax,
         htmlSyntax          = template.htmlSyntax,
         jsSyntax            = template.jsSyntax,
+        xmlSyntax           = template.xmlSyntax,
         cubescript          = template.cubescript,
     )
     def __init__(self, src, options=[]):
