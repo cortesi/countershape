@@ -303,6 +303,7 @@ class DocRoot(Directory):
     markup = markup.Default()
     _baseNS = dict(
         syntax              = template.Syntax,
+        readFrom            = readFrom,
         cubescript          = template.cubescript,
     )
     def __init__(self, src, options=[]):
