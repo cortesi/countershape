@@ -490,11 +490,17 @@ class ArchivePage(doc._DocHTMLPage):
 class RSSPage(model.BasePage, doc._DocMixin):
     structural = False
     NUM = 10
-    def __init__(self, name, title, posts, blog):
+    def __init__(self, name, title, posts, blog, fullrss=False):
         self.name, self.title, self.posts = name, title, posts
         self.blog = blog
         self.src = "."
         model.BasePage.__init__(self)
+        self.absolute_domain = blog.url
+        self.fullrss = fullrss
+        self.namespace = {
+            "syntax": template.DummySyntax,
+            "readFrom": doc.readFrom
+        }
 
     def _getRSS(self):
         items = []
@@ -502,7 +508,7 @@ class RSSPage(model.BasePage, doc._DocMixin):
             if "draft" in i.options:
                 continue
             path = [x.name for x in i.structuralPath()]
-            if ("fullrss" in i.options) or i.url:
+            if ("fullrss" in i.options) or i.url or self.fullrss:
                 r = _PostRenderer(i)
                 description = unicode(r)
             else:
@@ -551,12 +557,13 @@ class Blog:
     def archive(self, name, title):
         return ArchivePage(name, title, self)
 
-    def rss(self, name, title, posts=10):
+    def rss(self, name, title, posts=10, fullrss=False):
         return RSSPage(
             name,
             title,
             posts,
-            self
+            self,
+            fullrss=fullrss
         )
 
     def __call__(self):

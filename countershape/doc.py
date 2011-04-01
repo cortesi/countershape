@@ -183,7 +183,7 @@ class PythonPage(_DocHTMLPage):
                 break
         toroot.reverse()
         yield html.H2("/".join(i.title for i in toroot))
-        yield html.rawstr(self.namespace["pySyntax"](code))
+        yield html.rawstr(self.namespace["syntax"]("py")(code))
 
     def __repr__(self):
         return "PythonPage(%s)"%self.src
@@ -302,12 +302,8 @@ class DocRoot(Directory):
     contentName = "body"
     markup = markup.Default()
     _baseNS = dict(
-        pySyntax            = template.pySyntax,
-        cSyntax             = template.cSyntax,
-        pyTracebackSyntax   = template.pyTracebackSyntax,
-        cssSyntax           = template.cssSyntax,
-        htmlSyntax          = template.htmlSyntax,
-        jsSyntax            = template.jsSyntax,
+        syntax              = template.Syntax,
+        readFrom            = readFrom,
         cubescript          = template.cubescript,
     )
     def __init__(self, src, options=[]):

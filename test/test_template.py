@@ -6,10 +6,11 @@ import testpages
 
 class uSyntax(testpages.DummyState):
     def test_simple_syntax(self):
-        assert countershape.template.pySyntax("def foo")
+        assert countershape.template.Syntax("py")("def foo")
 
     def test_syntax_withConf(self):
-        p = countershape.template.pySyntax.withConf(
+        p = countershape.template.Syntax(
+                "py",
                 style="emacs",
                 linenos="inline",
                 linenostep=5,

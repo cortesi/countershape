@@ -1,31 +1,39 @@
 import cubictemp, tinytree
 import model, state, html, widgets
 
+
+
+class DummySyntax:
+    def __init__(self, *args, **kwargs):
+        pass
+
+    def __call__(self, txt):
+        return "%s\n"%unicode(txt)
+
+
 #begin nocover
 try:
     import pygments, pygments.lexers, pygments.formatters
     from pygments import highlight
     class Syntax:
+        lexerMap = dict(
+            py             = pygments.lexers.PythonLexer(),
+            py_traceback   = pygments.lexers.PythonTracebackLexer(),
+            css            = pygments.lexers.CssLexer(),
+            html           = pygments.lexers.HtmlLexer(),
+            js             = pygments.lexers.JavascriptLexer(),
+            c              = pygments.lexers.CLexer(),
+            xml            = pygments.lexers.XmlLexer(),
+        )
         def __init__(self,
                      lexer,
                      style="native",
                      linenostep=0,
                      linenos=False,
                      cssClass="highlight"):
-            self.lexer, self.style = lexer, style
+            self.lexer, self.style = self.lexerMap[lexer], style
             self.linenostep, self.linenos = linenostep, linenos
             self.cssClass = cssClass
-
-        def withConf(self,
-                     style="native",
-                     linenostep=0,
-                     linenos=False,
-                     cssClass="highlight"):
-            return Syntax(lexer=self.lexer,
-                          style=style,
-                          linenostep=linenostep,
-                          linenos=linenos,
-                          cssClass=cssClass)
 
         def __call__(self, txt):
             txt = txt.rstrip()
@@ -43,28 +51,8 @@ try:
                         pygments.formatters.HtmlFormatter(**fargs)
                     )
                 )
-    pySyntax            = Syntax(pygments.lexers.PythonLexer())
-    pyTracebackSyntax   = Syntax(pygments.lexers.PythonTracebackLexer())
-    cssSyntax           = Syntax(pygments.lexers.CssLexer())
-    htmlSyntax          = Syntax(pygments.lexers.HtmlLexer())
-    jsSyntax            = Syntax(pygments.lexers.JavascriptLexer())
-    cSyntax             = Syntax(pygments.lexers.CLexer())
 except ImportError:
-    class Syntax:
-        def __init__(self, *args, **kwargs):
-            pass
-
-        def withConf(self, *args, **kwargs):
-            return Syntax()
-
-        def __call__(self, txt):
-            return "%s\n"%unicode(txt)
-    pySyntax            = Syntax(pygments.lexers.PythonLexer())
-    pyTracebackSyntax   = Syntax(pygments.lexers.PythonTracebackLexer())
-    cssSyntax           = Syntax(pygments.lexers.CssLexer())
-    htmlSyntax          = Syntax(pygments.lexers.HtmlLexer())
-    jsSyntax            = Syntax(pygments.lexers.JavascriptLexer())
-    cSyntax             = Syntax(pygments.lexers.CLexer())
+    Syntax = DummySyntax
 #end nocover
     
 

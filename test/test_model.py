@@ -29,11 +29,14 @@ class uContext(testpages.DummyState):
         assert p.relativePath([]) == ".."
         assert p.relativePath(["foo", "bar"]) == "bar"
         assert p.relativePath(["foo", "bar", "voing"]) == "bar/voing"
+        assert p.absolutePath() == "foo/bar"
 
         p = self.application.getPage("foo")
         assert p.relativePath(["oink"]) == "oink"
         assert p.relativePath([""]) == ""
         assert p.relativePath(["foo", "bar"]) == "foo/bar"
+        assert p.absolutePath() == "foo"
+
 
     def test_top(self):
         p = self.application.getPage(os.path.join("foo","bar"))
