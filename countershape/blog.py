@@ -206,7 +206,7 @@ class _PostRenderer(html._Renderable):
                 title = html.A(self.post.title, href=self.post.url)
             else:
                 title = model.LinkTo(self.post)
-            posttime = self.post.time.strftime("%Y %B %d %H:%M %p")
+            posttime = self.post.time.strftime("%d %B %Y")
             links = Links(self.post.findAttr("markup"))
             postbody = template.Template(
                             self.post.findAttr("markup"),
