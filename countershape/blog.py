@@ -408,7 +408,7 @@ class BlogDirectory(doc.Directory):
             return BlogDirectory(os.path.basename(src), src, self.blog)
         else:
             filename, ext = os.path.splitext(os.path.basename(src))
-            blog_ext = ['.htm','.html','.md', '.mdtext', '.txtile','.textile', '.rstext', '.rst', '']
+            blog_ext = ['.md', '.mdtext', '.txtile','.textile', '.rstext', '.rst', '']
             ignore = ['']
             if ext.lower() in blog_ext and not filename.startswith('.') and not os.path.basename(src).lower() in ignore \
                 and not os.path.getsize(src) == 0:
