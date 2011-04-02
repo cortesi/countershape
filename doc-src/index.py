@@ -4,8 +4,6 @@ import countershape.grok
 from countershape.doc import *
 
 this.layout = countershape.Layout("_layout.html")
-#this.markdown = "textish"
-#this.markup =None
 this.titlePrefix = "Countershape "
 
 this.stdHeaders = [
@@ -23,7 +21,7 @@ ns.sidebar = countershape.widgets.SiblingPageIndex(
             '/index.html', 
             exclude=['countershape']
           )
-ns.parse = countershape.grok.parse("../countershape")
+#~ ns.parse = countershape.grok.parse("../countershape")
 
 pages = [
     Page("index.html", 

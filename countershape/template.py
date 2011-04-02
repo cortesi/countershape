@@ -91,7 +91,13 @@ class _TemplateMixin:
         kwargs.update(self._getNS())
         kwargs.update(self.nsDict)
         s = self.block.render(**kwargs)
-        return unicode(self.markup(s)) if self.markup else unicode(s)
+        value = ""
+        try:
+            value = unicode(self.markup(s)) if self.markup else unicode(s)
+        except TypeError:
+            print "Error: Check that you have a valid this.markup=markup.Markdown() or similar configuration"
+            raise
+        return value
 
     def __call__(self, *args, **kwargs):
         kwargs.update(_ns())

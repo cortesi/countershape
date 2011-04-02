@@ -203,28 +203,28 @@ class _PostRenderer(html._Renderable):
     def __unicode__(self):
         with utils.InDir(os.path.dirname(self.src)):
             if self.post.url:
-                title = html.H1(
-                    html.A(self.post.title, href=self.post.url)
-                )
+                title = html.A(self.post.title, href=self.post.url)
             else:
-                title = html.H1(model.LinkTo(self.post))
-            date = html.H2(self.post.time.strftime("%d %B %Y"))
-            blocks = []
-            blocks.append(html.DIV(title, date, _class="posthead"))
+                title = model.LinkTo(self.post)
+            posttime = self.post.time.strftime("%Y %B %d %H:%M %p")
             links = Links(self.post.findAttr("markup"))
-            blocks.append(html.DIV(
-                       template.Template(
+            postbody = template.Template(
                             self.post.findAttr("markup"),
                             self.post.data,
                             links = links
-                        ),
-                       _class="postbody"
-                   ))
-            for i in self.postfixes:
-                blocks.append(i())
-            return unicode(html.DIV(*blocks, _class="post"))
-
-
+                        )
+            postfixes = self.postfixes
+            t = template.Template(
+                self.post.findAttr("markup"),
+                file(utils.data.path("resources/post.html")).read(),
+                title = title, 
+                posttime = posttime, 
+                postdata = postbody, 
+                postfixes = postfixes
+                )
+                
+            return unicode(t)
+        
 class Post(doc._DocHTMLPage):
     """
         Each post is housed in a separate file, 
@@ -244,7 +244,7 @@ class Post(doc._DocHTMLPage):
         """
         self.blog = blog
         self.title, self.time, self.data, self.short, self.options, self.url, self.tags = self.fromPath(src)
-        name = os.path.basename(src) + ".html"
+        name = os.path.splitext(os.path.basename(src))[0] + ".html"
         doc._DocHTMLPage.__init__(
             self, name, self.title, src=src
         )
@@ -269,8 +269,14 @@ class Post(doc._DocHTMLPage):
 
     @classmethod
     def fromPath(klass, path):
-        s = codecs.open(path, "r", "utf-8").read()
-        return klass.fromStr(s)
+        try:
+        	s = codecs.open(path, "r", "utf-8").read()
+        except:
+            s = codecs.open(path, "r", "latin-1").read()
+        try:
+            return klass.fromStr(s)
+        except ValueError:
+            raise ValueError("Path %s", path)
 
     @classmethod
     def fromStr(klass, text):
@@ -324,7 +330,7 @@ class Post(doc._DocHTMLPage):
                 raise ValueError("Invalid metadata: %s"%i)
         data = "\n".join(list(lines))
         if not title:
-            raise ValueError, "Not a valid post - no title found."
+            raise ValueError("Not a valid post - no title found.")
         return title, time, data, short, options, url, tags
 
     @classmethod
@@ -400,10 +406,15 @@ class BlogDirectory(doc.Directory):
         src = os.path.normpath(src)
         if os.path.isdir(src):
             return BlogDirectory(os.path.basename(src), src, self.blog)
-        elif not "." in os.path.basename(src):
-            return Post(src, self.blog)
         else:
-            return doc.Directory.defaultAction(self, src)
+            filename, ext = os.path.splitext(os.path.basename(src))
+            blog_ext = ['.htm','.html','.md', '.mdtext', '.txtile','.textile', '.rstext', '.rst', '']
+            ignore = ['']
+            if ext.lower() in blog_ext and not filename.startswith('.') and not os.path.basename(src).lower() in ignore \
+                and not os.path.getsize(src) == 0:
+                return Post(src, self.blog)
+            else:
+                return doc.Directory.defaultAction(self, src)
 
     def sortedPosts(self):
         lst = filter(lambda x: isinstance(x, Post), self.preOrder())
