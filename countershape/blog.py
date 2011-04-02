@@ -215,13 +215,14 @@ class _PostRenderer(html._Renderable):
                         )
             postfixes = self.postfixes
             t = template.Template(
-                self.post.findAttr("markup"),
+                None,
                 file(utils.data.path("resources/post.html")).read(),
                 title = title, 
                 posttime = posttime, 
                 postdata = postbody, 
                 postfixes = [i() for i in postfixes]
                 )
+
             return unicode(t)
         
 class Post(doc._DocHTMLPage):
