@@ -220,9 +220,8 @@ class _PostRenderer(html._Renderable):
                 title = title, 
                 posttime = posttime, 
                 postdata = postbody, 
-                postfixes = postfixes
+                postfixes = [i() for i in postfixes]
                 )
-                
             return unicode(t)
         
 class Post(doc._DocHTMLPage):
