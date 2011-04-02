@@ -478,7 +478,6 @@ class ArchivePage(doc._DocHTMLPage):
 
 class RSSPage(model.BasePage, doc._DocMixin):
     structural = False
-    NUM = 10
     def __init__(self, name, title, posts, blog, fullrss=False):
         self.name, self.title, self.posts = name, title, posts
         self.blog = blog
@@ -493,7 +492,7 @@ class RSSPage(model.BasePage, doc._DocMixin):
 
     def _getRSS(self):
         items = []
-        for i in self.blog.blogdir.sortedPosts()[:self.NUM]:
+        for i in self.blog.blogdir.sortedPosts()[:self.posts]:
             if "draft" in i.options:
                 continue
             path = [x.name for x in i.structuralPath()]
