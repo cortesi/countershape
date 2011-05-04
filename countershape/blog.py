@@ -275,8 +275,8 @@ class Post(doc._DocHTMLPage):
             s = codecs.open(path, "r", "latin-1").read()
         try:
             return klass.fromStr(s)
-        except ValueError:
-            raise ValueError("Path %s", path)
+        except ValueError, v:
+            raise ValueError("%s: %s"%(str(v), path))
 
     @classmethod
     def fromStr(klass, text):
