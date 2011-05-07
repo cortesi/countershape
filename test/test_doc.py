@@ -1,8 +1,7 @@
 import shutil, os
 import libpry
 import countershape
-import countershape.doc as doc
-import countershape.model as model
+from countershape import doc, model, sitemap
 import testpages
 
 class DocTestPage(doc._DocHTMLPage):
@@ -54,7 +53,8 @@ class uRenderTests(libpry.AutoTree):
                 doc.Copy("doctree/copy"),
                 doc.Copy("copy2", src="doctree/copy"),
                 doc.PythonPage("testmod/foo.py"),
-                doc.PythonModule("testmod")
+                doc.PythonModule("testmod"),
+                sitemap.Sitemap("sitemap.xml")
             ])
         )
 
@@ -66,6 +66,7 @@ class uRenderTests(libpry.AutoTree):
         assert os.path.isfile(os.path.join(t, "copy2"))
         assert os.path.isdir(os.path.join(t, "testmod"))
         assert os.path.isfile(os.path.join(t, "testmod_index.html"))
+        assert os.path.isfile(os.path.join(t, "sitemap.xml"))
 
 class uBunch(libpry.AutoTree):
     def test_load(self):
