@@ -10,5 +10,4 @@ class Sitemap(model.BasePage, doc._DocMixin):
         return "sitemap(%s)"%self.name
 
     def render(self, *args, **kwargs):
-        print list(self.application.root.preOrder())
         return "test"

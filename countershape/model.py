@@ -236,6 +236,12 @@ class BasePage(tinytree.Tree):
             bod=[unicode(str(i),'latin-1', 'ignore') for i in self.run()]
         return "".join(bod)
 
+    def siteUrl(self):
+        r = self.findAttr("site_url")
+        if not r:
+            raise ApplicationError("Requires a site URL.")
+        return r
+
     def __repr__(self):
         return "Page(%s)"%self.name
 

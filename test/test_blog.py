@@ -252,6 +252,7 @@ class uBlog(libpry.AutoTree):
                         self.b.rss("rss.xml", "RS"),
                     ]
                 )
+        r.site_url = "foo.com"
         r.postfix = TestPostfix()
         self.a = doc.Doc(r)
 

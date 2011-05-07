@@ -5,6 +5,7 @@ import rssgen
 import cubictemp
 
 
+
 class Links:
     """
         A template processor for maintaining a link log. A link log is set of
@@ -225,6 +226,7 @@ class _PostRenderer(html._Renderable):
 
             return unicode(t)
         
+
 class Post(doc._DocHTMLPage):
     """
         Each post is housed in a separate file, 
@@ -257,7 +259,7 @@ class Post(doc._DocHTMLPage):
     @property
     def permalink(self):
         path = [x.name for x in self.structuralPath()]
-        return urllib.basejoin(self.blog.url, "/".join(path))
+        return urllib.basejoin(self.siteUrl(), "/".join(path))
 
     @classmethod
     def _timeToStr(klass, time):
@@ -494,7 +496,6 @@ class RSSPage(model.BasePage, doc._DocMixin):
         self.blog = blog
         self.src = "."
         model.BasePage.__init__(self)
-        self.absolute_domain = blog.url
         self.fullrss = fullrss
         self.namespace = {
             "syntax": template.DummySyntax,
@@ -523,7 +524,7 @@ class RSSPage(model.BasePage, doc._DocMixin):
             )
         rss = rssgen.RSS2(
             title = self.blog.blogname,
-            link = self.blog.url,
+            link = self.siteUrl(),
             description = self.blog.blogdesc,
             items = items
         )
