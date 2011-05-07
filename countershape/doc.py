@@ -255,7 +255,7 @@ class Directory(StaticDirectory, _DocMixin):
             with utils.InDir(self.src):
                 execfile(_ConfFile, glob, loc)
             for c in loc["pages"]:
-                if hasattr(c, "src"):
+                if c.src:
                     seen.add(c.src)
                 self.addChild(c)
             self.namespace.update(ns.getDict())

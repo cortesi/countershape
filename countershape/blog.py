@@ -452,6 +452,7 @@ class IndexPage(doc._DocHTMLPage):
 class ArchivePage(doc._DocHTMLPage):
     def __init__(self, name, title, blog):
         doc._DocHTMLPage.__init__(self, name, title)
+        self.src = None
         self.blog = blog
 
     def _getArchive(self):

@@ -1,7 +1,7 @@
 """
     This module provides a high-level framework for web applications.
 """
-import os.path, sys, cStringIO, inspect, types, copy
+import os.path, sys, cStringIO, inspect, types, copy, datetime
 import mimetypes, time
 import cubictemp, tinytree
 import countershape, html, layout
@@ -140,6 +140,8 @@ class BasePage(tinytree.Tree):
     internal = False
     # True if page will appear in the site indexes and menus
     structural = False
+    # Set to an absolute path if the page has a source file
+    src = None
     def __init__(self, children = None):
         if state.page and not state.application.testing:
             raise ApplicationError(
@@ -241,6 +243,14 @@ class BasePage(tinytree.Tree):
         if not r:
             raise ApplicationError("Requires a site URL.")
         return r
+
+    def lastMod(self):
+        """
+            Returns a datetime object for the last file modification.
+        """
+        if not self.src:
+            return None
+        return datetime.datetime.fromtimestamp(os.path.getmtime(self.src))
 
     def __repr__(self):
         return "Page(%s)"%self.name

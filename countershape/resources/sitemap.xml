@@ -7,7 +7,11 @@
     <!--(for i in pages)-->
         <url>
           <loc>@!urlTo(i)!@</loc>
-          <lastmod>2011-05-04T08:30:07+00:00</lastmod>
+          <!--(block lastmod)-->
+              <lastmod>@!i.lastMod().strftime("%Y:%m:%d")!@</lastmod>
+          <!--(end)-->
+          $!lastmod if i.lastMod() else ""!$
+
         </url>
     <!--(end)-->
 </urlset>
