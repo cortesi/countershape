@@ -497,6 +497,7 @@ class RSSPage(model.BasePage, doc._DocMixin):
         self.src = "."
         model.BasePage.__init__(self)
         self.fullrss = fullrss
+        self.absolute_domain = True
         self.namespace = {
             "syntax": template.DummySyntax,
             "readFrom": doc.readFrom
@@ -538,13 +539,13 @@ class RSSPage(model.BasePage, doc._DocMixin):
 
 
 class Blog:
-    def __init__(self, blogname, blogdesc, url, base, src, *postfixes):
+    def __init__(self, blogname, blogdesc, base, src, *postfixes):
         """
             postfixes: A set of Postfix objects, which will be appended in the
             relevant places in the specified order.
         """
         src = os.path.abspath(src)
-        self.blogname, self.url, self.base, self.src = blogname, url, base, src
+        self.blogname, self.base, self.src = blogname, base, src
         self.blogdesc = blogdesc
         self.postfixes = postfixes
         if not os.path.isdir(src):

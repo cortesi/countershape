@@ -36,7 +36,7 @@ class UrlTo:
         absdomain = state.page.findAttr("absolute_domain", None)
         if absdomain:
             u = to.absolutePath()
-            u = utils.urlCat(absdomain, u)
+            u = utils.urlCat(to.siteUrl(), u)
         else:
             rel = state.page.relativePath([i.name for i in to.structuralPath()])
             u = utils.makeURL(rel)

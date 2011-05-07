@@ -238,7 +238,6 @@ class uBlog(libpry.AutoTree):
         self.b = blog.Blog(
                     "Blog Title",
                     "blog description",
-                    "http://foo",
                     "posts",
                     "testblog",
                     blog.Disqus("test"),
