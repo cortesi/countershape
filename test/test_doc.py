@@ -68,6 +68,7 @@ class uRenderTests(libpry.AutoTree):
         assert os.path.isfile(os.path.join(t, "testmod_index.html"))
         assert os.path.isfile(os.path.join(t, "sitemap.xml"))
 
+
 class uBunch(libpry.AutoTree):
     def test_load(self):
         l = doc._Bunch(a=1, b=2)
@@ -180,6 +181,7 @@ class TestRoot(model.BaseRoot):
     contentName = "body"
     stdHeaders = []
     namespace = countershape.doc.DocRoot._baseNS
+    site_url = "http://foo.com"
 
 
 class uOptions(libpry.AutoTree):

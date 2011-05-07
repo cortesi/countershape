@@ -4,9 +4,10 @@
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
             http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
-    <url>
-      <loc>@!url!@</loc>
-      <lastmod>2011-05-04T08:30:07+00:00</lastmod>
-      <changefreq>weekly</changefreq>
-    </url>
+    <!--(for i in pages)-->
+        <url>
+          <loc>@!urlTo(i)!@</loc>
+          <lastmod>2011-05-04T08:30:07+00:00</lastmod>
+        </url>
+    <!--(end)-->
 </urlset>

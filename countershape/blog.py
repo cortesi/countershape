@@ -494,7 +494,6 @@ class RSSPage(model.BasePage, doc._DocMixin):
     def __init__(self, name, title, posts, blog, fullrss=False):
         self.name, self.title, self.posts = name, title, posts
         self.blog = blog
-        self.src = "."
         model.BasePage.__init__(self)
         self.fullrss = fullrss
         self.absolute_domain = True

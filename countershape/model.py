@@ -4,7 +4,7 @@
 import os.path, sys, cStringIO, inspect, types, copy
 import mimetypes, time
 import cubictemp, tinytree
-import countershape, html, layout, template
+import countershape, html, layout
 import utils, state
 
 

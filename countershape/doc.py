@@ -61,13 +61,10 @@ class _DocMixin:
 
     def _nameSrc(self, name, src):
         if src:
-            return name, src
+            return name, os.path.abspath(src)
         else:
-            return os.path.basename(name), name
+            return os.path.basename(name), os.path.abspath(name)
 
-    def _setDirectory(self, src):
-        self.src = os.path.join(src, self.src)
-    
 
 class _DocHTMLPage(model.HTMLPage, _DocMixin):
     link = model.Link([])
@@ -147,7 +144,7 @@ class Page(_DocHTMLPage):
             self.namespace[dt].name = self.src
 
     def __repr__(self):
-        return "Page(%s)"%self.name
+        return "HTMLPage(%s)"%self.name
 
 
 class Copy(model.BasePage, _DocMixin):
@@ -258,8 +255,8 @@ class Directory(StaticDirectory, _DocMixin):
             with utils.InDir(self.src):
                 execfile(_ConfFile, glob, loc)
             for c in loc["pages"]:
-                c._setDirectory(self.src)
-                seen.add(c.src)
+                if hasattr(c, "src"):
+                    seen.add(c.src)
                 self.addChild(c)
             self.namespace.update(ns.getDict())
 
