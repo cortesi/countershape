@@ -1,17 +1,13 @@
 #!/usr/bin/env python
 import os.path, sys
-from optparse import OptionParser
-import countershape.doc as doc
-import countershape.blog as blog
+from optparse import OptionParser, OptionGroup
+from countershape import doc, blog, analysis
 
 class CSDoc:
-    usage = "usage: %prog [options] src dst"
+    usage = "usage: %prog [options] src [dst]"
     description = "Renders a Countershape documentation tree."
     def main(self):
         parser = OptionParser(self.usage, description=self.description)
-        parser.add_option("-s", "--structure",
-                          action="store_true", dest="structure", default=False,
-                          help="Show site structure.")
         parser.add_option("-o", "--option", type="str",
                           action="append", dest="options",
                           default = [],
@@ -20,11 +16,24 @@ class CSDoc:
                           action="store_true", dest="dummy", default=False,
                           help="Perform a dummy run - don't render any files.")
 
+        group = OptionGroup(parser, "Analysis")
+        group.add_option("-s", "--structure",
+                          action="store_true", dest="structure", default=False,
+                          help="Show site structure.")
+        group.add_option("--blog-tags",
+                          action="store_true", dest="blogtags", default=False,
+                          help="Show blog tag histogram.")
+        parser.add_option_group(group)
+
         options, args = parser.parse_args()
 
-        if options.structure:
+        analysis_options = ["structure", "blogtags"]
+
+        if any(getattr(options, i) for i in analysis_options):
             if len(args) < 1:
-                parser.error("Missing source specification.")
+                parser.error("Please pass a source for analysis.")
+            elif len(args) > 1:
+                parser.error("Analysis options take a single argument.")
         else:
             if len(args) != 2:
                 parser.error("Please pass source and destination.")
@@ -34,6 +43,8 @@ class CSDoc:
         d = doc.Doc(args[0], options.options)
         if options.structure:
             d.root.dump()
+        if options.blogtags:
+            analysis.blog_tags(d)
         elif not options.dummy:
             d.render(args[1])
             lst = filter(

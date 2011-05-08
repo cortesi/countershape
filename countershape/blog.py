@@ -569,3 +569,11 @@ class Blog:
 
     def __call__(self):
         return self.blogdir
+
+
+
+def find_blog(d):
+    for i in d.root.preOrder():
+        if isinstance(i, BlogDirectory):
+            return i.blog
+    return None

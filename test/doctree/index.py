@@ -1,5 +1,4 @@
 from countershape import doc, sitemap
-
 ns.data = readFrom("_notcopied.html")
 this.site_url = "http://foo.com"
 
