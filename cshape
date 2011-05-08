@@ -23,11 +23,14 @@ class CSDoc:
         group.add_option("--blog-tags",
                           action="store_true", dest="blogtags", default=False,
                           help="Show blog tag histogram.")
+        group.add_option("--blog-notags",
+                          action="store_true", dest="blognotags", default=False,
+                          help="Show blog posts with no tags.")
         parser.add_option_group(group)
 
         options, args = parser.parse_args()
 
-        analysis_options = ["structure", "blogtags"]
+        analysis_options = ["structure", "blogtags", "blognotags"]
 
         if any(getattr(options, i) for i in analysis_options):
             if len(args) < 1:
@@ -45,6 +48,8 @@ class CSDoc:
             d.root.dump()
         if options.blogtags:
             analysis.blog_tags(d)
+        if options.blognotags:
+            analysis.blog_notags(d)
         elif not options.dummy:
             d.render(args[1])
             lst = filter(

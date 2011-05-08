@@ -1,4 +1,4 @@
-import sys
+import sys, os
 import blog
 
 def blog_tags(d, fp=sys.stdout):
@@ -11,6 +11,14 @@ def blog_tags(d, fp=sys.stdout):
     vals.sort(reverse=True)
     for i in vals:
         print >> fp, "%5i"%i[0], i[1]
+
+
+def blog_notags(d, fp=sys.stdout):
+    cwdl = len(os.getcwd())
+    b = blog.find_blog(d)
+    for i in b.blogdir.sortedPosts():
+        if not i.tags:
+            print >> fp, i.src[cwdl:]
 
 
 
