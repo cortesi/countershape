@@ -8,7 +8,7 @@ class DummySyntax:
         pass
 
     def __call__(self, txt):
-        return "<pre>%s\n</pre>"%unicode(txt)
+        return "<pre>%s\n</pre>"%unicode(cubictemp.escape(txt))
 
 
 #begin nocover
