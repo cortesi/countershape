@@ -8,7 +8,7 @@
         <url>
           <loc>@!urlTo(i)!@</loc>
           <!--(block lastmod)-->
-              <lastmod>@!i.lastMod().strftime("%Y:%m:%d")!@</lastmod>
+              <lastmod>@!i.lastMod().strftime("%Y-%m-%d")!@</lastmod>
           <!--(end)-->
           $!lastmod if i.lastMod() else ""!$
 
