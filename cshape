@@ -26,11 +26,17 @@ class CSDoc:
         group.add_option("--blog-notags",
                           action="store_true", dest="blognotags", default=False,
                           help="Show blog posts with no tags.")
+        group.add_option("--blog-has-option",
+                          action="store", type="str", dest="bloghasoption", default=False,
+                          help="Show blog posts with option.")
+        group.add_option("--blog-has-no-option",
+                          action="store", type="str", dest="bloghasnooption", default=False,
+                          help="Show blog posts without option.")
         parser.add_option_group(group)
 
         options, args = parser.parse_args()
 
-        analysis_options = ["structure", "blogtags", "blognotags"]
+        analysis_options = ["structure", "blogtags", "blognotags", "bloghasoption", "bloghasnooption"]
 
         if any(getattr(options, i) for i in analysis_options):
             if len(args) < 1:
@@ -46,10 +52,14 @@ class CSDoc:
         d = doc.Doc(args[0], options.options)
         if options.structure:
             d.root.dump()
-        if options.blogtags:
+        elif options.blogtags:
             analysis.blog_tags(d)
-        if options.blognotags:
+        elif options.blognotags:
             analysis.blog_notags(d)
+        elif options.bloghasoption:
+            analysis.blog_has_option(d, options.bloghasoption)
+        elif options.bloghasnooption:
+            analysis.blog_has_no_option(d, options.bloghasnooption)
         elif not options.dummy:
             d.render(args[1])
             lst = filter(

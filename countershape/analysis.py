@@ -1,6 +1,10 @@
 import sys, os
 import blog
 
+def nicepath(b):
+    cwdl = len(os.getcwd())
+    return "." + b.src[cwdl:]
+
 def blog_tags(d, fp=sys.stdout):
     b = blog.find_blog(d)
     histogram = dict()
@@ -14,12 +18,25 @@ def blog_tags(d, fp=sys.stdout):
 
 
 def blog_notags(d, fp=sys.stdout):
-    cwdl = len(os.getcwd())
     b = blog.find_blog(d)
     for i in b.blogdir.sortedPosts():
         if not i.tags:
-            print >> fp, i.src[cwdl:]
+            print >> fp, nicepath(i)
 
 
+def blog_has_option(d, option, fp=sys.stdout):
+    cwdl = len(os.getcwd())
+    b = blog.find_blog(d)
+    for i in b.blogdir.sortedPosts():
+        if option in i.options:
+            print >> fp, nicepath(i)
+
+
+def blog_has_no_option(d, option, fp=sys.stdout):
+    cwdl = len(os.getcwd())
+    b = blog.find_blog(d)
+    for i in b.blogdir.sortedPosts():
+        if option not in i.options:
+            print >> fp, nicepath(i)
 
 
