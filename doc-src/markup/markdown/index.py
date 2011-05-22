@@ -1,5 +1,6 @@
 from countershape.doc import *
-this.markup = "markdown"
+from countershape import markup
+this.markup = markup.Markdown(extras=["code-friendly"])
 
 pages = [
     Page("basics.text", "Basics"),
