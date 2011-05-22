@@ -1,5 +1,6 @@
 from countershape.doc import *
-this.markup = "rst"
+from countershape import markup
+this.markup = markup.RST()
 
 pages = [
     Page("quickstart.text",
