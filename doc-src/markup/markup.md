@@ -3,14 +3,16 @@ Countershape supports documentation markup in a number of formats, including:
 - HTML
 - [Markdown](markup/markdown.html)
 - reStructuredText ReST
-- [Textish](markup/textish.html)
+
+The markup can be specific to a site or particular path, using the classes
+specified in markup.py and referenced as in the below:
 
 ### reStructuredText Using docutils.sourceforge.net
 
-Use a page filename with the file extension ".rst" or from the referencing index.py
+Use a page filename with the file extension ".rst" or from the configuration index.py
 use:
 
-`this.markup = "rst"`
+`this.markup = markup.RST()`
 
 [reStructuredText](http://docutils.sourceforge.net/rst.html) is an easy-to-read, 
 what-you-see-is-what-you-get plaintext markup syntax and parser system. It is 
@@ -30,18 +32,11 @@ conversion tool for web writers. Markdown allows you to write using an
 easy-to-read, easy-to-write plain text format, then convert it to structurally 
 valid XHTML (or HTML). 
 
-### Textish (default)
+Use a page filename with the file extension ".mdtext" or from the configuration index.py
+use:
 
-`this.markup = "textish"`
+`this.markup = markup.Markdown()`
 
-Textish is a text mark-up syntax processed by countershape
+Options for the markdown2 command-line utility can be included such as:
 
-With the support of external tools (ala pygments) Countershape also supports
-code coloring syntax for :
-
-- Python
-- Python Tracebacks
-- CSS
-- HTML
-- Javascript
-- Cc
+`this.markup = markup.Markdown(extras=["code-friendly"])`

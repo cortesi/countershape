@@ -29,8 +29,8 @@ pages = [
         ),
         
     Page("markup/markup.md", 
-        title="Document Markup",
-        pageTitle="Document Markup Options"
+        title="Page Markup",
+        pageTitle="Page Markup Options"
         ),
     Directory("markup"),
     
