@@ -304,11 +304,11 @@ class Post(doc._DocHTMLPage):
             if match:
                 name = match.group(1).lower()
                 value = match.group(2)
-                if name == "time":
+                if name.lower() == "time":
                     time = klass._timeFromStr(value)
-                elif name == "url":
+                elif name.lower() == "url":
                     url = value.strip()
-                elif name == "short":
+                elif name.lower() == "short":
                     v = [value]
                     for j in lines:
                         if j and not klass._metaRe.match(j.strip()):
@@ -317,13 +317,13 @@ class Post(doc._DocHTMLPage):
                             lines.push(j)
                             short = "\n".join(v).strip()
                             break
-                elif name == "options":
+                elif name.lower() == "options":
                     for j in value.strip().split():
                         if j in klass._validOptions:
                             options.add(j)
                         else:
                             raise ValueError("Invalid option: %s"%j)
-                elif name == "tags":
+                elif name.lower() == "tags":
                     for j in value.split(","):
                         tags.add(j.strip())
                 else:
