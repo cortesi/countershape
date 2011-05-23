@@ -1,4 +1,8 @@
+import countershape
+from countershape import markup
 from countershape.doc import *
+
+this.markup = markup.Markdown(extras=["code-friendly"])
 
 pages = [
             Page(
@@ -13,13 +17,6 @@ pages = [
                 title="reStructuredText",
                 pageTitle = "reStructuredText"
             ),           
-            Directory("rest"),
-            
-            Page(
-                "textish/textish.html",
-                title="Textish",
-                pageTitle = "Mark Up with MarkDown"
-            ),
-            Directory("textish"),
+            Directory("rest"),            
         ]
         

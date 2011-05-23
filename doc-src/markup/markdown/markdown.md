@@ -1,12 +1,20 @@
-# Markdown
+Use a page filename with the file extension ".mdtext", ".md" or from the configuration
+index.py use:
 
-Use a page filename with the file extension ".md" or from the referencing index.py
-use:
+<pre>
+import countershape
+from countershape import markup
+this.markup = markup.Markdown()
+</pre>
 
-`this.markup = "markdown"`
+to render all pages using this markdown2.
 
-to render all pages in the index.py using this markup context.
+Options for the markdown2 command-line utility can be included such as:
 
+`this.markup = markup.Markdown(extras=["code-friendly"])`
+
+Refer to the [python-markdown2](https://github.com/trentm/python-markdown2) project
+site for installation, and more complete documentation.
 
 [Markdown](http://daringfireball.net/projects/markdown/) is a text-to-HTML 
 conversion tool for web writers. Markdown allows you to write using an 

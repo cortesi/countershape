@@ -1,6 +1,8 @@
 import countershape
-from countershape import Page, Directory, PythonModule
+from countershape import Page, Directory, PythonModule, markup
 from countershape.doc import *
+          
+this.markup = markup.Markdown(extras=["code-friendly"])
 
 this.layout = countershape.Layout("_layout.html")
 this.titlePrefix = "Countershape "
@@ -27,8 +29,8 @@ pages = [
         ),
         
     Page("markup/markup.md", 
-        title="Document Markup",
-        pageTitle="Document Markup Options"
+        title="Page Markup",
+        pageTitle="Page Markup Options"
         ),
     Directory("markup"),
     

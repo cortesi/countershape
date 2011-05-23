@@ -1,8 +1,11 @@
 Use a page filename with the file extension ".rst" or ".rest" to render
 that specific document using this markup context. Likewise, within the 
-index.py that calls countershape.docs.Page("yourfile.text"), use:
+configuration file index.py that calls countershape.docs.Page("yourfile.text"), 
+use::
 
-`this.markup = "rst"`
+    import countershape
+    from countershape import markup
+    this.markup = markup.RST()
 
 to render all pages in the index.py using this markup context.
 
