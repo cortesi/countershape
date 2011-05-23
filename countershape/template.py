@@ -24,6 +24,11 @@ try:
             js             = pygments.lexers.JavascriptLexer(),
             c              = pygments.lexers.CLexer(),
             xml            = pygments.lexers.XmlLexer(),
+            perl           = pygments.lexers.PerlLexer(),
+            php            = pygments.lexers.PhpLexer(),
+            bash           = pygments.lexers.BashLexer(),
+            apache         = pygments.lexers.ApacheConfLexer(),
+            squid          = pygments.lexers.SquidConfLexer(),
         )
         def __init__(self,
                      lexer,
