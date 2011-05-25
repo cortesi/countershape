@@ -27,6 +27,7 @@ pages = [
         title="Introduction",
         pageTitle="Introduction to Countershape"
         ),
+    Directory("install"),
         
     Page("markup/markup.md", 
         title="Page Markup",
