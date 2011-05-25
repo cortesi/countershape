@@ -1,11 +1,12 @@
 import countershape
-from countershape import widgets, layout, grok, blog
+from countershape import widgets, layout, markup, blog
 from countershape.doc import *
+this.site_url="http://foo"
+this.markup = markup.Markdown(extras=["code-friendly"])
 
 ns.foot = "This is a footer"
-ns.head = "<h1>Example Blog</h2>"
+ns.head = "<h1>Example Blog</h1>"
 ns.sidebar = widgets.SiblingPageIndex('/index.html', depth=1)
-ns.readFrom = readFrom
 
 class ExampleLayout(layout.Layout):
     components = ["pageTitle", "body", "header"]
@@ -27,7 +28,6 @@ this.stdHeaders = [
 blog = blog.Blog(
         blogname="My Blog", 
         blogdesc="my blog description", 
-        url="http://foo", 
         base="src", 
         src="../blog-posts")
 
@@ -36,5 +36,5 @@ pages = [
     blog.index("index.html", "Blog"),
     Page("about.html", "About"),
     blog.archive("archive.html", "Archive"),
-    blog.rss("rss.xml", "RSS"),
+    blog.rss("rss.xml", title="My Blog RSS", fullrss=True),
 ]
