@@ -23,9 +23,16 @@ body {
     margin-bottom:  15px;
 }
 
-.highlight pre {
+pre {
     border-bottom:      1px solid #CCCCCC;
     border-top:         1px solid #CCCCCC;
+    padding: 5px;
+    background-color: #e0e0e0;
+}
+
+.highlight pre {
+    border-bottom:      2px solid #BC7A00;
+    border-top:         2px solid #BC7A00;
     padding:            10px;
     background:         #F8F8F8 none repeat scroll 0% 0%;
     margin-bottom:      10px;
