@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<rss version="2.0"><channel><title>My Blog</title><link>http://foo</link><description>my blog description</description><generator>PyRSS2Gen-1.0.0</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>Nother post</title><link>http://foo/src/notherdir/nother.html</link><description>&lt;div class="post"&gt;
+    &lt;div class="posthead"&gt;
+        &lt;h1&gt;&lt;a href="http://foo/src/notherdir/nother.html"&gt;Nother post&lt;/a&gt;&lt;/h1&gt;
+        &lt;h2&gt;25 May 2011&lt;/h2&gt;
+    &lt;/div&gt;&lt;!-- end: _post.html.posthead --&gt;
+    &lt;div class="postbody"&gt;
+        &lt;p&gt;&lt;img src="http://foo/media/images/beware.jpg"&gt;&lt;/p&gt;
+
+&lt;p&gt;Another post.&lt;/p&gt;
+
+&lt;p&gt;Note, that the first 'posting' will generate
+the date for this post.&lt;/p&gt;
+
+    &lt;/div&gt;&lt;!-- end: _post.html.postbody --&gt;
+&lt;/div&gt;&lt;!-- end: _post.html.post --&gt;
+</description><guid isPermaLink="true">http://foo/src/notherdir/nother.html</guid><pubDate>Wed, 25 May 2011 15:52:00 GMT</pubDate></item><item><title>Title One</title><link>http://foo/src/postone.html</link><description>&lt;div class="post"&gt;
+    &lt;div class="posthead"&gt;
+        &lt;h1&gt;&lt;a href="http://foo/src/postone.html"&gt;Title One&lt;/a&gt;&lt;/h1&gt;
+        &lt;h2&gt;25 May 2011&lt;/h2&gt;
+    &lt;/div&gt;&lt;!-- end: _post.html.posthead --&gt;
+    &lt;div class="postbody"&gt;
+        &lt;h2&gt;The File Name becomes your url&lt;/h2&gt;
+
+&lt;p&gt;Use the formatting you choose, and you can be explicit
+by using the this.markup configuration.&lt;/p&gt;
+
+&lt;p&gt;Images can be inserted by using &lt;strong&gt;urlTo&lt;/strong&gt; such as including the
+below image:&lt;/p&gt;
+
+&lt;pre&gt;@!urlTo(&amp;quot;media/images/beware.jpg&amp;quot;)!@
+
+&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src="http://foo/media/images/beware.jpg"&gt;&lt;/p&gt;
+
+&lt;p&gt;Source can be included, and formatted inline:&lt;/p&gt;
+
+&lt;pre&gt;print &amp;quot;Foo!&amp;quot;
+
+&lt;/pre&gt;
+
+&lt;p&gt;through the use of &lt;a href="http://pygments.org/"&gt;pygments&lt;/a&gt; for syntax
+highlighting.&lt;/p&gt;
+
+&lt;p&gt;Files can be read into your page output by using scripts in your
+site "namespace" such as with: &lt;/p&gt;
+
+&lt;pre&gt;&amp;lt;!--(block | cubescript | syntax(&amp;quot;py&amp;quot;))--&amp;gt;
+$!readFrom(&amp;quot;_somecode.py&amp;quot;)!$
+&amp;lt;!--(end)--&amp;gt;
+
+&lt;/pre&gt;
+
+&lt;p&gt;Execution:&lt;/p&gt;
+
+&lt;pre&gt;import cubictemp
+print cubictemp.File(
+    &amp;quot;template&amp;quot;,
+    foo=3,
+    mydict=dict(key=&amp;quot;value&amp;quot;)
+)
+&amp;lt;!--(end)--&amp;gt;
+&lt;/pre&gt;
+
+    &lt;/div&gt;&lt;!-- end: _post.html.postbody --&gt;
+&lt;/div&gt;&lt;!-- end: _post.html.post --&gt;
+</description><guid isPermaLink="true">http://foo/src/postone.html</guid><pubDate>Wed, 25 May 2011 15:52:00 GMT</pubDate></item><item><title>Nother post</title><link>http://foo/src/subdir/nother.html</link><description>&lt;div class="post"&gt;
+    &lt;div class="posthead"&gt;
+        &lt;h1&gt;&lt;a href="http://foo/src/subdir/nother.html"&gt;Nother post&lt;/a&gt;&lt;/h1&gt;
+        &lt;h2&gt;13 April 2008&lt;/h2&gt;
+    &lt;/div&gt;&lt;!-- end: _post.html.posthead --&gt;
+    &lt;div class="postbody"&gt;
+        &lt;p&gt;Another post.&lt;/p&gt;
+
+&lt;p&gt;In another directory&lt;/p&gt;
+
+    &lt;/div&gt;&lt;!-- end: _post.html.postbody --&gt;
+&lt;/div&gt;&lt;!-- end: _post.html.post --&gt;
+</description><guid isPermaLink="true">http://foo/src/subdir/nother.html</guid><pubDate>Sun, 13 Apr 2008 13:58:00 GMT</pubDate></item></channel></rss>

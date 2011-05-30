@@ -5,18 +5,10 @@ this.site_url="http://foo"
 this.markup = markup.Markdown(extras=["code-friendly"])
 
 ns.foot = "This is a footer"
-ns.head = "<h1>Example Blog</h1>"
+ns.head = "My Example Blog"
 ns.sidebar = widgets.SiblingPageIndex('/index.html', depth=1)
 
-class ExampleLayout(layout.Layout):
-    components = ["pageTitle", "body", "header"]
-    def __init__(self):
-        layout.Layout.__init__(
-            self,
-            "_layout.html"
-        )
-this.layout = ExampleLayout()
-
+this.layout = layout.Layout("_layout.html")
 
 this.stdHeaders = [
     model.UrlTo("media/css/reset.css"),
@@ -33,8 +25,8 @@ blog = blog.Blog(
 
 pages = [
     blog(),
-    blog.index("index.html", "Blog"),
-    Page("about.html", "About"),
+    blog.index("index.html", "My Example Blog"),
+    Page("about.mdtext", "About"),
     blog.archive("archive.html", "Archive"),
     blog.rss("rss.xml", title="My Blog RSS", fullrss=True),
 ]
