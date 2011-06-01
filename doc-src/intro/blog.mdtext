@@ -15,54 +15,16 @@ Configuring your blog is as simple as the following example:
 
 <pre>
 base-dir+
-        | src
+        | blog
         | blog-posts
 </pre>
 
-file: base-dir/index.py
+file: base-dir/blog/index.py
 
-<!--(block | syntax("py"))-->
-import countershape
-from countershape import widgets, layout, blog, markup
-from countershape.doc import *
-
-this.site_url="http://foo"
-this.markup=markup.Markdown()
-
-ns.foot = "This is a footer"
-ns.head = "<h1>Example Blog</h2>"
-ns.sidebar = widgets.SiblingPageIndex('/index.html', depth=1)
-ns.readFrom = readFrom
-
-class ExampleLayout(layout.Layout):
-    components = ["pageTitle", "body", "header"]
-    def __init__(self):
-        layout.Layout.__init__(
-            self,
-            "_layout.html"
-        )
-this.layout = ExampleLayout()
-
-
-this.stdHeaders = [
-    model.UrlTo("content.css"),
-]
-    
-
-blog = blog.Blog(
-        blogname="My Blog", 
-        blogdesc="my blog description", 
-        base="src", 
-        src="../blog-posts")
-
-pages = [
-    blog(),
-    blog.index("index.html", "Blog"),
-    Page("about.html", "About"),
-    blog.archive("archive.html", "Archive"),
-    blog.rss("rss.xml", "RSS"),
-]
+<!--(block | cubescript | syntax("py"))-->
+$!readFrom("../examples/myblog/site-src/index.py")!$
 <!--(end)-->
+
 
 
 

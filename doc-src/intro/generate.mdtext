@@ -2,7 +2,8 @@ Generate or process/compile your site from the source configuration
 using the 'cshape' executable.
 
 <pre class="command-line">
-cshape src dst
+cshape src-dir/ dst-dir/
 </pre>
 
-Where *src* is the source-path and *dst* is the destination directory
+Where *src-dir* is the directory with the source files, and 
+*dst-dir* is the destination directory.

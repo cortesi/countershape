@@ -84,5 +84,37 @@ pages = [
 
 <!--(end)-->
 
+## Namespaces
+
+Your site can use a private namespace to store functions, macros
+you wish to use within the generation of web pages. Some
+namespaces provided with the system are:
+
+<table>
+    <tr><th>class</th>
+        <th>namespace</th>
+    </tr><tr>
+        <td>blog.RSSPage</td>
+        <td>syntax, readFrom</td>
+    </tr><tr>
+        <td>doc.DocRoot</td>
+        <td>syntax, readFrom, options</td>
+    </tr><tr>
+        <td></td>
+        <td></td>
+    </tr><tr>
+        <td></td>
+        <td></td>
+    </tr><tr>
+        <td></td>
+        <td></td>
+    </tr><tr>
+        <td></td>
+        <td></td>
+    </tr><tr>
+        <td></td>
+        <td></td>
+    </tr>
+</table>
 
 ## Template
