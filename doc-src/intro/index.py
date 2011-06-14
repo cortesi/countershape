@@ -6,25 +6,25 @@ this.markup = markup.Markdown(extras=["code-friendly"])
 
 pages = [
             Page(
-                "install.mdtext",
+                "install.md",
                 title="Install",
                 pageTitle = "Installation"
             ),           
 
             Page(
-                "config.mdtext",
+                "config.md",
                 title="Config",
                 pageTitle = "Path Config"
             ),
             
             Page(
-                "generate.mdtext",
+                "generate.md",
                 title="Generate Site",
                 pageTitle = "Generate Site"
             ),           
             
             Page(
-                "blog.mdtext",
+                "blog.md",
                 title="Blog",
                 pageTitle = "Web Log"
             ),           

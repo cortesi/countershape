@@ -21,6 +21,7 @@ ns.head = countershape.template.File(None, "_banner.html")
 ns.sidebar = countershape.widgets.SiblingPageIndex(
             '/index.html'
           )
+ns.license = file("../LICENSE").read()
 
 ns.imgBanner = countershape.html.IMG(
     src=countershape.model.UrlTo("countershape.png"),
@@ -39,7 +40,7 @@ class ShowSrc:
 ns.readFrom = ShowSrc(".")        
 
 pages = [
-    Page("index.html", 
+    Page("index.md", 
         title="Introduction",
         pageTitle="Introduction to Countershape"
         ),
@@ -54,7 +55,7 @@ pages = [
     PythonModule("../countershape", 
         title="Source"),
         
-    Page("admin.html", 
+    Page("admin.md", 
         title="Administrivia",
         pageTitle="Novella Administrivia")
     
