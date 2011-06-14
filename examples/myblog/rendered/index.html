@@ -1,0 +1,99 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta  content="text/html; charset=utf-8" http-equiv="Content-Type"/><link  href="media/css/reset.css" type="text/css" rel="StyleSheet"/>
+<link  href="media/css/docstyle.css" type="text/css" rel="StyleSheet"/>
+<link  href="media/css/content.css" type="text/css" rel="StyleSheet"/>
+<title>My Example Blog</title></head><body><div class="yui-t4" id="doc2">
+    <div style="" id="hd">
+        <h1>My Example Blog</h1>
+    </div><!-- end: _layout.hd -->
+    <div id="bd">
+        <div id="yui-main">
+            <div style="" class="yui-b"><div class="post">
+    <div class="posthead">
+        <h1><a href="src/notherdir/nother.html">Nother post</a></h1>
+        <h2>25 May 2011</h2>
+    </div><!-- end: _post.html.posthead -->
+    <div class="postbody">
+        <p><img src="media/images/beware.jpg"></p>
+
+<p>Another post.</p>
+
+<p>Note, that the first 'posting' will generate
+the date for this post.</p>
+
+    </div><!-- end: _post.html.postbody -->
+</div><!-- end: _post.html.post -->
+<div class="post">
+    <div class="posthead">
+        <h1><a href="src/postone.html">Title One</a></h1>
+        <h2>25 May 2011</h2>
+    </div><!-- end: _post.html.posthead -->
+    <div class="postbody">
+        <h2>The File Name becomes your url</h2>
+
+<p>Use the formatting you choose, and you can be explicit
+by using the this.markup configuration.</p>
+
+<p>Images can be inserted by using <strong>urlTo</strong> such as including the
+below image:</p>
+
+<div class="highlight"><pre><span class="err">@!</span><span class="n">urlTo</span><span class="p">(</span><span class="s">&quot;media/images/beware.jpg&quot;</span><span class="p">)</span><span class="err">!@</span>
+</pre></div>
+
+<p><img src="media/images/beware.jpg"></p>
+
+<p>Source can be included, and formatted inline:</p>
+
+<div class="highlight"><pre><span class="k">print</span> <span class="s">&quot;Foo!&quot;</span>
+</pre></div>
+
+<p>through the use of <a href="http://pygments.org/">pygments</a> for syntax
+highlighting.</p>
+
+<p>Files can be read into your page output by using scripts in your
+site "namespace" such as with: </p>
+
+<div class="highlight"><pre><span class="c">&lt;!--(block | cubescript | syntax(&quot;py&quot;))--&gt;</span>
+$!readFrom(&quot;_somecode.py&quot;)!$
+<span class="c">&lt;!--(end)--&gt;</span>
+</pre></div>
+
+<p>Execution:</p>
+
+<div class="highlight"><pre><span class="kn">import</span> <span class="nn">cubictemp</span>
+<span class="k">print</span> <span class="n">cubictemp</span><span class="o">.</span><span class="n">File</span><span class="p">(</span>
+    <span class="s">&quot;template&quot;</span><span class="p">,</span>
+    <span class="n">foo</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+    <span class="n">mydict</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s">&quot;value&quot;</span><span class="p">)</span>
+<span class="p">)</span>
+<span class="o">&lt;</span><span class="err">!</span><span class="o">--</span><span class="p">(</span><span class="n">end</span><span class="p">)</span><span class="o">--&gt;</span>
+</pre></div>
+
+    </div><!-- end: _post.html.postbody -->
+</div><!-- end: _post.html.post -->
+<div class="post">
+    <div class="posthead">
+        <h1><a href="src/subdir/nother.html">Nother post</a></h1>
+        <h2>13 April 2008</h2>
+    </div><!-- end: _post.html.posthead -->
+    <div class="postbody">
+        <p>Another post.</p>
+
+<p>In another directory</p>
+
+    </div><!-- end: _post.html.postbody -->
+</div><!-- end: _post.html.post -->
+
+            </div><!-- end: _layout.yui-main.yui-b -->
+        </div><!-- end: _layout.yui-main -->
+        <div style="" class="yui-b">
+            <div><div class="pageindex"><ul><li class="active"><a href="index.html">My Example Blog</a></li><li class="inactive"><a href="about.html">About</a></li><li class="inactive"><a href="archive.html">Archive</a></li></ul></div>
+            </div>
+        </div><!-- end: _layout.yui-b -->
+    </div><!-- end: _layout.bd -->
+    <div style="" id="ft">
+        <p><a class="rss" href='rss.xml'>Posts RSS</a><br>
+        Copyright 2008 Aldo Cortesi</p>
+    </div><!-- end: _layout.ft -->
+</div>
+</body></html>
