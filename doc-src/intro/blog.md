@@ -15,11 +15,11 @@ Configuring your blog is as simple as the following example:
 
 <pre>
 base-dir+
-        | blog
+        | site-src
         | blog-posts
 </pre>
 
-file: base-dir/blog/index.py
+file: base-dir/site-src/index.py
 
 <!--(block | cubescript | syntax("py"))-->
 $!readFrom("../examples/myblog/site-src/index.py")!$
