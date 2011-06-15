@@ -2,19 +2,19 @@
 
 ### TinyTree
 
-<pre>
-$ git clone git:\\github.com\cortesi\tinytree.git
+<!--(block | syntax("bash"))-->
+$ git clone git://github.com/cortesi/tinytree.git
 $ cd tinytree
 $ sudo setup.py install
-</pre>
+<!--(end)-->
 
-Cubictemp
+### Cubictemp
 
-<pre>
-$ git clone git:\\github.com\cortesi\cubictemp.git
+<!--(block | syntax("bash"))-->
+$ git clone git://github.com/cortesi/cubictemp.git
 $ cd cubictemp
 $ sudo setup.py install
-</pre>
+<!--(end)-->
 
 ## Optional
 
@@ -22,7 +22,7 @@ $ sudo setup.py install
 
 #### DOCUTILS
 
-[Project Site](http://docutils.sourceforge.net)
+[DOCUTILS Project Site](http://docutils.sourceforge.net)
 
 <blockquote>
 Docutils is an open-source text processing system for processing plaintext 
@@ -32,11 +32,11 @@ the easy to read, easy to use, what-you-see-is-what-you-get plaintext markup lan
 
 Download the current version of the docutils from the [Project Site](http://docutils.sourceforge.net)
 
-<pre>
+<!--(block | syntax("bash"))-->
 $ tar -zxf docutils-0.7.tgz
 $ cd docutils
 $ sudo python setup.py install
-</pre>
+<!--(end)-->
 
 
 #### MARKDOWN
@@ -50,11 +50,11 @@ to write using an easy-to-read, easy-to-write plain text format, then convert it
 to structurally valid XHTML (or HTML). 
 </blockquote>
 
-<pre>
+<!--(block | syntax("bash"))-->
 $ git clone https://github.com/trentm/python-markdown2.git
 $ cd python-markdown2
 $ sudo setup.py install
-</pre>
+<!--(end)-->
 
 ### Syntax Highlighting
 
@@ -67,16 +67,16 @@ source code.</blockquote>
 
 Refer to the [project page](http://pygments.org) for getting pygments.
 
-<pre>
+<!--(block | syntax("bash"))-->
 $ sudo easy_install Pygments 
-</pre>
+<!--(end)-->
 
 After installing Pygments, generate the CSS Style Sheet to be used in
 your site using the following:
 
-<pre>
+<!--(block | syntax("bash"))-->
 $ pygmentize -S default -f html -a ".highlight" > syntax.css
-</pre>
+<!--(end)-->
 
 ### Test Suite
 
