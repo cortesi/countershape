@@ -13,6 +13,12 @@ this.stdHeaders = [
     model.UrlTo("media/css/docstyle-customised.css"),
     model.UrlTo("media/css/syntax.css"),
 ]
+this.metadata = {
+    "robots":"all",
+    "keywords":"countershape,website generator,website compiler",
+    "description":"Countershape website generator",
+    "copyright":"(c) Copyright Nullcube 2007"
+}
 ns.docTitle = "Countershape Manual"
 ns.docMaintainer = "Aldo Cortesi"
 ns.docMaintainerEmail = "dev@nullcube.com"
@@ -52,7 +58,7 @@ pages = [
         ),
     Directory("markup"),
     
-    PythonModule("../countershape", 
+    PythonModule(name="../countershape", 
         title="Source"),
         
     Page("admin.md", 

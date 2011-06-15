@@ -261,6 +261,7 @@ class Header(object):
         self.page = page
         self._jsPath = utils.OrderedSet()
         self._cssPath = utils.OrderedSet()
+        self._metaData = utils.OrderedSet()
 
     def jsPath(self, path, **attrs):
         self._jsPath.append(
@@ -271,7 +272,10 @@ class Header(object):
         self._cssPath.append(
             unicode(html.LINK(rel="StyleSheet", href=path, type="text/css", **attrs))
         )
-
+    def metaData(self, key, value):
+        self._metaData.append(
+            unicode("<META %s=\"%s\">" % (key.upper(), value) )
+        )
     def path(self, spec):
         path = unicode(spec)
         if path.endswith(".css"):
@@ -293,10 +297,17 @@ class Header(object):
                     thispage.append(j)
                     sofar.add(base)
             adds.extend(reversed(thispage))
+        meta = self.page.findAttr("metadata")
+        if meta != None:
+            for k, v in meta.iteritems():
+                self.metaData(k, v)
+            
         for i in reversed(adds):
             self.path(i)
         return "\n".join(
                     [
+                        "\n",
+                        unicode(self._metaData),
                         unicode(self._cssPath),
                         unicode(self._jsPath),
                     ]
