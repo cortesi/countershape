@@ -149,6 +149,7 @@ class RecentPosts(_PostList):
     def solo(self, post):
         posts = list(post.blog.blogdir.sortedPosts())
         posts.remove(post)
+        posts = [i for i in posts if "draft" not in i.options]
         parts = []
         related_posts = []
         if self.related:
@@ -246,6 +247,8 @@ class Post(doc._DocHTMLPage):
         """
         self.blog = blog
         self.title, self.time, self.data, self.short, self.options, self.url, self.tags = self.fromPath(src)
+        if "draft" in self.options:
+            self.structural = False
         name = os.path.splitext(os.path.basename(src))[0] + ".html"
         doc._DocHTMLPage.__init__(
             self, name, self.title, src=src
