@@ -1,16 +1,17 @@
 import shutil, time, cStringIO, os
-import libpry
 import countershape, testpages
 from countershape import utils
 from countershape import model
 from countershape import state
-import testpages
+import testpages, tutils
 
 
-class uContext(testpages.DummyState):
+class TestContext(testpages.DummyState):
     def setUp(self):
         testpages.DummyState.setUp(self)
-        testpages.RenderTester.setUp(self)
+
+    def tearDown(self):
+        testpages.DummyState.tearDown(self)
 
     def test_relativePath(self):
         self.application = testpages.TestApplication(
@@ -37,19 +38,17 @@ class uContext(testpages.DummyState):
         assert p.relativePath(["foo", "bar"]) == "foo/bar"
         assert p.absolutePath() == "foo"
 
-
     def test_top(self):
-        p = self.application.getPage(os.path.join("foo","bar"))
-        assert p.top(), ".."
+        assert not self.application.getPage(os.path.join("foo","bar"))
 
 
-class uPageInstantiate(testpages.DummyState):
+class TestPageInstantiate(testpages.DummyState):
     def test_instantiate_err(self):
         self.application.testing = False
-        libpry.raises("instantiated during page call", model.BasePage)
+        tutils.raises("instantiated during page call", model.BasePage)
 
 
-class uHeader(testpages.DummyState):
+class TestHeader(testpages.DummyState):
     def test_path(self):
         h = model.Header(state.page)
         h.path("foo.css")
@@ -59,7 +58,7 @@ class uHeader(testpages.DummyState):
 
     def test_path_err(self):
         h = model.Header(state.page)
-        libpry.raises("unrecognised resource extension", h.path, "foo.bar")
+        tutils.raises("unrecognised resource extension", h.path, "foo.bar")
 
     def test_cssPath(self):
         h = model.Header(state.page)
@@ -83,9 +82,9 @@ class uHeader(testpages.DummyState):
         h.jsPath("bar")
         s = str(h)
         assert len([i for i in s.splitlines() if i]) == 4
-       
 
-class uHTMLPage(testpages.RenderTester):
+
+class TestHTMLPage(testpages.RenderTester):
     def setUp(self):
         self.application = testpages.TestApplication(
             model.BaseRoot(
@@ -123,7 +122,7 @@ class uHTMLPage(testpages.RenderTester):
         assert repr(t)
 
 
-class uBaseApplication(testpages.RenderTester):
+class TestBaseApplication(testpages.RenderTester):
     def setUp(self):
         self.r = model.BaseRoot(
             [
@@ -134,10 +133,10 @@ class uBaseApplication(testpages.RenderTester):
 
     def test_pageexception(self):
         p = self.application.getPage("one")
-        libpry.raises("an exception", self.application, p)
+        tutils.raises("an exception", self.application, p)
 
 
-class uApplication(testpages.DummyState):
+class TestApplication(testpages.DummyState):
     def setUp(self):
         self.application = testpages.TestApplication(
            model.BaseRoot(
@@ -156,7 +155,7 @@ class uApplication(testpages.DummyState):
 
     def test_getPageErr(self):
         assert not self.application.getPage('nonexistent')
-        libpry.raises("invalid argument", self.application.getPage, 0)
+        tutils.raises("invalid argument", self.application.getPage, 0)
 
     def test_getPageIdempotence(self):
         p = self.application.getPage('base')
@@ -173,7 +172,7 @@ class uApplication(testpages.DummyState):
         assert str(model.LinkTo("TPageWithTitle"))
 
     def test_linkTo_nopage(self):
-        libpry.raises(
+        tutils.raises(
             "unknown page",
             str,
             model.LinkTo("Nonexistent")
@@ -190,24 +189,24 @@ class uApplication(testpages.DummyState):
         assert s == "base/TPageNoLink#foo"
 
     def test_url_nopage(self):
-        libpry.raises("unknown page", str, model.UrlTo("Nonexistent"))
+        tutils.raises("unknown page", str, model.UrlTo("Nonexistent"))
 
     def test_url_internal(self):
-        libpry.raises("internal page", str, model.UrlTo("internal"))
+        tutils.raises("internal page", str, model.UrlTo("internal"))
 
     def test_alink(self):
         s = str(model.ALink("TPageNoLink", "text", "foo"))
         assert  "TPageNoLink#foo" in s
 
     def test_linkTo_internal(self):
-        libpry.raises(
+        tutils.raises(
             model.ApplicationError,
             str,
             model.LinkTo("internal")
         )
 
 
-class uPageModel(libpry.AutoTree):
+class TestPageModel:
     """
         A suite of tests testing the application page model functionality.
         Tests span the Application and Page classes.
@@ -246,7 +245,7 @@ class uPageModel(libpry.AutoTree):
         state.ctx = None
 
     def test_getPage(self):
-        libpry.raises("ambiguous path", self.t.getPage, os.path.join("page","end"))
+        tutils.raises("ambiguous path", self.t.getPage, os.path.join("page","end"))
         assert self.t.getPage(os.path.join("sub1","page","end"))
         assert self.t.getPage(os.path.join("sub2","page","end"))
 
@@ -257,7 +256,7 @@ class uPageModel(libpry.AutoTree):
         assert self.t.getPage(os.path.join(".","page"))
 
     def test_getPage_nostate(self):
-        libpry.raises("relative page link", self.t.getPage, os.path.join(".","page","end"))
+        tutils.raises("relative page link", self.t.getPage, os.path.join(".","page","end"))
 
     def test_getPageParent(self):
         state.page = self.s1
@@ -320,7 +319,7 @@ class uPageModel(libpry.AutoTree):
         assert str(model.UrlTo("one")) == "one"
 
 
-class uPage(libpry.AutoTree):
+class TestPage:
     def test_isDocDescendantOf(self):
         one = testpages.TPage("one")
         two = testpages.TPage("two")
@@ -339,7 +338,7 @@ class uPage(libpry.AutoTree):
         assert r.isDescendantOf(two)
 
 
-class uPageModelErrors(libpry.AutoTree):
+class TestPageModelErrors:
     def test_ambiguouschild(self):
         r = model.BaseRoot([
             testpages.TPage("one", structural=True), [
@@ -347,7 +346,7 @@ class uPageModelErrors(libpry.AutoTree):
                 testpages.TPage("test"),
             ]
         ])
-        libpry.raises(
+        tutils.raises(
             model.ApplicationError,
             testpages.TestApplication,
             r
@@ -362,7 +361,7 @@ class uPageModelErrors(libpry.AutoTree):
                 ]
             ]
         ])
-        libpry.raises(
+        tutils.raises(
             model.ApplicationError,
             testpages.TestApplication,
             r
@@ -373,7 +372,7 @@ class uPageModelErrors(libpry.AutoTree):
             testpages.TPage("test", structural=True),
             testpages.TPage("test", structural=False),
         ])
-        libpry.raises(
+        tutils.raises(
             model.ApplicationError,
             testpages.TestApplication,
             r
@@ -400,19 +399,10 @@ _TestApp = testpages.TestApplication(
 )
 
 
-class uApplicationRenderNoTesting(testpages.RenderTester):
+class TestApplicationRenderNoTesting(testpages.RenderTester):
     def setUp(self):
         self.application = _TestApp
         self.application.testing = 1
-        testpages.RenderTester.setUp(self)
-
-    def test_dirtystate(self):
-        self.application.testing = 0
-        self.application.debug = 1
-        io = cStringIO.StringIO()
-        self.application.logErr = io
-        p = model.BasePage()
-        libpry.raises("Dirty state", self.application.pre, p)
 
     def test_prenotesting(self):
         self.application.testing = 0
@@ -420,7 +410,7 @@ class uApplicationRenderNoTesting(testpages.RenderTester):
         self.application.pre(p)
 
 
-class uApplicationRender(testpages.RenderTester):
+class TestApplicationRender(testpages.RenderTester):
     def setUp(self):
         self.application = _TestApp
         self.application.testing = 2
@@ -429,27 +419,12 @@ class uApplicationRender(testpages.RenderTester):
         assert self.call("one")
 
     def test_call_nonexistent(self):
-        libpry.raises(model.ApplicationError, self.call, "nonexistent")
+        tutils.raises(model.ApplicationError, self.call, "nonexistent")
 
 
-class uApplicationError(libpry.AutoTree):
+class TestApplicationError:
     def test_str(self):
         a = model.ApplicationError("foo")
         str(a)
 
-
-tests = [
-    uPage(),
-    uPageInstantiate(),
-    uHeader(),
-    uHTMLPage(),
-    uBaseApplication(),
-    uApplication(),
-    uPageModel(),
-    uPageModelErrors(),
-    uApplicationRenderNoTesting(),
-    uApplicationRender(),
-    uApplicationError(),
-    uContext(),
-]
 

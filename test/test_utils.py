@@ -1,19 +1,20 @@
-from __future__ import with_statement
-
 import os
-import libpry
 import countershape
 import countershape.utils as utils
+import tutils
 
-class uInDir(libpry.AutoTree):
+class TestInDir:
     def test_one(self):
-        old = os.getcwd()
-        with utils.InDir(self.tmpdir()):
-            assert os.getcwd() != old
-        assert os.getcwd() == old
+        with tutils.tmpdir() as t:
+            old = os.getcwd()
+            sub = os.path.join(t, "sub")
+            os.mkdir(sub)
+            with utils.InDir(sub):
+                assert os.getcwd() != old
+            assert os.getcwd() == old
 
 
-class uMakeURL(libpry.AutoTree):
+class TestMakeURL:
     def test_page(self):
         assert utils.makeURL("foo", bar="voing", orc="foo") == "foo?bar=voing&orc=foo"
         assert utils.makeURL("foo") == "foo"
@@ -30,50 +31,45 @@ class uMakeURL(libpry.AutoTree):
         assert utils.makeURL("http://foo.bar.voing") == "http://foo.bar.voing"
 
 
-class uUrlCat(libpry.AutoTree):
-    def test_cat(self):
-        assert utils.urlCat("foo", "bar") == "foo/bar"
-        assert utils.urlCat("/foo", "bar") == "/foo/bar"
-        assert utils.urlCat("/foo", "bar/") == "/foo/bar/"
-        assert utils.urlCat("", "bar") == "bar"
+def test_urlCat():
+    assert utils.urlCat("foo", "bar") == "foo/bar"
+    assert utils.urlCat("/foo", "bar") == "/foo/bar"
+    assert utils.urlCat("/foo", "bar/") == "/foo/bar/"
+    assert utils.urlCat("", "bar") == "bar"
 
 
-class uisStringLike(libpry.AutoTree):
-    def test_all(self):
-        assert utils.isStringLike("foo")
-        assert not utils.isStringLike([1, 2, 3])
-        assert not utils.isStringLike((1, 2, 3))
-        assert not utils.isStringLike(["1", "2", "3"])
+def test_isStringLike():
+    assert utils.isStringLike("foo")
+    assert not utils.isStringLike([1, 2, 3])
+    assert not utils.isStringLike((1, 2, 3))
+    assert not utils.isStringLike(["1", "2", "3"])
 
 
-class uisSequenceLike(libpry.AutoTree):
-    def test_all(self):
-        assert utils.isSequenceLike([1, 2, 3])
-        assert utils.isSequenceLike((1, 2, 3))
-        assert not utils.isSequenceLike("foobar")
-        assert not utils.isSequenceLike(1)
-        assert utils.isSequenceLike(["foobar", "foo"])
-        x = iter([1, 2, 3])
-        assert utils.isSequenceLike(x)
+def test_isSequenceLike():
+    assert utils.isSequenceLike([1, 2, 3])
+    assert utils.isSequenceLike((1, 2, 3))
+    assert not utils.isSequenceLike("foobar")
+    assert not utils.isSequenceLike(1)
+    assert utils.isSequenceLike(["foobar", "foo"])
+    x = iter([1, 2, 3])
+    assert utils.isSequenceLike(x)
 
 
-class uisNumeric(libpry.AutoTree):
-    def test_all(self):
-        assert utils.isNumeric(1)
-        assert utils.isNumeric(1.1)
-        assert not utils.isNumeric("a")
-        assert not utils.isNumeric([])
+def test_isNumeric():
+    assert utils.isNumeric(1)
+    assert utils.isNumeric(1.1)
+    assert not utils.isNumeric("a")
+    assert not utils.isNumeric([])
 
 
-class uWalkTree(libpry.AutoTree):
-    def test_foo(self):
-        s = set(utils.walkTree("doctree"))
-        assert not "README" in s
-        assert "copy" in s
-        assert os.path.join("foo","index.py") in s
+def test_walkTree():
+    s = set(utils.walkTree(tutils.test_data.path("doctree")))
+    assert not "README" in s
+    assert "copy" in s
+    assert os.path.join("foo","index.py") in s
 
 
-class uOrderedSet(libpry.AutoTree):
+class TestOrderedSet:
     def test_append(self):
         x = utils.OrderedSet()
         x.append(1)
@@ -104,7 +100,7 @@ class uOrderedSet(libpry.AutoTree):
         assert x == [1, 2]
 
 
-class uBufIter(libpry.AutoTree):
+class TestBufIter:
     def test_nop(self):
         l = [1, 2, 3]
         b = utils.BuffIter(l)
@@ -117,18 +113,4 @@ class uBufIter(libpry.AutoTree):
         b.push(1)
         assert b.next() == 1
         assert list(b) == [2, 3]
-
-
-tests = [
-    uMakeURL(),
-    uUrlCat(),
-    uisStringLike(),
-    uisSequenceLike(),
-    uisNumeric(),
-    uWalkTree(),
-    uOrderedSet(),
-    uBufIter(),
-    uInDir(),
-]
-
 

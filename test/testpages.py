@@ -1,8 +1,7 @@
-import libpry
 import countershape, countershape.template
 import countershape.doc
 import countershape.model as model
-
+import tutils
 
 class TPage(model.BasePage):
     def __init__(self, name = None, structural = False, internal = False):
@@ -34,7 +33,7 @@ class TPageHTMLFileTemplate(model.HTMLPage):
 
     def body(self):
         yield countershape.template.File(
-                    False, "templates/TPageHTMLFileTemplate.html", this=self
+                    False, tutils.test_data.path("templates/TPageHTMLFileTemplate.html"), this=self
             )
 
 
@@ -58,7 +57,7 @@ class TestApplication(model.BaseApplication):
 
 
 
-class RenderTester(libpry.AutoTree):
+class RenderTester:
     """
         This is a test strut for interacting with an application in test mode.
         It allows for rendering of pages, and a variety of tests for
@@ -74,7 +73,7 @@ class RenderTester(libpry.AutoTree):
     def call(self, spec):
         """
             Call a page, and return the resulting data.
-                
+
                 spec        - Either a string path, or a context object.
                 **fields    - Field values
         """
@@ -116,5 +115,5 @@ class DummyState(RenderTester):
     def tearDown(self):
         if self.application:
             self.application._resetState()
-        
+
 

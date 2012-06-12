@@ -1,20 +1,20 @@
 import cStringIO
-import libpry
 import countershape
 import countershape.model as model
-import testpages
+import testpages, tutils
 
 
-class TestLayout(countershape.layout.Layout):
+class TLayout(countershape.layout.Layout):
     bodyClass = "test"
     components = ("body", "header", "special")
 
 
 class CMissingMethodLayout(testpages.TPageHTML):
-    layout = TestLayout("templates/frame.html")
+    layout = TLayout(tutils.test_data.path("templates/frame.html"))
+
 
 class CLayout(testpages.TPageHTML):
-    layout = TestLayout()
+    layout = TLayout()
     def body(self):
         yield "body"
 
@@ -25,7 +25,7 @@ class CLayout(testpages.TPageHTML):
         yield "special"
 
 
-class uLayoutRender(testpages.RenderTester):
+class TestLayoutRender(testpages.RenderTester):
     def setUp(self):
         self.application = testpages.TestApplication(
             model.BaseRoot([
@@ -36,12 +36,8 @@ class uLayoutRender(testpages.RenderTester):
         self.application.testing = 2
 
     def test_missingmethod(self):
-        libpry.raises("cannot find layout component", self.call, "missing")
+        tutils.raises("cannot find layout component", self.call, "missing")
 
     def test_render(self):
         assert self.call("good")
 
-
-tests = [
-    uLayoutRender()
-]

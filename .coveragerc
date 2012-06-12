@@ -1,0 +1,3 @@
+[report]
+omit = *PyRSS2Gen*
+include = *countershape*

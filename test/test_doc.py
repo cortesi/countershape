@@ -1,8 +1,7 @@
 import shutil, os
-import libpry
 import countershape
 from countershape import doc, model, sitemap
-import testpages
+import testpages, tutils
 
 class DocTestPage(doc._DocHTMLPage):
     def __init__(self, name):
@@ -18,25 +17,25 @@ class DummyPage(DocTestPage):
         DocTestPage.__init__(self, "DummyPage")
 
 
-class uPython(libpry.AutoTree):
+class TestPython:
     def test_init(self):
-        d = doc.PythonPage("name", "title", "testmod/foo.py")
+        d = doc.PythonPage("name", "title", tutils.test_data.path("testmod/foo.py"))
 
     def test_repr(self):
-        d = doc.PythonPage("name", "title", "testmod/foo.py")
+        d = doc.PythonPage("name", "title", tutils.test_data.path("testmod/foo.py"))
         repr(d)
 
-        m = doc.PythonModule("testmod")
+        m = doc.PythonModule(tutils.test_data.path("testmod"))
         repr(m)
 
     def test_index(self):
-        d = doc.PythonModule("name", "title", "testmod")
+        d = doc.PythonModule("name", "title", tutils.test_data.path("testmod"))
 
 
-class u_DocHTMLPage(libpry.AutoTree):
+class TestDocHTMLPage:
     def setUp(self):
         self.application = doc.Doc(
-            TestRoot([
+            TRoot([
                 DummyPage()
             ])
         )
@@ -45,31 +44,31 @@ class u_DocHTMLPage(libpry.AutoTree):
         repr(countershape.state.page)
 
 
-class uRenderTests(libpry.AutoTree):
+class TestRenderTests:
     def setUp(self):
         self.application = doc.Doc(
-            TestRoot([
-                doc.Page("doctree/test.html", "Title"),
-                doc.Copy("doctree/copy"),
-                doc.Copy("copy2", src="doctree/copy"),
-                doc.PythonPage("testmod/foo.py"),
-                doc.PythonModule("testmod"),
+            TRoot([
+                doc.Page(tutils.test_data.path("doctree/test.html"), "Title"),
+                doc.Copy(tutils.test_data.path("doctree/copy")),
+                doc.Copy("copy2", src=tutils.test_data.path("doctree/copy")),
+                doc.PythonPage(tutils.test_data.path("testmod/foo.py")),
+                doc.PythonModule(tutils.test_data.path("testmod")),
                 sitemap.Sitemap("sitemap.xml")
             ])
         )
 
     def test_render(self):
-        t = self.tmpdir()
-        self.application.render(t)
-        assert os.path.isfile(os.path.join(t, "test.html"))
-        assert os.path.isfile(os.path.join(t, "copy"))
-        assert os.path.isfile(os.path.join(t, "copy2"))
-        assert os.path.isdir(os.path.join(t, "testmod"))
-        assert os.path.isfile(os.path.join(t, "testmod_index.html"))
-        assert os.path.isfile(os.path.join(t, "sitemap.xml"))
+        with tutils.tmpdir() as t:
+            self.application.render(t)
+            assert os.path.isfile(os.path.join(t, "test.html"))
+            assert os.path.isfile(os.path.join(t, "copy"))
+            assert os.path.isfile(os.path.join(t, "copy2"))
+            assert os.path.isdir(os.path.join(t, "testmod"))
+            assert os.path.isfile(os.path.join(t, "testmod_index.html"))
+            assert os.path.isfile(os.path.join(t, "sitemap.xml"))
 
 
-class uBunch(libpry.AutoTree):
+class TestBunch:
     def test_load(self):
         l = doc._Bunch(a=1, b=2)
         assert l.a == 1
@@ -77,38 +76,38 @@ class uBunch(libpry.AutoTree):
         assert l.getDict()["c"] == 22
 
 
-class uFullRender(libpry.AutoTree):
+class TestFullRender:
     def test_render(self):
-        app = doc.Doc("doctree")
-        t = self.tmpdir()
-        app.render(t)
-        assert "notcopied" in app.root.namespace["data"]
-        assert not os.path.isfile(os.path.join(t, "_notcopied.html"))
-        assert os.path.isfile(os.path.join(t, "include.css"))
-        assert os.path.isdir(os.path.join(t, "autocopy"))
-        assert os.path.isdir(os.path.join(t, "foo"))
+        app = doc.Doc(tutils.test_data.path("doctree"))
+        with tutils.tmpdir() as t:
+            app.render(t)
+            assert "notcopied" in app.root.namespace["data"]
+            assert not os.path.isfile(os.path.join(t, "_notcopied.html"))
+            assert os.path.isfile(os.path.join(t, "include.css"))
+            assert os.path.isdir(os.path.join(t, "autocopy"))
+            assert os.path.isdir(os.path.join(t, "foo"))
 
     def test_render_newdir(self):
-        app = doc.Doc("doctree")
-        t = self.tmpdir()
-        app.render(os.path.join(t, "newdir"))
+        app = doc.Doc(tutils.test_data.path("doctree"))
+        with tutils.tmpdir() as t:
+            app.render(os.path.join(t, "newdir"))
 
 
-class uDocRoot(libpry.AutoTree):
+class TestDocRoot:
     def test_render(self):
-        libpry.raises(SyntaxError, doc.Doc, doc.DocRoot("doctree_err"))
+        tutils.raises(SyntaxError, doc.Doc, doc.DocRoot(tutils.test_data.path("doctree_err")))
 
     def test_repr(self):
-        x = doc.DocRoot("doctree")
+        x = doc.DocRoot(tutils.test_data.path("doctree"))
         repr(x)
 
 
-class uPage(testpages.DummyState):
+class TestPage(testpages.DummyState):
     def setUp(self):
-        os.chdir("doctemplate")
+        os.chdir(tutils.test_data.path("doctemplate"))
         self.d = doc.Page("test.html", "Title", pageTitle="PageTitle")
         self.application = doc.Doc(
-            TestRoot([
+            TRoot([
                 self.d
             ])
         )
@@ -118,7 +117,7 @@ class uPage(testpages.DummyState):
 
     def tearDown(self):
         testpages.DummyState.tearDown(self)
-        os.chdir("..")
+        os.chdir("../..")
 
     def test_call(self):
         assert "mynameistest" in  self.application(self.d)
@@ -127,7 +126,7 @@ class uPage(testpages.DummyState):
         repr(self.d)
 
     def test_getLayoutComponentErr(self):
-        libpry.raises(
+        tutils.raises(
             "layout component \"nonexistent\"",
             self.d._getLayoutComponent,
             "nonexistent"
@@ -151,22 +150,20 @@ class uPage(testpages.DummyState):
         assert self.d.namespace["body"].txt.strip() == "mynameis@!this.name!@"
 
 
-class uStaticDirectory(libpry.AutoTree):
-    def test_repr(self):
-        s = doc.StaticDirectory("foo")
-        repr(s)
+def test_static_directory():
+    s = doc.StaticDirectory("foo")
+    repr(s)
 
 
-class uDirectory(libpry.AutoTree):
-    def test_repr(self):
-        s = doc.Directory("doctree")
-        repr(s)
+def test_directory():
+    s = doc.Directory(tutils.test_data.path("doctree"))
+    repr(s)
 
 
-class uCopy(testpages.DummyState):
+class TestCopy(testpages.DummyState):
     def setUp(self):
         self.application = doc.Doc(
-            TestRoot([
+            TRoot([
                 doc.Copy("bar", "foo")
             ])
         )
@@ -177,14 +174,14 @@ class uCopy(testpages.DummyState):
         repr(countershape.state.page)
 
 
-class TestRoot(model.BaseRoot):
+class TRoot(model.BaseRoot):
     contentName = "body"
     stdHeaders = []
     namespace = countershape.doc.DocRoot._baseNS
     site_url = "http://foo.com"
 
 
-class uOptions(libpry.AutoTree):
+class TestOptions:
     def test_all(self):
         o = doc.Options(
             [
@@ -199,19 +196,3 @@ class uOptions(libpry.AutoTree):
         assert o.four == "five"
         str(o)
 
-
-tests = [
-    uPython(),
-    uStaticDirectory(),
-    uDirectory(),
-    u_DocHTMLPage(),
-    uPage(),
-    uCopy(),
-    uRenderTests(),
-    uFullRender(),
-    uBunch(),
-    uDocRoot(),
-    uOptions()
-
-
-]

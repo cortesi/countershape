@@ -7,3 +7,4 @@
 /dist
 /doc
 /rendered
+.coverage

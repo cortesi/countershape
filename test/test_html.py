@@ -1,11 +1,10 @@
 import datetime
-import libpry
 from countershape.html import *
 import countershape as cs
 import testpages
 
 
-class uUL(testpages.DummyState):
+class TestUL(testpages.DummyState):
     def test_one(self):
         u = UL(["one", "two", "three"])
         s = str(u)
@@ -23,7 +22,7 @@ class uUL(testpages.DummyState):
         assert "testclass" in s
 
 
-class uValue(libpry.AutoTree):
+class TestValue:
     def test_call(self):
         s = Value("foo")
         assert not s.value
@@ -37,13 +36,13 @@ class uValue(libpry.AutoTree):
         assert str(a) == str(b)
 
 
-class uGroup(libpry.AutoTree):
+class TestGroup:
     def test_render(self):
         g = Group("foo", "bar")
         str(g)
 
 
-class u_HalfTag(testpages.DummyState):
+class TestHalfTag:
     def test_makeAttrs(self):
         ht = HalfTag(
             "foo",
@@ -86,7 +85,7 @@ class u_HalfTag(testpages.DummyState):
         assert ht["class"] == "bar"
 
 
-class u_FullTag(testpages.DummyState):
+class TestFullTag(testpages.DummyState):
     def test_str(self):
         ft = FullTag("foo", "contents", one="foo", two="bar")
         assert str(ft)
@@ -112,12 +111,3 @@ class u_FullTag(testpages.DummyState):
         u = u"\u1234foober"
         s = DIV(u"\u1234foober")
         assert u in unicode(s)
-
-
-tests = [
-    uUL(),
-    uValue(),
-    uGroup(),
-    u_HalfTag(),
-    u_FullTag()
-]
