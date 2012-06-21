@@ -129,7 +129,7 @@ class _PostList(_Postfix):
         else:
             return ""
 
-    
+
 
 class RecentPosts(_PostList):
     """
@@ -169,27 +169,6 @@ class RecentPosts(_PostList):
         return html.DIV(*parts)
 
 
-class Disqus(_Postfix):
-    def __init__(self, account):
-        self.account = account
-
-    def index(self, page):
-        return html.rawstr(cubictemp.File(
-            utils.data.path("resources/disqus_index.html"),
-            account = self.account
-        ))
-
-    def inline(self, post):
-        return html.rawstr("<a href=\"%s#disqus_thread\">Comments</a>"%model.UrlTo(post))
-
-    def solo(self, post):
-        return html.rawstr(cubictemp.File(
-            utils.data.path("resources/disqus_solo.html"),
-            permalink = post.permalink,
-            account = self.account
-        ))
-
-
 class _PostRenderer(html._Renderable):
     """
         Lazy post renderer.
@@ -219,23 +198,23 @@ class _PostRenderer(html._Renderable):
             t = template.Template(
                 None,
                 file(utils.data.path("resources/post.html")).read(),
-                title = title, 
-                posttime = posttime, 
-                postdata = postbody, 
+                title = title,
+                posttime = posttime,
+                postdata = postbody,
                 postfixes = [i() for i in postfixes]
                 )
 
             return unicode(t)
-        
+
 
 class Post(doc._DocHTMLPage):
     """
-        Each post is housed in a separate file, 
+        Each post is housed in a separate file,
 
-            First line is a multi-word title 
+            First line is a multi-word title
             Time: Time
 
-            The rest of the file is the post. 
+            The rest of the file is the post.
     """
     _TimeFmt = "%Y-%m-%d %H:%M"
     _metaRe = re.compile(r"(\w+):(.*)")
@@ -557,7 +536,7 @@ class Blog:
 
     def index(self, name, title, posts=10):
         return IndexPage(name, title, posts, self, *self.postfixes)
-        
+
     def archive(self, name, title):
         return ArchivePage(name, title, self)
 

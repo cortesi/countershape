@@ -246,7 +246,6 @@ class TestBlog:
                     "blog description",
                     "posts",
                     tutils.test_data.path("testblog"),
-                    blog.Disqus("test"),
                     blog.RecentPosts(5, 5),
                 )
         r = TestRoot(
