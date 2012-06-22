@@ -2,7 +2,6 @@ import cubictemp, tinytree
 import model, state, html, widgets
 
 
-
 class DummySyntax:
     def __init__(self, *args, **kwargs):
         pass
@@ -59,7 +58,7 @@ try:
 except ImportError:
     Syntax = DummySyntax
 #end nocover
-    
+
 
 def cubescript(txt):
     txt = txt.replace("@_!", "@!")

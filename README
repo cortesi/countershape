@@ -7,10 +7,12 @@ websites.
 
 Source is hosted at http://github.com/cortesi/countershape
 
+
 Features
 ========
 
     * Loveable
+
 
 Requirements
 =========
@@ -37,8 +39,6 @@ Optional modules:
     - Pygments for syntax highlighting
         http://pygments.org/
 
-    - Pry to run the test suite
-        http://dev.nullcube.com
 
 
 Documentation

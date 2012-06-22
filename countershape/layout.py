@@ -1,10 +1,10 @@
 import html, template
-_dtd = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">\n'
 
 class Layout:
     """
         A basic framework for layout objects.
     """
+    dtd = '<!DOCTYPE html>\n'
     bodyClass = ""
     components = ("pageTitle", "body", "header")
     def __init__(self, path = None, **kwargs):
@@ -20,7 +20,7 @@ class Layout:
         if self.bodyClass:
             htmlBody["class"] = self.bodyClass
         self.frame = html.Group(
-                html.RawStr(_dtd),
+                html.RawStr(self.dtd),
                 html.HTML(
                     html.HEAD(
                         meta,
@@ -38,3 +38,19 @@ class Layout:
             c = page._getLayoutComponent(i)
             data[i] = unicode(c)
         return self.frame(**data)
+
+
+class FileLayout:
+    """
+        A framework for layout objects, sourced from a file.
+    """
+    components = ("pageTitle", "body", "header")
+    def __init__(self, path = None, **kwargs):
+        self.layout = template.File(False, path)
+
+    def __call__(self, page):
+        data = {}
+        for i in self.components:
+            c = page._getLayoutComponent(i)
+            data[i] = unicode(c)
+        return self.layout(**data)

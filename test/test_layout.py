@@ -25,12 +25,25 @@ class CLayout(testpages.TPageHTML):
         yield "special"
 
 
+class FLayout(testpages.TPageHTML):
+    layout = countershape.layout.FileLayout(tutils.test_data.path("templates/fileframe.html"))
+    def body(self):
+        yield "body"
+
+    def header(self):
+        yield "header"
+
+    def special(self):
+        yield "special"
+
+
 class TestLayoutRender(testpages.RenderTester):
     def setUp(self):
         self.application = testpages.TestApplication(
             model.BaseRoot([
                 CMissingMethodLayout("missing"),
                 CLayout("good"),
+                FLayout("flayout"),
             ])
         )
         self.application.testing = 2
@@ -40,4 +53,8 @@ class TestLayoutRender(testpages.RenderTester):
 
     def test_render(self):
         assert self.call("good")
+
+    def test_render(self):
+        assert self.call("flayout")
+
 
