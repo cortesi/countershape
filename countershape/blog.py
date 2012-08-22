@@ -103,7 +103,7 @@ class _PostList(_Postfix):
     def _makeList(self, posts, num, title):
         monthyear = None
         output = html.DIV(_class=self.CSS_PREFIX)
-        output.addChild(html.H1(title))
+        output.addChild(html.H2(title))
         postlst = []
         for i in posts:
             if not num:

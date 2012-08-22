@@ -128,7 +128,7 @@ class BasePage(tinytree.Tree):
     """
         Objects inheriting from this class should over-ride the run() method,
         which will be called with the arguments of the page submission as
-        keywords. 
+        keywords.
     """
     # Name of page (possibly not unique)
     name = None
@@ -159,6 +159,12 @@ class BasePage(tinytree.Tree):
         self.application = app
         sp = self.structuralPath()
         self.path = os.path.sep + (os.path.sep).join([i.name for i in sp])
+
+    def under(self, path):
+        p = state.application.getPage(path)
+        if p == self:
+            return True
+        return self.isDocDescendantOf(p)
 
     def structuralPath(self):
         """
@@ -301,7 +307,7 @@ class Header(object):
         if meta != None:
             for k, v in meta.iteritems():
                 self.metaData(k, v)
-            
+
         for i in reversed(adds):
             self.path(i)
         return "\n".join(
@@ -386,16 +392,16 @@ class BaseApplication(object):
             Examples:
 
                 /foo       - A node named "foo" on the structural root.
-                
+
                 foo        - Any node named "foo". If there is more than one, this
                              will raise an Ambiguous Link error.
-                             
+
                 ./foo      - A descendant of the current page named foo.
-                
+
                 ^/foo      - An ancestor of the current page named foo.
-                
+
                 -/foo      - A sibling of the current page named foo.
-                
+
                 $/foo      - A page in the same subtree as the current page.
                              This means that the page is either a descendant,
                              or a sibling or an ancestor of the current page.
@@ -463,7 +469,7 @@ class BaseApplication(object):
             s = "Invalid argument to getPage: %s."%repr(toPage) +\
                 " Must be either a string or a Page object."
             raise ApplicationError(s)
-    
+
     def getPath(self, path):
         """
             path        :   A list of path elements.
@@ -472,7 +478,7 @@ class BaseApplication(object):
             tuple which is the path "remainder". So, a request for /foo/bar/woo
             would result in a path argument of ["foo", "bar", "woo"]. If this
             matches a page "foo", the remainder will be ["bar", "woo"].
-            
+
             Always returns a page, or raises an error.
         """
         l = len(path)
