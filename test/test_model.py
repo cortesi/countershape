@@ -274,22 +274,21 @@ class TestPageModel:
         assert self.t.getPage("$/base")
         assert not self.t.getPage("$/X")
 
-    def test_matchPage(self):
-        assert self.b.matchPage([], False)
-        assert self.b.matchPage(["two"], False)
-        assert self.b.matchPage(["one", "two"], False)
-        assert not self.b.matchPage(["two", "two"], False)
-        assert self.s1.matchPage(["sub1", "page"], False)
-        assert self.s1.matchPage(["page"], False)
-        assert self.s2.matchPage(["page"], False)
+    def test_match(self):
+        assert self.b.match([], False)
+        assert self.b.match("", False)
+        assert self.b.match(["two", "test"], False)
+        assert self.b.match(["one", "two", "test"], False)
+        assert not self.b.match(["two", "two", "test"], False)
 
-        assert self.s1.matchPage(["sub1", "page"], True)
-        assert not self.s1.matchPage(["page"], True)
-        assert not self.r.matchPage(["page"], False)
+        assert self.s1.match(["sub1", "page", "end"], False)
+        assert self.s1.match(["page", "end"], False)
+        assert self.s2.match(["page", "end"], False)
 
-    def test_root_url(self):
-        state.page = self.t.getPage(os.path.join("one","two"))
-        assert str(model.UrlTo("BaseRoot")) == ".."
+        assert self.s1.match(["sub1", "page", "end"], True)
+        assert self.s1.match("sub1/page/end", True)
+        assert not self.s1.match(["page", "end"], True)
+        assert not self.r.match(["page", "end"], False)
 
     def test_getPath(self):
         page, path = self.t.getPath(["one", "two"])

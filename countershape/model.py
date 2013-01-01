@@ -184,15 +184,16 @@ class BasePage(tinytree.Tree):
         """
         pass
 
-    def matchPage(self, path, exact):
+    def match(self, path, exact):
         """
             Walk up the tree to see if we match the specified path.
 
-            path    :   A list of path elements, NOT including the name of the
-            current page. I.e. for a path foo/bar, this function would be
-            called on the page named "bar" with path argument ["foo"].
+            path:   A list of path elements, or a string path specification.
+
         """
-        sp = self.structuralPath()[:-1]
+        if isinstance(path, basestring):
+            path = [i for i in path.split(os.path.sep) if i]
+        sp = self.structuralPath()
         for j in reversed(path):
             if not sp:
                 return False
@@ -430,11 +431,10 @@ class BaseApplication(object):
             if any([isParent, isChild, isSibling, isLocal]) and not fromPage:
                 s = "Relative page link '%s' outside of page call context."%toPage
                 raise ApplicationError(s)
-            path = []
             path = [i for i in os.path.normpath(toPage).split(os.path.sep) if i and i != "."]
             if not path:
                 return self.root
-            pname = path.pop()
+            pname = path[-1]
             pagelist = self._pages.get(pname, None)
             if pagelist:
                 match = None
@@ -456,7 +456,7 @@ class BaseApplication(object):
                         ]
                         if not any(values):
                             continue
-                    if p.matchPage(path, exact):
+                    if p.match(path, exact):
                         if match:
                             raise ApplicationError(
                                     "Ambiguous path specification: %s."%toPage
