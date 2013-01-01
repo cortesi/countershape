@@ -25,7 +25,7 @@ def makeURL(destination, **args):
     """
         If destination is a list-like object, it is treated as a series of path
         components.
-        
+
         Creates a link with the given destination and page arguments. If the
         argument value is sequence-like (not string-like) it will be treated as
         mulitple values with the same name.
@@ -175,7 +175,7 @@ class BuffIter:
             return self.buff.pop()
         else:
             return self.itr.next()
-    
+
 
 class Data:
     def __init__(self, name):
