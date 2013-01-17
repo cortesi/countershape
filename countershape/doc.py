@@ -9,7 +9,7 @@ class Options:
         An Options object, injected into the namespace as "options".
 
         On the commandline, options are specified either as "name=value" pairs,
-        or just as names, in which case the value is True. 
+        or just as names, in which case the value is True.
     """
     def __init__(self, lst):
         self.__dict__["opts"] = {}
@@ -34,7 +34,7 @@ class Options:
         for k, v in self.__dict__["opts"].items():
             r.append("%s=%s"%(k, v))
         return "\n".join(r)
-            
+
 
 class _Bunch:
     def __init__(self, **kwds):
@@ -110,13 +110,13 @@ class _DocHTMLPage(model.HTMLPage, _DocMixin):
 class Page(_DocHTMLPage):
     """
         Pages are always guaranteed to have a Directory object parent.
-    """ 
+    """
     def __init__(self, name, title=None, namespace=None, src=None, pageTitle=None):
         htmlextensions=['html','htm']
         htmlext=os.path.extsep+'html'
         filename_ext=os.path.splitext(name)
         self.fileext=None
-        if len(filename_ext[1])==0 or (len(filename_ext[1])>0 and (filename_ext[1][1:]).lower() not in htmlextensions): 
+        if len(filename_ext[1])==0 or (len(filename_ext[1])>0 and (filename_ext[1][1:]).lower() not in htmlextensions):
             self.fileext=filename_ext[1]
             name = "%s%s"%(filename_ext[0],htmlext)
         _DocHTMLPage.__init__(self, name, title, namespace, src, pageTitle)
@@ -129,12 +129,12 @@ class Page(_DocHTMLPage):
                 filepath = os.path.splitext(os.path.join(self.src))[0]+self.fileext
             else:
                 filepath = self.src
-                
+
             try:
                 s = codecs.open(os.path.join(filepath), "r", "utf-8").read()
             except UnicodeDecodeError:
-                s = codecs.open(os.path.join(filepath), "r", "latin-1").read()            
-                
+                s = codecs.open(os.path.join(filepath), "r", "latin-1").read()
+
             if self.fileext is not None and self.fileext.lower() in [".md", ".markdown", ".mdtext"]:
                     self.namespace[dt] = template.Template(markup.Markdown(), s)
             elif self.fileext is not None and (self.fileext).lower() in [".rst", ".rest", ".rstext"]:
@@ -345,4 +345,4 @@ class Doc(model.BaseApplication):
 
     def __call__(self, page):
         return model.BaseApplication.__call__(self, page)
-        
+
