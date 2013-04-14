@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import os.path, sys
 from optparse import OptionParser, OptionGroup
-from countershape import doc, blog, analysis
+from countershape import doc, blog, analysis, model
 
 class CSDoc:
     usage = "usage: %prog [options] src [dst]"
@@ -61,7 +61,12 @@ class CSDoc:
         elif options.bloghasnooption:
             analysis.blog_has_no_option(d, options.bloghasnooption)
         elif not options.dummy:
-            d.render(args[1])
+            try:
+                d.render(args[1])
+            except model.ApplicationError, v:
+                print >> sys.stderr, "Error in %s"%v.page.src
+                print >> sys.stderr, "\t", v
+                sys.exit(1)
             lst = filter(
                     lambda x: isinstance(x, blog.Post), d.root.preOrder()
                 )

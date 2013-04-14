@@ -10,11 +10,11 @@ try:
     class Markdown:
         def __init__(self, html4tags=False, tab_width=4, safe_mode=None, extras=None, link_patterns=None, use_file_vars=False):
             self.markdowner = markdown2.Markdown(
-                html4tags, 
-                tab_width, 
-                safe_mode, 
-                extras, 
-                link_patterns, 
+                html4tags,
+                tab_width,
+                safe_mode,
+                extras,
+                link_patterns,
                 use_file_vars
             )
 

@@ -8,7 +8,10 @@ import countershape, html, layout
 import utils, state
 
 
-class ApplicationError(Exception): pass
+class ApplicationError(Exception):
+    def __init__(self, msg):
+        Exception.__init__(self, msg)
+        self.page = state.page
 
 
 class UrlTo:
