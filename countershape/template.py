@@ -10,7 +10,6 @@ class DummySyntax:
         return "<pre>%s\n</pre>"%unicode(cubictemp.escape(txt))
 
 
-#begin nocover
 try:
     import pygments, pygments.lexers, pygments.formatters
     from pygments import highlight
@@ -39,7 +38,6 @@ try:
                 )
 except ImportError:
     Syntax = DummySyntax
-#end nocover
 
 
 def cubescript(txt):

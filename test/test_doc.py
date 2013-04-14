@@ -138,7 +138,6 @@ class TestPage(testpages.DummyState):
         assert "test" == str(self.d._getLayoutComponent("testAttr"))
 
     def test_getLayoutComponent_pageTitle(self):
-        print self.d._getLayoutComponent("pageTitle")
         assert str(self.d._getLayoutComponent("pageTitle")) == "PageTitle"
         self.application.root.titlePrefix = "prefix-"
         assert str(self.d._getLayoutComponent("pageTitle")) == "prefix-PageTitle"

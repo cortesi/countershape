@@ -83,13 +83,14 @@ class TestMarkdown(testpages.DummyState):
         assert "__one__" in s
 
 
-class TestRst(testpages.DummyState):
-    def test_str(self):
-        s = """name@!this.name!@name"""
-        t = countershape.template.Template(markup.RST(), s, this=countershape.state.page)
-        s = str(t)
-        assert "TestPage" in s
-        assert "<p>" in s
+if markup.RST:
+    class TestRst(testpages.DummyState):
+        def test_str(self):
+            s = """name@!this.name!@name"""
+            t = countershape.template.Template(markup.RST(), s, this=countershape.state.page)
+            s = str(t)
+            assert "TestPage" in s
+            assert "<p>" in s
 
 
 class TestFileTemplate(testpages.DummyState):
