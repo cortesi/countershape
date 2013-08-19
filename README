@@ -21,11 +21,9 @@ Countershape requires the following modules:
 
     - TinyTree
         http://github.com/cortesi/tinytree
-        http://dev.nullcube.com
 
     - Cubictemp
         http://github.com/cortesi/cubictemp
-        http://dev.nullcube.com
 
 
 Optional modules:
