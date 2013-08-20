@@ -201,6 +201,7 @@ class _PostRenderer(html._Renderable):
                 title = title,
                 posttime = posttime,
                 postdata = postbody,
+                by = self.post.by,
                 postfixes = [i() for i in postfixes]
                 )
 
@@ -225,7 +226,7 @@ class Post(doc._DocHTMLPage):
             :time DateTime object - publication time
         """
         self.blog = blog
-        self.title, self.time, self.data, self.short, self.options, self.url, self.tags = self.fromPath(src)
+        self.title, self.time, self.data, self.short, self.options, self.url, self.tags, self.by = self.fromPath(src)
         if "draft" in self.options:
             self.structural = False
         name = os.path.splitext(os.path.basename(src))[0] + ".html"
@@ -275,6 +276,7 @@ class Post(doc._DocHTMLPage):
         options = set()
         tags = set()
         url = None
+        by = None
         for i in lines:
             i = i.strip()
             if not i:
@@ -288,6 +290,8 @@ class Post(doc._DocHTMLPage):
                 value = match.group(2)
                 if name.lower() == "time":
                     time = klass._timeFromStr(value)
+                elif name.lower() == "by":
+                    by = value.strip()
                 elif name.lower() == "url":
                     url = value.strip()
                 elif name.lower() == "short":
@@ -315,10 +319,10 @@ class Post(doc._DocHTMLPage):
         data = "\n".join(list(lines))
         if not title:
             raise ValueError("Not a valid post - no title found.")
-        return title, time, data, short, options, url, tags
+        return title, time, data, short, options, url, tags, by
 
     @classmethod
-    def toStr(klass, title, time, data, short, options, url, tags):
+    def toStr(klass, title, time, data, short, options, url, tags, by):
         """
             Return a string representation of this post.
         """
@@ -334,6 +338,8 @@ class Post(doc._DocHTMLPage):
             meta.append("tags: %s"%(",".join(tags)))
         if url:
             meta.append("url: %s"%url)
+        if by:
+            meta.append("by: %s"%by)
         meta += [
                 "",
                 data
@@ -352,7 +358,8 @@ class Post(doc._DocHTMLPage):
                 self.short,
                 self.options,
                 self.url,
-                self.tags
+                self.tags,
+                self.by
             )
         )
         f.close()

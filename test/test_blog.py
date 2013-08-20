@@ -116,7 +116,7 @@ class TestPost:
             is
             data
         """
-        title, time, data, short, options, link, tags = blog.Post.fromStr(data)
+        title, time, data, short, options, link, tags, by = blog.Post.fromStr(data)
         check(title, time, data, short, options, tags)
 
         data = """
@@ -132,7 +132,7 @@ class TestPost:
             is
             data
         """
-        title, time, data, short, options, link, tags = blog.Post.fromStr(data)
+        title, time, data, short, options, link, tags, by = blog.Post.fromStr(data)
         check(title, time, data, short, options, tags)
 
 
@@ -149,7 +149,7 @@ class TestPost:
             is
             data
         """
-        title, time, data, short, options, link, tags = blog.Post.fromStr(data)
+        title, time, data, short, options, link, tags, by = blog.Post.fromStr(data)
         check(title, time, data, short, options, tags)
 
     def test_fromStr_err(self):
@@ -166,7 +166,7 @@ class TestPost:
         tutils.raises("invalid option", blog.Post.fromStr, data)
 
     def test_fromPath(self):
-        title, time, data, short, options, link, tags = blog.Post.fromPath(tutils.test_data.path("testblog/postone"))
+        title, time, data, short, options, link, tags, by = blog.Post.fromPath(tutils.test_data.path("testblog/postone"))
         assert not tags
         assert title == "Title One"
         assert short == "multi\nline\nshort"
@@ -183,31 +183,35 @@ class TestPost:
             self.post.short,
             self.post.options,
             self.post.url,
-            self.post.tags
+            self.post.tags,
+            self.post.by
         )
-        title, time, data, short, options, url, tags = blog.Post.fromStr(s)
+        title, time, data, short, options, url, tags, by = blog.Post.fromStr(s)
         assert self.post.short == short
         assert self.post.title == title
         assert self.post.time == time
         assert self.post.data == data
         assert self.post.tags == tags
+        assert self.post.by == by
 
     def test_toStr_noshort(self):
         p = blog.Post(tutils.test_data.path("blogpages/testpost_noshort"), DummyBlog())
-        title, time, data, short, options, url, tags = blog.Post.fromStr(p.toStr(
+        title, time, data, short, options, url, tags, by = blog.Post.fromStr(p.toStr(
             p.title,
             p.time,
             p.data,
             p.short,
             p.options,
             p.url,
-            p.tags
+            p.tags,
+            p.by
         ))
         assert p.short == short
         assert p.title == title
         assert p.time == time
         assert p.data == data
         assert p.tags == tags
+        assert p.by == by
 
 
 class TestRewrite:
