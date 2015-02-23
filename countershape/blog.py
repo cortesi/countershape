@@ -556,6 +556,11 @@ class Blog:
             fullrss=fullrss
         )
 
+    def recent(self, n):
+        posts = list(self.blogdir.sortedPosts())
+        posts = [i for i in posts if "draft" not in i.options]
+        return posts[:n]
+
     def __call__(self):
         return self.blogdir
 
