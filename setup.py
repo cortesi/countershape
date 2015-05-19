@@ -87,6 +87,8 @@ setup(
         "cubictemp",
         "docutils",
         "markdown2",
-        "pygments"
+        "pygments",
+        "bottle",
+        "livereload"
     ],
 )

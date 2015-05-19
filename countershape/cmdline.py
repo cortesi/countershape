@@ -1,7 +1,28 @@
 import os.path
 import sys
 import argparse
+
+import bottle
+import livereload
+
 from . import doc, blog, analysis, model
+
+
+def make_app(root):
+    app = bottle.Bottle()
+
+    @app.route('<path:path>')
+    def servestatic(path):
+        idx = os.path.join(root, path.lstrip("/"), "index.html")
+        print root, path, idx
+        if os.path.exists(idx):
+            return bottle.static_file(
+                os.path.join(path, "index.html"),
+                root=root
+            )
+        return bottle.static_file(path, root=root)
+
+    return app
 
 
 def main():
@@ -18,6 +39,11 @@ def main():
         "-d", "--dummy",
         action="store_true", dest="dummy", default=False,
         help="Perform a dummy run - don't render any files."
+    )
+    parser.add_argument(
+        "-l", "--live",
+        action="store_true", dest="live", default=False,
+        help="Start a live server."
     )
     group = parser.add_argument_group("Analysis")
     group.add_argument(
@@ -88,16 +114,25 @@ def main():
     elif args.bloghasnooption:
         analysis.blog_has_no_option(d, args.bloghasnooption)
     elif not args.dummy:
-        try:
-            d.render(args.dst)
-        except model.ApplicationError, v:
-            print >> sys.stderr, "Error in %s"%v.page.src
-            print >> sys.stderr, "\t", v
-            sys.exit(1)
-        lst = filter(
-            lambda x: isinstance(x, blog.Post), d.root.preOrder()
-        )
-        for i in lst:
-            if i.changed:
-                print >> sys.stderr, "Rewriting %s"%i.src
-                i.rewrite()
+        def rerender():
+            d = doc.Doc(args.src, args.options)
+            print "RENDERING"
+            try:
+                d.render(args.dst)
+            except model.ApplicationError, v:
+                print >> sys.stderr, "Error in %s"%v.page.src
+                print >> sys.stderr, "\t", v
+                sys.exit(1)
+            lst = filter(
+                lambda x: isinstance(x, blog.Post), d.root.preOrder()
+            )
+            for i in lst:
+                if i.changed:
+                    print >> sys.stderr, "Rewriting %s"%i.src
+                    i.rewrite()
+        rerender()
+        if args.live:
+            app = make_app(os.path.abspath(args.dst))
+            server = livereload.Server(app)
+            server.watch(args.src, func=rerender)
+            server.serve()
