@@ -77,7 +77,11 @@ setup(
     url = "http://dev.nullcube.com",
     packages = packages,
     package_data = package_data,
-    scripts = ["cshape"],
+    entry_points = {
+        "console_scripts": [
+            "cshape = countershape.cmdline:main"
+        ]
+    },
     install_requires=[
         "tinytree",
         "cubictemp",
