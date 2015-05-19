@@ -1,6 +1,8 @@
 import os
-import platform, sys
+import platform
+import sys
 from distutils.core import setup
+
 
 def _fnmatch(name, patternList):
     for i in patternList:
@@ -65,23 +67,22 @@ def findPackages(path, dataExclude=[]):
     return packages, package_data
 
 
-
 packages, package_data = findPackages("countershape")
 setup(
-        name = "countershape",
-        version = "0.1",
-        description = "A framework for rendering static documentation.",
-        author = "Nullcube Pty Ltd",
-        author_email = "aldo@nullcube.com",
-        url = "http://dev.nullcube.com",
-        packages = packages,
-        package_data = package_data,
-        scripts = ["cshape"],
-        install_requires=[
-            "tinytree",
-            "cubictemp",
-            "docutils",
-            "markdown2",
-            "pygments"
-        ],
+    name = "countershape",
+    version = "0.2",
+    description = "A framework for rendering static documentation.",
+    author = "Nullcube Pty Ltd",
+    author_email = "aldo@nullcube.com",
+    url = "http://dev.nullcube.com",
+    packages = packages,
+    package_data = package_data,
+    scripts = ["cshape"],
+    install_requires=[
+        "tinytree",
+        "cubictemp",
+        "docutils",
+        "markdown2",
+        "pygments"
+    ],
 )

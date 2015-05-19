@@ -345,4 +345,3 @@ class Doc(model.BaseApplication):
 
     def __call__(self, page):
         return model.BaseApplication.__call__(self, page)
-
