@@ -1,11 +1,12 @@
 """
     This module provides a high-level framework for web applications.
 """
-import os.path, sys, cStringIO, inspect, types, copy, datetime
-import mimetypes, time
-import cubictemp, tinytree
-import countershape, html, layout
-import utils, state
+import os.path
+import types
+import datetime
+
+import tinytree
+from . import html, layout, utils, state
 
 
 class ApplicationError(Exception):
@@ -282,10 +283,12 @@ class Header(object):
         self._cssPath.append(
             unicode(html.LINK(rel="StyleSheet", href=path, type="text/css", **attrs))
         )
+
     def metaData(self, key, value):
         self._metaData.append(
             unicode("<META %s=\"%s\">" % (key.upper(), value) )
         )
+        
     def path(self, spec):
         path = unicode(spec)
         if path.endswith(".css"):
@@ -533,4 +536,3 @@ class BaseApplication(object):
         d = page.render()
         self.post(page)
         return d
-

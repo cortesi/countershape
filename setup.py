@@ -88,7 +88,6 @@ setup(
         "docutils",
         "markdown2",
         "pygments",
-        "bottle",
         "livereload"
     ],
 )

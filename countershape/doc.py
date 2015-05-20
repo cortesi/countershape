@@ -1,8 +1,12 @@
-from __future__ import with_statement
-import os, os.path, re, fnmatch, shutil, shlex, string,  codecs
-import model, utils, html, state, template, widgets, markup
+import os
+import os.path
+import fnmatch
+import codecs
+
+from . import model, utils, html, template, widgets, markup
 
 _ConfFile = "index.py"
+
 
 class Options:
     """
@@ -332,7 +336,7 @@ class Doc(model.BaseApplication):
             os.mkdir(destination)
         for i in self.root.preOrder():
             path = [j.name for j in i.structuralPath()]
-            if (not i.internal) and (not i is self.root):
+            if (not i.internal) and (i is not self.root):
                 if len(path) > 1:
                     newdir = os.path.join(destination, *path[:-1])
                     if not os.path.exists(newdir):

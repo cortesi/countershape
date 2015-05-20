@@ -2,27 +2,10 @@ import os.path
 import sys
 import argparse
 
-import bottle
-import livereload
+import logging
+import livereload, livereload.handlers
 
 from . import doc, blog, analysis, model
-
-
-def make_app(root):
-    app = bottle.Bottle()
-
-    @app.route('<path:path>')
-    def servestatic(path):
-        idx = os.path.join(root, path.lstrip("/"), "index.html")
-        print root, path, idx
-        if os.path.exists(idx):
-            return bottle.static_file(
-                os.path.join(path, "index.html"),
-                root=root
-            )
-        return bottle.static_file(path, root=root)
-
-    return app
 
 
 def main():
@@ -114,15 +97,14 @@ def main():
     elif args.bloghasnooption:
         analysis.blog_has_no_option(d, args.bloghasnooption)
     elif not args.dummy:
-        def rerender():
+        def render():
             d = doc.Doc(args.src, args.options)
-            print "RENDERING"
             try:
                 d.render(args.dst)
             except model.ApplicationError, v:
                 print >> sys.stderr, "Error in %s"%v.page.src
                 print >> sys.stderr, "\t", v
-                sys.exit(1)
+                return
             lst = filter(
                 lambda x: isinstance(x, blog.Post), d.root.preOrder()
             )
@@ -130,9 +112,24 @@ def main():
                 if i.changed:
                     print >> sys.stderr, "Rewriting %s"%i.src
                     i.rewrite()
-        rerender()
+            return d
+
+        render()
         if args.live:
-            app = make_app(os.path.abspath(args.dst))
-            server = livereload.Server(app)
+            def rerender():
+                render()
+                for w in livereload.handlers.LiveReloadHandler.waiters:
+                    msg = {
+                        'command': 'reload',
+                        'path': "*",
+                        'liveCSS': True
+                    }
+                    try:
+                        w.write_message(msg)
+                    except:
+                        logging.error('Error sending message', exc_info=True)
+                        livereload.handlers.LiveReloadHandler.waiters.remove(waiter)
+
+            server = livereload.Server()
             server.watch(args.src, func=rerender)
-            server.serve()
+            server.serve(root=args.dst)
