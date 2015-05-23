@@ -116,8 +116,8 @@ class Page(_DocHTMLPage):
         Pages are always guaranteed to have a Directory object parent.
     """
     def __init__(self, name, title=None, namespace=None, src=None, pageTitle=None):
-        htmlextensions = ['html','htm']
-        htmlext = os.path.extsep+'html'
+        htmlextensions = ['html', 'htm']
+        htmlext = os.path.extsep + 'html'
         filename_ext = os.path.splitext(name)
         self.fileext = None
         if len(filename_ext[1]) == 0 or (len(filename_ext[1])>0 and (filename_ext[1][1:]).lower() not in htmlextensions):
@@ -130,7 +130,9 @@ class Page(_DocHTMLPage):
         dt = self.findAttr("contentName")
         if dt not in self.namespace:
             if self.fileext is not None:
-                filepath = os.path.splitext(os.path.join(self.src))[0]+self.fileext
+                filepath = os.path.splitext(
+                    os.path.join(self.src)
+                )[0] + self.fileext
             else:
                 filepath = self.src
 
@@ -252,10 +254,11 @@ class DocRoot(Directory):
     contentName = "body"
     markup = markup.Default()
     _baseNS = dict(
-        syntax              = template.Syntax,
-        readFrom            = readFrom,
-        cubescript          = template.cubescript,
+        syntax = template.Syntax,
+        readFrom = readFrom,
+        cubescript = template.cubescript,
     )
+
     def __init__(self, src, options=[]):
         """
             src:    Path to the top of the document tree.

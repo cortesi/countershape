@@ -1,8 +1,10 @@
 import tinytree
-import html, state, model, utils
+from . import html, state, model, utils
+
 
 class NavBar(html._Renderable):
     _cubictemp_unescaped = 1
+
     def __init__(self, items, **attrs):
         html._Renderable.__init__(self)
         self.items = items
@@ -65,7 +67,7 @@ class _PageIndex(html._Renderable):
                 yield i.getPrevious()
 
     def _mkUL(self, n, exclude, depth):
-        if not depth is None and depth <= 0:
+        if depth is not None and depth <= 0:
             return
         itms = []
         if self.currentActive:
@@ -95,8 +97,8 @@ class _PageIndex(html._Renderable):
                         )
                     )
             if p.children:
-                if not depth is None:
-                    d = self._mkUL(p.children, exclude, depth-1)
+                if depth is not None:
+                    d = self._mkUL(p.children, exclude, depth - 1)
                 else:
                     d = self._mkUL(p.children, exclude, None)
                 if d:
@@ -147,6 +149,7 @@ class PageTrail:
         the current page
     """
     _cubictemp_unescaped = 1
+
     def __init__(self, node):
         self.node = node
 
@@ -161,4 +164,3 @@ class PageTrail:
                     trailList.append(unicode(model.LinkTo(crumb.path)))
         trailList.reverse()
         return " -> ".join(trailList)
-

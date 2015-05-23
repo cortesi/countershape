@@ -8,29 +8,30 @@ class Layout:
     dtd = '<!DOCTYPE html>\n'
     bodyClass = ""
     components = ("pageTitle", "body", "header")
+
     def __init__(self, path = None, **kwargs):
         if path:
             body = template.File(False, path)
         else:
             body = html.Value("body")
         meta = html.META(
-                            content = "text/html; charset=utf-8"
-                        )
+            content = "text/html; charset=utf-8"
+        )
         meta["http-equiv"] = "Content-Type"
         htmlBody = html.BODY(body, **kwargs)
         if self.bodyClass:
             htmlBody["class"] = self.bodyClass
         self.frame = html.Group(
-                html.RawStr(self.dtd),
-                html.HTML(
-                    html.HEAD(
-                        meta,
-                        html.Value("header"),
-                        html.TITLE(html.Value("pageTitle"))
-                    ),
-                    htmlBody,
-                    xmlns = "http://www.w3.org/1999/xhtml",
-                )
+            html.RawStr(self.dtd),
+            html.HTML(
+                html.HEAD(
+                    meta,
+                    html.Value("header"),
+                    html.TITLE(html.Value("pageTitle"))
+                ),
+                htmlBody,
+                xmlns = "http://www.w3.org/1999/xhtml",
+            )
         )
 
     def __call__(self, page):
@@ -46,6 +47,7 @@ class FileLayout:
         A framework for layout objects, sourced from a file.
     """
     components = ("pageTitle", "body", "header")
+
     def __init__(self, path = None, **kwargs):
         self.layout = template.File(False, path)
 

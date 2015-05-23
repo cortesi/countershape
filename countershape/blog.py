@@ -14,6 +14,8 @@ import cubictemp
 
 from . import html, model, doc, utils, template
 
+BLOG_EXT = ['.md', '.mdtext', '.txtile', '.textile', '.rstext', '.rst', '']
+
 
 class Links:
     """
@@ -72,10 +74,10 @@ class Links:
                 )
             )
         t = template.Template(
-                self.markup,
-                file(utils.data.path("resources/links.html")).read(),
-                links = links
-            )
+            self.markup,
+            file(utils.data.path("resources/links.html")).read(),
+            links = links
+        )
         return unicode(t)
 
 
@@ -139,21 +141,25 @@ class _PostList(_Postfix):
             return ""
 
 
-
 class RecentPosts(_PostList):
     """
-        A postfix that shows a list of recent top posts, excluding link posts (i.e.
-        posts with a specified url option).
+        A postfix that shows a list of recent top posts, excluding link posts
+        (i.e. posts with a specified url option).
     """
     RECENT_TITLE = "More posts:"
     RELATED_TITLE = "Related:"
     CSS_PREFIX = "recent"
+
     def __init__(self, recent, related):
         self.recent, self.related = recent, related
 
     def index(self, idx):
         posts = idx.blog.blogdir.sortedPosts()
-        return self._makeList(posts[idx.posts:], self.recent, self.RECENT_TITLE)
+        return self._makeList(
+            posts[idx.posts:],
+            self.recent,
+            self.RECENT_TITLE
+        )
 
     def solo(self, post):
         posts = list(post.blog.blogdir.sortedPosts())
@@ -163,7 +169,9 @@ class RecentPosts(_PostList):
         related_posts = []
         if self.related:
             related_posts = post.related(posts, self.related)
-            parts.append(self._makeList(related_posts, self.related, self.RELATED_TITLE))
+            parts.append(
+                self._makeList(related_posts, self.related, self.RELATED_TITLE)
+            )
         if self.recent:
             for i in related_posts:
                 if i in posts:
@@ -199,10 +207,10 @@ class _PostRenderer(html._Renderable):
             posttime = self.post.time.strftime("%d %B %Y")
             links = Links(self.post.findAttr("markup"))
             postbody = template.Template(
-                            self.post.findAttr("markup"),
-                            self.post.data,
-                            links = links
-                        )
+                self.post.findAttr("markup"),
+                self.post.data,
+                links = links
+            )
             postfixes = self.postfixes
             t = template.Template(
                 None,
@@ -212,7 +220,7 @@ class _PostRenderer(html._Renderable):
                 postdata = postbody,
                 by = self.post.by,
                 postfixes = [i() for i in postfixes]
-                )
+            )
 
             return unicode(t)
 
@@ -229,6 +237,7 @@ class Post(doc._DocHTMLPage):
     _TimeFmt = "%Y-%m-%d %H:%M"
     _metaRe = re.compile(r"(\w+):(.*)")
     _validOptions = set(["fullrss", "draft", "top"])
+
     def __init__(self, src, blog):
         """
             :title Title of this post.
@@ -405,9 +414,8 @@ class BlogDirectory(doc.Directory):
             return BlogDirectory(os.path.basename(src), src, self.blog)
         else:
             filename, ext = os.path.splitext(os.path.basename(src))
-            blog_ext = ['.md', '.mdtext', '.txtile','.textile', '.rstext', '.rst', '']
             ignore = ['']
-            if ext.lower() in blog_ext and not filename.startswith('.') and not os.path.basename(src).lower() in ignore \
+            if ext.lower() in BLOG_EXT and not filename.startswith('.') and not os.path.basename(src).lower() in ignore \
                 and not os.path.getsize(src) == 0:
                 return Post(src, self.blog)
             else:
@@ -487,6 +495,7 @@ class ArchivePage(doc._DocHTMLPage):
 
 class RSSPage(doc._DocHTMLPage, doc._DocMixin):
     structural = False
+
     def __init__(self, name, title, posts, blog, fullrss=False):
         self.name, self.title, self.posts = name, title, posts
         self.blog = blog
@@ -544,7 +553,9 @@ class Blog:
         self.blogdesc = blogdesc
         self.postfixes = postfixes
         if not os.path.isdir(src):
-            raise model.ApplicationError("Blog source is not a directory: %s"%src)
+            raise model.ApplicationError(
+                "Blog source is not a directory: %s"%src
+            )
         self.blogdir = BlogDirectory(base, src, self)
 
     def index(self, name, title, posts=10):
@@ -569,7 +580,6 @@ class Blog:
 
     def __call__(self):
         return self.blogdir
-
 
 
 def find_blog(d):

@@ -4,6 +4,7 @@ import tinytree
 
 encoding = "utf-8"
 
+
 class rawstr(unicode):
     _cubictemp_unescaped = True
 
@@ -70,7 +71,7 @@ class Str(_Renderable):
 
     def __unicode__(self):
         return unicode(utils.escape(self.s))
-    
+
 
 class _Tag(_Renderable):
     """
@@ -262,5 +263,3 @@ class Value(_Renderable):
 
     def __str__(self):
         return unicode(self.value)
-
-

@@ -1,4 +1,6 @@
-import datetime, os, shutil
+import datetime
+import os
+import shutil
 import tempfile
 import countershape
 import countershape.model as model
@@ -34,7 +36,9 @@ class TestPost:
         repr(self.post)
 
     def getPost(self):
-        return blog.Post(tutils.test_data.path("blogpages/testpost"), DummyBlog())
+        return blog.Post(
+            tutils.test_data.path("blogpages/testpost"), DummyBlog()
+        )
 
     def test_related(self):
         class Dummy:
@@ -348,4 +352,3 @@ class TestLinks:
         """
         e = l.parse(nobod)
         assert e[0]["body"] is None
-
