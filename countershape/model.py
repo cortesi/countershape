@@ -248,9 +248,9 @@ class BasePage(tinytree.Tree):
 
     def render(self):
         try:
-            bod=[unicode(i) for i in self.run()]
+            bod = [unicode(i) for i in self.run()]
         except UnicodeEncodeError:
-            bod=[unicode(str(i),'latin-1', 'ignore') for i in self.run()]
+            bod = [unicode(str(i), 'latin-1', 'ignore') for i in self.run()]
         return "".join(bod)
 
     def siteUrl(self):
@@ -285,12 +285,19 @@ class Header(object):
 
     def cssPath(self, path, **attrs):
         self._cssPath.append(
-            unicode(html.LINK(rel="StyleSheet", href=path, type="text/css", **attrs))
+            unicode(
+                html.LINK(
+                    rel="StyleSheet",
+                    href=path,
+                    type="text/css",
+                    **attrs
+                )
+            )
         )
 
     def metaData(self, key, value):
         self._metaData.append(
-            unicode("<META %s=\"%s\">" % (key.upper(), value) )
+            unicode("<META %s=\"%s\">" % (key.upper(), value))
         )
 
     def path(self, spec):
@@ -301,7 +308,7 @@ class Header(object):
             self.jsPath(path)
         else:
             s = "Unrecognised resource extension (neither .css nor .js)."
-            raise ValueError, s
+            raise ValueError(s)
 
     def __str__(self):
         sofar = set()
@@ -310,25 +317,25 @@ class Header(object):
             thispage = []
             for j in i:
                 _, base = os.path.split(j.pageSpec)
-                if not base in sofar:
+                if base not in sofar:
                     thispage.append(j)
                     sofar.add(base)
             adds.extend(reversed(thispage))
         meta = self.page.findAttr("metadata")
-        if meta != None:
+        if meta is not None:
             for k, v in meta.iteritems():
                 self.metaData(k, v)
 
         for i in reversed(adds):
             self.path(i)
         return "\n".join(
-                    [
-                        "\n",
-                        unicode(self._metaData),
-                        unicode(self._cssPath),
-                        unicode(self._jsPath),
-                    ]
-                )
+            [
+                "\n",
+                unicode(self._metaData),
+                unicode(self._cssPath),
+                unicode(self._jsPath),
+            ]
+        )
 
 
 class HTMLPage(BasePage):
@@ -339,6 +346,7 @@ class HTMLPage(BasePage):
     """
     defaultLayout = layout.Layout()
     structural = True
+
     def pageTitle(self, *args, **kwargs):
         return self.title or self.name
 
@@ -383,6 +391,7 @@ class BaseRoot(BasePage):
 
 class BaseApplication(object):
     testing = 0
+
     def __init__(self, root):
         """
             Takes the root node of a tree of pages.
@@ -404,8 +413,8 @@ class BaseApplication(object):
 
                 /foo       - A node named "foo" on the structural root.
 
-                foo        - Any node named "foo". If there is more than one, this
-                             will raise an Ambiguous Link error.
+                foo        - Any node named "foo". If there is more than one,
+                             this will raise an Ambiguous Link error.
 
                 ./foo      - A descendant of the current page named foo.
 
@@ -469,7 +478,7 @@ class BaseApplication(object):
                     if p.match(path, exact):
                         if match:
                             raise ApplicationError(
-                                    "Ambiguous path specification: %s."%toPage
+                                "Ambiguous path specification: %s."%toPage
                             )
                         match = p
                 return match
@@ -493,12 +502,12 @@ class BaseApplication(object):
         """
         l = len(path)
         for i in range(l):
-            match = self._pages.get(path[-i-1])
+            match = self._pages.get(path[-i - 1])
             if match:
-                p = os.path.sep + (os.path.sep).join(path[:l-i])
+                p = os.path.sep + (os.path.sep).join(path[:l - i])
                 for j in match:
                     if not j.internal and j.path == p:
-                        return j, path[l-i:]
+                        return j, path[l - i:]
         return self.root, path
 
     def addPage(self, page):

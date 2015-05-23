@@ -1,6 +1,6 @@
 import copy
-import utils
 import tinytree
+from . import utils
 
 encoding = "utf-8"
 

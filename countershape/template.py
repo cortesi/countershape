@@ -1,5 +1,6 @@
-import cubictemp, tinytree
-import model, state, html, widgets
+import cubictemp
+import tinytree
+from . import model, state, html, widgets
 
 
 class DummySyntax:
@@ -13,6 +14,7 @@ class DummySyntax:
 try:
     import pygments, pygments.lexers, pygments.formatters
     from pygments import highlight
+
     class Syntax:
         def __init__(self, lexer, style="native", linenostep=0, linenos=False, cssClass="highlight"):
             self.style = style
@@ -30,12 +32,12 @@ try:
             if self.cssClass:
                 fargs["cssclass"] = self.cssClass
             return "%s\n"%unicode(
-                    pygments.highlight(
-                        txt,
-                        self.lexer,
-                        pygments.formatters.HtmlFormatter(**fargs)
-                    )
+                pygments.highlight(
+                    txt,
+                    self.lexer,
+                    pygments.formatters.HtmlFormatter(**fargs)
                 )
+            )
 except ImportError:
     Syntax = DummySyntax
 
@@ -51,21 +53,21 @@ def cubescript(txt):
 
 def _ns():
     return dict(
-        state               = state,
-        linkTo              = model.LinkTo,
-        aLink               = model.ALink,
-        urlTo               = model.UrlTo,
-        getPage             = state.application.getPage,
-        top                 = model.Top(),
-        siblingIndex        = widgets.SiblingPageIndex(),
-        parentIndex         = widgets.ParentPageIndex(),
+        state = state,
+        linkTo = model.LinkTo,
+        aLink = model.ALink,
+        urlTo = model.UrlTo,
+        getPage = state.application.getPage,
+        top = model.Top(),
+        siblingIndex = widgets.SiblingPageIndex(),
+        parentIndex = widgets.ParentPageIndex(),
         extendedParentIndex = widgets.ExtendedParentPageIndex(),
-        siblingNavBar       = widgets.SiblingNavBar,
-        next                = state.page.findForwards(lambda x: x.title),
-        previous            = state.page.findBackwards(lambda x: x.title),
-        this                = state.page,
+        siblingNavBar = widgets.SiblingNavBar,
+        next = state.page.findForwards(lambda x: x.title),
+        previous = state.page.findBackwards(lambda x: x.title),
+        this = state.page,
         # Processors
-        htmlescape          = cubictemp.escape
+        htmlescape = cubictemp.escape
     )
 
 

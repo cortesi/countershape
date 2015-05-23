@@ -1,6 +1,6 @@
 import sys
 import os
-import blog
+from . import blog
 
 
 def nicepath(b):
