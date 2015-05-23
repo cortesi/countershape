@@ -1,7 +1,9 @@
-import shutil, os
+import shutil
+import os
 import countershape
 from countershape import doc, model, sitemap
-import testpages, tutils
+from . import testpages, tutils
+
 
 class DocTestPage(doc._DocHTMLPage):
     def __init__(self, name):
@@ -15,21 +17,6 @@ class DocTestPage(doc._DocHTMLPage):
 class DummyPage(DocTestPage):
     def __init__(self):
         DocTestPage.__init__(self, "DummyPage")
-
-
-class TestPython:
-    def test_init(self):
-        d = doc.PythonPage("name", "title", tutils.test_data.path("testmod/foo.py"))
-
-    def test_repr(self):
-        d = doc.PythonPage("name", "title", tutils.test_data.path("testmod/foo.py"))
-        repr(d)
-
-        m = doc.PythonModule(tutils.test_data.path("testmod"))
-        repr(m)
-
-    def test_index(self):
-        d = doc.PythonModule("name", "title", tutils.test_data.path("testmod"))
 
 
 class TestDocHTMLPage:
@@ -51,8 +38,6 @@ class TestRenderTests:
                 doc.Page(tutils.test_data.path("doctree/test.html"), "Title"),
                 doc.Copy(tutils.test_data.path("doctree/copy")),
                 doc.Copy("copy2", src=tutils.test_data.path("doctree/copy")),
-                doc.PythonPage(tutils.test_data.path("testmod/foo.py")),
-                doc.PythonModule(tutils.test_data.path("testmod")),
                 sitemap.Sitemap("sitemap.xml")
             ])
         )
@@ -63,8 +48,6 @@ class TestRenderTests:
             assert os.path.isfile(os.path.join(t, "test.html"))
             assert os.path.isfile(os.path.join(t, "copy"))
             assert os.path.isfile(os.path.join(t, "copy2"))
-            assert os.path.isdir(os.path.join(t, "testmod"))
-            assert os.path.isfile(os.path.join(t, "testmod_index.html"))
             assert os.path.isfile(os.path.join(t, "sitemap.xml"))
 
 
@@ -195,4 +178,3 @@ class TestOptions:
         o.four = "five"
         assert o.four == "five"
         str(o)
-

@@ -1,9 +1,12 @@
-import sys, os
+import sys
+import os
 import blog
+
 
 def nicepath(b):
     cwdl = len(os.getcwd())
     return "." + b.src[cwdl:]
+
 
 def blog_tags(d, fp=sys.stdout):
     b = blog.find_blog(d)
@@ -38,5 +41,3 @@ def blog_has_no_option(d, option, fp=sys.stdout):
     for i in b.blogdir.sortedPosts():
         if option not in i.options:
             print >> fp, nicepath(i)
-
-

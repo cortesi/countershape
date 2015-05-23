@@ -20,6 +20,7 @@ class UrlTo:
         A lazily evaluated URL to a page in this application.
     """
     _cubictemp_unescaped = True
+
     def __init__(self, pageSpec, anchor=None):
         """
             :pageSpec A Countershape page specification
@@ -78,6 +79,7 @@ class ALink(html._Renderable):
         Lazy simple A HREF link.
     """
     _cubictemp_unescaped = 1
+
     def __init__(self, page, txt, anchor=None):
         self.page, self.txt, self.anchor = page, txt, anchor
         html._Renderable.__init__(self)
@@ -93,6 +95,7 @@ class LinkTo(html._Renderable):
         the _link_ attribute for the destination page.
     """
     _cubictemp_unescaped = True
+
     def __init__(self, page):
         """
             :page Page specification
@@ -146,11 +149,12 @@ class BasePage(tinytree.Tree):
     structural = False
     # Set to an absolute path if the page has a source file
     src = None
+
     def __init__(self, children = None):
         if state.page and not state.application.testing:
             raise ApplicationError(
-                    "Page object instantiated during page call. Last page: %s"%state.page.name
-                )
+                "Page object instantiated during page call. Last page: %s"%state.page.name
+            )
         tinytree.Tree.__init__(self, children)
         if not self.name:
             self.name = self.__class__.__name__
@@ -209,7 +213,7 @@ class BasePage(tinytree.Tree):
 
     def top(self):
         l = len(self.structuralPath()) - 1
-        return (os.path.sep).join([".."]*l)
+        return (os.path.sep).join([".."] * l)
 
     def absolutePath(self):
         p = [i.name for i in self.structuralPath()]
@@ -226,7 +230,7 @@ class BasePage(tinytree.Tree):
         for common, e in enumerate(zip(fromPath, toPath)):
             if not e[0] == e[1]:
                 break
-        backtrack = [".."]*((len(fromPath) - 1)-common)
+        backtrack = [".."] * ((len(fromPath) - 1) - common)
         return utils.urlCat(*(backtrack + toPath[common:]))
 
     def isDocDescendantOf(self, other):
@@ -288,7 +292,7 @@ class Header(object):
         self._metaData.append(
             unicode("<META %s=\"%s\">" % (key.upper(), value) )
         )
-        
+
     def path(self, spec):
         path = unicode(spec)
         if path.endswith(".css"):

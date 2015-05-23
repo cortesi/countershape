@@ -116,19 +116,19 @@ class Page(_DocHTMLPage):
         Pages are always guaranteed to have a Directory object parent.
     """
     def __init__(self, name, title=None, namespace=None, src=None, pageTitle=None):
-        htmlextensions=['html','htm']
-        htmlext=os.path.extsep+'html'
-        filename_ext=os.path.splitext(name)
-        self.fileext=None
-        if len(filename_ext[1])==0 or (len(filename_ext[1])>0 and (filename_ext[1][1:]).lower() not in htmlextensions):
-            self.fileext=filename_ext[1]
-            name = "%s%s"%(filename_ext[0],htmlext)
+        htmlextensions = ['html','htm']
+        htmlext = os.path.extsep+'html'
+        filename_ext = os.path.splitext(name)
+        self.fileext = None
+        if len(filename_ext[1]) == 0 or (len(filename_ext[1])>0 and (filename_ext[1][1:]).lower() not in htmlextensions):
+            self.fileext = filename_ext[1]
+            name = "%s%s"%(filename_ext[0], htmlext)
         _DocHTMLPage.__init__(self, name, title, namespace, src, pageTitle)
 
     def _prime(self, app):
         _DocHTMLPage._prime(self, app)
         dt = self.findAttr("contentName")
-        if not dt in self.namespace:
+        if dt not in self.namespace:
             if self.fileext is not None:
                 filepath = os.path.splitext(os.path.join(self.src))[0]+self.fileext
             else:
@@ -153,6 +153,7 @@ class Page(_DocHTMLPage):
 
 class Copy(model.BasePage, _DocMixin):
     link = model.Link([])
+
     def __init__(self, name, title=None, src=None):
         self.name, self.src = self._nameSrc(name, src)
         model.BasePage.__init__(self)
@@ -164,63 +165,10 @@ class Copy(model.BasePage, _DocMixin):
         return file(self.src, "rb").read()
 
 
-class PythonPage(_DocHTMLPage):
-    pygmentsStyle = "native"
-    def __init__(self, name, title=None, src=None):
-        if not title:
-            title = os.path.basename(name)
-        _DocHTMLPage.__init__(self, name, title, None, src)
-        self.src = os.path.abspath(self.src)
-        name = os.path.basename(name)
-        self.name = self.name + ".html"
-
-    def body(self):
-        code = file(self.src).read()
-        toroot = []
-        for i in self.pathToRoot():
-            if isinstance(i, PythonPage):
-                toroot.append(i)
-            else:
-                break
-        toroot.reverse()
-        yield html.H2("/".join(i.title for i in toroot))
-        yield html.rawstr(self.namespace["syntax"]("py")(code))
-
-    def __repr__(self):
-        return "PythonPage(%s)"%self.src
-
-
-class PythonModule(_DocHTMLPage):
-    structural = True
-    def __init__(self, name, title=None, src=None):
-        _DocHTMLPage.__init__(self, name, title, None, src)
-        self.src = os.path.abspath(self.src)
-        self.d = StaticDirectory(self.name)
-        self.name = self.name + "_index.html"
-        for f in sorted(os.listdir(self.src)):
-            ctitle = os.path.basename(f)
-            p = os.path.join(self.src, f)
-            if os.path.isfile(p) and p.endswith(".py"):
-                self.d.addChild(PythonPage(p))
-            else:
-                if os.path.exists(os.path.join(p, "__init__.py")):
-                    self.d.addChild(PythonModule(p, title=f))
-
-    def register(self, parent):
-        _DocHTMLPage.register(self, parent)
-        self.parent.children.insert(self.index() + 1, self.d)
-        self.d.register(parent)
-
-    def body(self):
-        yield widgets.ParentPageIndex(self.getNext(), divclass="sourceindex")
-
-    def __repr__(self):
-        return "PythonModule(%s)"%self.src
-
-
 class StaticDirectory(model.BasePage):
     structural = True
     internal = True
+
     def __init__(self, name):
         model.BasePage.__init__(self)
         self.name = name
@@ -235,6 +183,7 @@ class Directory(StaticDirectory, _DocMixin):
     """
     internal = True
     excludePatterns = utils.fileExcludePatterns + ["*/%s"%_ConfFile, "*/_*"]
+
     def __init__(self, name, src=None, namespace=None):
         self.stdHeaders = []
         name, self.src = self._nameSrc(name, src)
@@ -271,7 +220,7 @@ class Directory(StaticDirectory, _DocMixin):
                 if fnmatch.fnmatch(fullSrc, patt):
                     break
             else:
-                if not fullSrc in seen:
+                if fullSrc not in seen:
                     self.addChild(self.defaultAction(fullSrc))
 
     def defaultAction(self, src):
@@ -346,6 +295,3 @@ class Doc(model.BaseApplication):
                 if isinstance(out, unicode):
                     out = out.encode("utf-8")
                 f.write(out)
-
-    def __call__(self, page):
-        return model.BaseApplication.__call__(self, page)

@@ -1,9 +1,18 @@
 from __future__ import with_statement
-import os.path, re, datetime, urllib, codecs, functools, textwrap, tempfile, shutil
-import html, model, doc, utils, template
+import os.path
+import re
+import datetime
+import urllib
+import codecs
+import functools
+import textwrap
+import tempfile
+import shutil
+
 import rssgen
 import cubictemp
 
+from . import html, model, doc, utils, template
 
 
 class Links:
@@ -255,7 +264,7 @@ class Post(doc._DocHTMLPage):
     @classmethod
     def fromPath(klass, path):
         try:
-        	s = codecs.open(path, "r", "utf-8").read()
+            s = codecs.open(path, "r", "utf-8").read()
         except:
             s = codecs.open(path, "r", "latin-1").read()
         try:
@@ -340,10 +349,7 @@ class Post(doc._DocHTMLPage):
             meta.append("url: %s"%url)
         if by:
             meta.append("by: %s"%by)
-        meta += [
-                "",
-                data
-            ]
+        meta += ["", data]
         return "\n".join(meta)
 
     def rewrite(self):

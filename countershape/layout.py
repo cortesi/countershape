@@ -1,4 +1,5 @@
-import html, template
+from . import html, template
+
 
 class Layout:
     """
