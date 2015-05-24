@@ -1,7 +1,9 @@
-import countershape, countershape.template
+import countershape
+import countershape.template
 import countershape.doc
 import countershape.model as model
 import tutils
+
 
 class TPage(model.BasePage):
     def __init__(self, name = None, structural = False, internal = False):
@@ -33,8 +35,10 @@ class TPageHTMLFileTemplate(model.HTMLPage):
 
     def body(self):
         yield countershape.template.File(
-                    False, tutils.test_data.path("templates/TPageHTMLFileTemplate.html"), this=self
-            )
+            False,
+            tutils.test_data.path("templates/TPageHTMLFileTemplate.html"),
+            this=self
+        )
 
 
 class TPageHTML(TPageHTMLTemplate):
@@ -79,7 +83,7 @@ class RenderTester:
         """
         p = self.application.getPage(spec)
         if not p:
-            raise model.ApplicationError, "No such page: %s"%spec
+            raise model.exceptions.ApplicationError, "No such page: %s"%spec
         self.application.pre(p)
         return "".join([unicode(i) for i in self.application(p)])
 
@@ -109,11 +113,9 @@ class DummyState(RenderTester):
             p = self.application.getPage(self.pageName)
         if not p:
             p = "Could not find test page."
-            raise model.ApplicationError, p
+            raise model.exceptions.ApplicationError, p
         self.application.pre(p)
 
     def tearDown(self):
         if self.application:
             self.application._resetState()
-
-

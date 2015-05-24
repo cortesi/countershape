@@ -1,5 +1,122 @@
-import tinytree
-from . import html, state, model, utils
+from . import html, state, utils, exceptions
+
+
+class UrlTo:
+    """
+        A lazily evaluated URL to a page in this application.
+    """
+    _cubictemp_unescaped = True
+
+    def __init__(self, pageSpec, anchor=None):
+        """
+            :pageSpec A Countershape page specification
+            :anchor Anchor to add to URL
+        """
+        self.pageSpec = pageSpec
+        self.anchor = anchor
+
+    def __str__(self):
+        to = state.application.getPage(self.pageSpec)
+        if not to:
+            s = "Link to unknown page: %s."%self.pageSpec
+            raise exceptions.ApplicationError(s)
+        if to.internal:
+            s = "URL request to internal page: %s."%to.name
+            raise exceptions.ApplicationError(s)
+
+        absdomain = state.page.findAttr("absolute_domain", None)
+        if absdomain:
+            u = to.absolutePath()
+            u = utils.urlCat(to.siteUrl(), u)
+        else:
+            rel = state.page.relativePath([i.name for i in to.structuralPath()])
+            u = utils.makeURL(rel)
+
+        if self.anchor:
+            u = u + "#%s"%self.anchor
+        return u
+
+
+class Link(html._Renderable):
+    """
+        A standard href link.
+    """
+    def __init__(self, destination):
+        """
+            The arguments are as follows:
+
+                destination         Link destination (optional)
+        """
+        html._Renderable.__init__(self)
+        self.destination = destination
+
+    def __call__(self, valobj=None, **kwargs):
+        return html._Renderable.__call__(self, valobj, **kwargs)
+
+    def __str__(self):
+        content = self.page.title or self.page.name
+        vals = {}
+        url = UrlTo(self.destination, **vals)
+        return unicode(html.A(content, href=url))
+
+
+class ALink(html._Renderable):
+    """
+        Lazy simple A HREF link.
+    """
+    _cubictemp_unescaped = 1
+
+    def __init__(self, page, txt, anchor=None):
+        self.page, self.txt, self.anchor = page, txt, anchor
+        html._Renderable.__init__(self)
+
+    def __str__(self):
+        url = UrlTo(self.page, anchor=self.anchor)
+        return unicode(html.A(self.txt, href=url))
+
+
+class LinkTo(html._Renderable):
+    """
+        A lazily evaluated link to a page in this application, created using
+        the _link_ attribute for the destination page.
+    """
+    _cubictemp_unescaped = True
+
+    def __init__(self, page):
+        """
+            :page Page specification
+        """
+        html._Renderable.__init__(self)
+        self.page = page
+
+    def _getLink(self):
+        p = state.application.getPage(self.page)
+        if not p:
+            s = "Link to unknown page: %s."%self.page
+            raise exceptions.ApplicationError(s)
+        l = p.link()
+        l.page = p
+        return l
+
+    def __call__(self):
+        """
+            This method complies with the _Renderable interface, although we
+            don't return a LinkTo object - we return the link object itself.
+        """
+        return self._getLink()
+
+    def __str__(self):
+        return unicode(self._getLink())
+
+
+class Top:
+    """
+        Lazy URL to top of site.
+    """
+    def __str__(self):
+        return utils.urlCat("./", state.page.top())
+
+
 
 
 class NavBar(html._Renderable):
@@ -24,12 +141,12 @@ class NavBar(html._Renderable):
                 continue
             if state.page.isDocDescendantOf(i):
                 a = html.LI(
-                    html.A(i.title, href=model.UrlTo(i), _class="selected"),
+                    html.A(i.title, href=UrlTo(i), _class="selected"),
                     _class = "selected",
                 )
             else:
                 a = html.LI(
-                    html.A(i.title, href=model.UrlTo(i))
+                    html.A(i.title, href=UrlTo(i))
                 )
             lst.append(a)
         return unicode(html.UL(lst, **self.attrs))
@@ -92,7 +209,7 @@ class _PageIndex(html._Renderable):
                 else:
                     itms.append(
                         html.LI(
-                            model.LinkTo(p),
+                            LinkTo(p),
                             _class = klass
                         )
                     )
@@ -161,6 +278,6 @@ class PageTrail:
                 if crumb.internal:
                     trailList.append(crumb.name)
                 else:
-                    trailList.append(unicode(model.LinkTo(crumb.path)))
+                    trailList.append(unicode(LinkTo(crumb.path)))
         trailList.reverse()
         return " -> ".join(trailList)

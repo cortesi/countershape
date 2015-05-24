@@ -11,9 +11,9 @@ ns.sidebar = widgets.SiblingPageIndex('/index.html', depth=1)
 this.layout = layout.Layout("_layout.html")
 
 this.stdHeaders = [
-    model.UrlTo("media/css/reset.css"),
-    model.UrlTo("media/css/docstyle.css"),
-    model.UrlTo("media/css/content.css"),
+    widgets.UrlTo("media/css/reset.css"),
+    widgets.UrlTo("media/css/docstyle.css"),
+    widgets.UrlTo("media/css/content.css"),
 ]
     
 

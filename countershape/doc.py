@@ -3,7 +3,7 @@ import os.path
 import fnmatch
 import codecs
 
-from . import model, utils, html, template, widgets, markup
+from . import model, utils, template, markup, layout, widgets
 
 _ConfFile = "index.py"
 
@@ -71,10 +71,11 @@ class _DocMixin:
 
 
 class _DocHTMLPage(model.HTMLPage, _DocMixin):
-    link = model.Link([])
+    link = widgets.Link([])
     _verbatimComponents = "pageTitle"
     _pageTitle = None
-    
+    layout = layout.DefaultLayout
+
     def __init__(self, name, title, namespace=None, src=None, pageTitle=None):
         model.HTMLPage.__init__(self)
         self.name, self.src = self._nameSrc(name, src)
@@ -155,7 +156,7 @@ class Page(_DocHTMLPage):
 
 
 class Copy(model.BasePage, _DocMixin):
-    link = model.Link([])
+    link = widgets.Link([])
 
     def __init__(self, name, title=None, src=None):
         self.name, self.src = self._nameSrc(name, src)
@@ -235,7 +236,7 @@ class Directory(StaticDirectory, _DocMixin):
             if src.endswith(".css") or src.endswith(".js"):
                 urlpath = src[len(self.application.root.src):]
                 self.stdHeaders.append(
-                    model.UrlTo(urlpath)
+                    widgets.UrlTo(urlpath)
                 )
             return Copy(src)
         else:

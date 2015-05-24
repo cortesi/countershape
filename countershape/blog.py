@@ -12,7 +12,7 @@ import shutil
 import rssgen
 import cubictemp
 
-from . import html, model, doc, utils, template
+from . import html, model, doc, utils, template, widgets
 
 BLOG_EXT = ['.md', '.mdtext', '.txtile', '.textile', '.rstext', '.rst', '']
 
@@ -123,7 +123,7 @@ class _PostList(_Postfix):
                 postlst.append(
                     html.Group(
                         html.SPAN(
-                            model.LinkTo(i),
+                            widgets.LinkTo(i),
                             _class="%s-post"%self.CSS_PREFIX
                         ),
                         " ",
@@ -203,7 +203,7 @@ class _PostRenderer(html._Renderable):
             if self.post.url:
                 title = html.A(self.post.title, href=self.post.url)
             else:
-                title = model.LinkTo(self.post)
+                title = widgets.LinkTo(self.post)
             posttime = self.post.time.strftime("%d %B %Y")
             links = Links(self.post.findAttr("markup"))
             postbody = template.Template(
@@ -474,7 +474,7 @@ class ArchivePage(doc._DocHTMLPage):
                 output.addChild(html.H1(monthyear))
             postlst.append(
                 html.Group(
-                    html.SPAN(model.LinkTo(i), _class="archive-post"),
+                    html.SPAN(widgets.LinkTo(i), _class="archive-post"),
                     " ",
                     html.SPAN(i.time.strftime("%d %b %Y"), _class="archive-date")
                 )
@@ -553,7 +553,7 @@ class Blog:
         self.blogdesc = blogdesc
         self.postfixes = postfixes
         if not os.path.isdir(src):
-            raise model.ApplicationError(
+            raise model.exceptions.ApplicationError(
                 "Blog source is not a directory: %s"%src
             )
         self.blogdir = BlogDirectory(base, src, self)

@@ -3,6 +3,7 @@
 # Vim swap files
 *.swp
 *.swo
+*.egg-info
 /build
 /dist
 /doc

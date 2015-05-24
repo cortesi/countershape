@@ -101,7 +101,7 @@ def main():
             d = doc.Doc(args.src, args.options)
             try:
                 d.render(args.dst)
-            except model.ApplicationError, v:
+            except model.exceptions.ApplicationError, v:
                 print >> sys.stderr, "Error in %s"%v.page.src
                 print >> sys.stderr, "\t", v
                 return

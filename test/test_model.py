@@ -1,9 +1,8 @@
-import shutil, time, cStringIO, os
-import countershape, testpages
-from countershape import utils
+import os
 from countershape import model
 from countershape import state
-import testpages, tutils
+from countershape import widgets
+from . import testpages, tutils
 
 
 class TestContext(testpages.DummyState):
@@ -165,44 +164,44 @@ class TestApplication(testpages.DummyState):
         assert self.application.getPage("").name == "BaseRoot"
 
     def test_LinkTo(self):
-        assert str(model.LinkTo("base"))
-        assert model.LinkTo("base")()
+        assert str(widgets.LinkTo("base"))
+        assert widgets.LinkTo("base")()
 
     def test_linkTo_withTitle(self):
-        assert str(model.LinkTo("TPageWithTitle"))
+        assert str(widgets.LinkTo("TPageWithTitle"))
 
     def test_linkTo_nopage(self):
         tutils.raises(
             "unknown page",
             str,
-            model.LinkTo("Nonexistent")
+            widgets.LinkTo("Nonexistent")
         )
 
     def test_linkTo_nolink(self):
-        assert str(model.LinkTo("TPageNoLink"))
+        assert str(widgets.LinkTo("TPageNoLink"))
 
     def test_url(self):
-        assert str(model.UrlTo("TPageNoLink"))
+        assert str(widgets.UrlTo("TPageNoLink"))
 
     def test_url_anchor(self):
-        s = str(model.UrlTo("TPageNoLink", anchor="foo"))
+        s = str(widgets.UrlTo("TPageNoLink", anchor="foo"))
         assert s == "base/TPageNoLink#foo"
 
     def test_url_nopage(self):
-        tutils.raises("unknown page", str, model.UrlTo("Nonexistent"))
+        tutils.raises("unknown page", str, widgets.UrlTo("Nonexistent"))
 
     def test_url_internal(self):
-        tutils.raises("internal page", str, model.UrlTo("internal"))
+        tutils.raises("internal page", str, widgets.UrlTo("internal"))
 
     def test_alink(self):
-        s = str(model.ALink("TPageNoLink", "text", "foo"))
+        s = str(widgets.ALink("TPageNoLink", "text", "foo"))
         assert  "TPageNoLink#foo" in s
 
     def test_linkTo_internal(self):
         tutils.raises(
-            model.ApplicationError,
+            model.exceptions.ApplicationError,
             str,
-            model.LinkTo("internal")
+            widgets.LinkTo("internal")
         )
 
 
@@ -313,9 +312,9 @@ class TestPageModel:
 
     def test_url(self):
         state.page = self.t.getPage(os.path.join("one","two"))
-        assert str(model.UrlTo("two")) == "two"
+        assert str(widgets.UrlTo("two")) == "two"
         state.page = self.t.getPage("one")
-        assert str(model.UrlTo("one")) == "one"
+        assert str(widgets.UrlTo("one")) == "one"
 
 
 class TestPage:
@@ -346,7 +345,7 @@ class TestPageModelErrors:
             ]
         ])
         tutils.raises(
-            model.ApplicationError,
+            model.exceptions.ApplicationError,
             testpages.TestApplication,
             r
         )
@@ -361,7 +360,7 @@ class TestPageModelErrors:
             ]
         ])
         tutils.raises(
-            model.ApplicationError,
+            model.exceptions.ApplicationError,
             testpages.TestApplication,
             r
         )
@@ -372,7 +371,7 @@ class TestPageModelErrors:
             testpages.TPage("test", structural=False),
         ])
         tutils.raises(
-            model.ApplicationError,
+            model.exceptions.ApplicationError,
             testpages.TestApplication,
             r
         )
@@ -418,12 +417,10 @@ class TestApplicationRender(testpages.RenderTester):
         assert self.call("one")
 
     def test_call_nonexistent(self):
-        tutils.raises(model.ApplicationError, self.call, "nonexistent")
+        tutils.raises(model.exceptions.ApplicationError, self.call, "nonexistent")
 
 
 class TestApplicationError:
     def test_str(self):
-        a = model.ApplicationError("foo")
+        a = model.exceptions.ApplicationError("foo")
         str(a)
-
-

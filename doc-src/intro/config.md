@@ -71,8 +71,8 @@ this.layout = countershape.Layout("_layout.html")
         </ul>
 <!--(block | syntax("py"))-->
 this.stdHeaders = [
-    model.UrlTo("media/css/syntax.css"),
-    model.UrlTo("media/js/menu.js"),
+    widgets.UrlTo("media/css/syntax.css"),
+    widgets.UrlTo("media/js/menu.js"),
 ]
 <!--(end)-->
         </td>
@@ -114,7 +114,7 @@ this.layout = countershape.Layout( path="_layout.html" )
 this.titlePrefix = "Countershape "
 
 this.stdHeaders = [
-    model.UrlTo("media/css/syntax.css"),
+    widgets.UrlTo("media/css/syntax.css"),
 ]
 <!--(end)-->
 

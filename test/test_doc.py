@@ -1,4 +1,3 @@
-import shutil
 import os
 import countershape
 from countershape import doc, model, sitemap
@@ -103,7 +102,7 @@ class TestPage(testpages.DummyState):
         os.chdir("../..")
 
     def test_call(self):
-        assert "mynameistest" in  self.application(self.d)
+        assert "mynameistest" in self.application(self.d)
 
     def test_repr(self):
         repr(self.d)
@@ -162,6 +161,7 @@ class TRoot(model.BaseRoot):
     stdHeaders = []
     namespace = countershape.doc.DocRoot._baseNS
     site_url = "http://foo.com"
+    layout = countershape.layout.DefaultLayout
 
 
 class TestOptions:

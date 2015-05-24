@@ -1,6 +1,6 @@
 import cubictemp
 import tinytree
-from . import model, state, html, widgets
+from . import state, widgets
 
 
 class DummySyntax:
@@ -12,8 +12,9 @@ class DummySyntax:
 
 
 try:
-    import pygments, pygments.lexers, pygments.formatters
-    from pygments import highlight
+    import pygments
+    import pygments.lexers
+    import pygments.formatters
 
     class Syntax:
         def __init__(self, lexer, style="native", linenostep=0, linenos=False, cssClass="highlight"):
@@ -54,11 +55,11 @@ def cubescript(txt):
 def _ns():
     return dict(
         state = state,
-        linkTo = model.LinkTo,
-        aLink = model.ALink,
-        urlTo = model.UrlTo,
+        linkTo = widgets.LinkTo,
+        aLink = widgets.ALink,
+        urlTo = widgets.UrlTo,
         getPage = state.application.getPage,
-        top = model.Top(),
+        top = widgets.Top(),
         siblingIndex = widgets.SiblingPageIndex(),
         parentIndex = widgets.ParentPageIndex(),
         extendedParentIndex = widgets.ExtendedParentPageIndex(),

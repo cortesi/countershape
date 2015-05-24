@@ -6,129 +6,7 @@ import types
 import datetime
 
 import tinytree
-from . import html, layout, utils, state
-
-
-class ApplicationError(Exception):
-    def __init__(self, msg):
-        Exception.__init__(self, msg)
-        self.page = state.page
-
-
-class UrlTo:
-    """
-        A lazily evaluated URL to a page in this application.
-    """
-    _cubictemp_unescaped = True
-
-    def __init__(self, pageSpec, anchor=None):
-        """
-            :pageSpec A Countershape page specification
-            :anchor Anchor to add to URL
-        """
-        self.pageSpec = pageSpec
-        self.anchor = anchor
-
-    def __str__(self):
-        to = state.application.getPage(self.pageSpec)
-        if not to:
-            s = "Link to unknown page: %s."%self.pageSpec
-            raise ApplicationError(s)
-        if to.internal:
-            s = "URL request to internal page: %s."%to.name
-            raise ApplicationError(s)
-
-        absdomain = state.page.findAttr("absolute_domain", None)
-        if absdomain:
-            u = to.absolutePath()
-            u = utils.urlCat(to.siteUrl(), u)
-        else:
-            rel = state.page.relativePath([i.name for i in to.structuralPath()])
-            u = utils.makeURL(rel)
-
-        if self.anchor:
-            u = u + "#%s"%self.anchor
-        return u
-
-
-class Link(html._Renderable):
-    """
-        A standard href link.
-    """
-    def __init__(self, destination):
-        """
-            The arguments are as follows:
-
-                destination         Link destination (optional)
-        """
-        html._Renderable.__init__(self)
-        self.destination = destination
-
-    def __call__(self, valobj=None, **kwargs):
-        return html._Renderable.__call__(self, valobj, **kwargs)
-
-    def __str__(self):
-        content = self.page.title or self.page.name
-        vals = {}
-        url = UrlTo(self.destination, **vals)
-        return unicode(html.A(content, href=url))
-
-
-class ALink(html._Renderable):
-    """
-        Lazy simple A HREF link.
-    """
-    _cubictemp_unescaped = 1
-
-    def __init__(self, page, txt, anchor=None):
-        self.page, self.txt, self.anchor = page, txt, anchor
-        html._Renderable.__init__(self)
-
-    def __str__(self):
-        url = UrlTo(self.page, anchor=self.anchor)
-        return unicode(html.A(self.txt, href=url))
-
-
-class LinkTo(html._Renderable):
-    """
-        A lazily evaluated link to a page in this application, created using
-        the _link_ attribute for the destination page.
-    """
-    _cubictemp_unescaped = True
-
-    def __init__(self, page):
-        """
-            :page Page specification
-        """
-        html._Renderable.__init__(self)
-        self.page = page
-
-    def _getLink(self):
-        p = state.application.getPage(self.page)
-        if not p:
-            s = "Link to unknown page: %s."%self.page
-            raise ApplicationError(s)
-        l = p.link()
-        l.page = p
-        return l
-
-    def __call__(self):
-        """
-            This method complies with the _Renderable interface, although we
-            don't return a LinkTo object - we return the link object itself.
-        """
-        return self._getLink()
-
-    def __str__(self):
-        return unicode(self._getLink())
-
-
-class Top:
-    """
-        Lazy URL to top of site.
-    """
-    def __str__(self):
-        return utils.urlCat("./", state.page.top())
+from . import html, utils, state, layout, exceptions, widgets
 
 
 class BasePage(tinytree.Tree):
@@ -152,13 +30,13 @@ class BasePage(tinytree.Tree):
 
     def __init__(self, children = None):
         if state.page and not state.application.testing:
-            raise ApplicationError(
+            raise exceptions.ApplicationError(
                 "Page object instantiated during page call. Last page: %s"%state.page.name
             )
         tinytree.Tree.__init__(self, children)
         if not self.name:
             self.name = self.__class__.__name__
-        self.link = Link(self)
+        self.link = widgets.Link(self)
 
     def _prime(self, app):
         """
@@ -256,7 +134,7 @@ class BasePage(tinytree.Tree):
     def siteUrl(self):
         r = self.findAttr("site_url")
         if not r:
-            raise ApplicationError("Requires a site URL.")
+            raise exceptions.ApplicationError("Requires a site URL.")
         return r
 
     def lastMod(self):
@@ -344,8 +222,8 @@ class HTMLPage(BasePage):
         would normally over-ride a suite of methods that depend on the
         particular layout object chosen for the class.
     """
-    defaultLayout = layout.Layout()
     structural = True
+    layout = layout.DefaultLayout
 
     def pageTitle(self, *args, **kwargs):
         return self.title or self.name
@@ -364,7 +242,7 @@ class HTMLPage(BasePage):
         meth = self.findAttr(attr)
         if meth is None:
             s = "Cannot find layout component \"%s\""%attr
-            raise ApplicationError(s)
+            raise exceptions.ApplicationError(s)
         if callable(meth):
             ret = meth(*args, **kwargs)
             if isinstance(ret, types.GeneratorType):
@@ -378,7 +256,7 @@ class HTMLPage(BasePage):
             return meth
 
     def render(self):
-        layout = self.findAttr("layout", self.defaultLayout)
+        layout = self.findAttr("layout")
         return unicode(layout(self))
 
     def __repr__(self):
@@ -449,7 +327,7 @@ class BaseApplication(object):
                 toPage = toPage[2:]
             if any([isParent, isChild, isSibling, isLocal]) and not fromPage:
                 s = "Relative page link '%s' outside of page call context."%toPage
-                raise ApplicationError(s)
+                raise exceptions.ApplicationError(s)
             path = [i for i in os.path.normpath(toPage).split(os.path.sep) if i and i != "."]
             if not path:
                 return self.root
@@ -477,7 +355,7 @@ class BaseApplication(object):
                             continue
                     if p.match(path, exact):
                         if match:
-                            raise ApplicationError(
+                            raise exceptions.ApplicationError(
                                 "Ambiguous path specification: %s."%toPage
                             )
                         match = p
@@ -487,7 +365,7 @@ class BaseApplication(object):
         else:
             s = "Invalid argument to getPage: %s."%repr(toPage) +\
                 " Must be either a string or a Page object."
-            raise ApplicationError(s)
+            raise exceptions.ApplicationError(s)
 
     def getPath(self, path):
         """
@@ -516,7 +394,7 @@ class BaseApplication(object):
         for i in lst:
             if i.path == page.path:
                 e = "Ambiguous page structure: duplicate page %s."
-                raise ApplicationError(e%(page.path))
+                raise exceptions.ApplicationError(e%(page.path))
         lst.append(page)
 
     def pre(self, p):
@@ -530,7 +408,7 @@ class BaseApplication(object):
                 "state.application : %s"%state.application,
             ]
             s = "Dirty state: (%s)"%(" ;".join(vals))
-            raise ApplicationError(s)
+            raise exceptions.ApplicationError(s)
         if not self.testing:
             self._resetState()
         state.page = p

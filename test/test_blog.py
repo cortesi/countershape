@@ -6,6 +6,7 @@ import countershape
 import countershape.model as model
 import countershape.doc as doc
 import countershape.blog as blog
+import countershape.layout
 import tutils
 
 
@@ -13,6 +14,7 @@ class TestRoot(model.BaseRoot):
     contentName = "body"
     stdHeaders = []
     namespace = doc.DocRoot._baseNS
+    layout = countershape.layout.DefaultLayout
 
 
 class TestPostfix:

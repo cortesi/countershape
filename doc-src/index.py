@@ -8,10 +8,10 @@ this.layout = countershape.Layout("_layout.html")
 this.titlePrefix = "Countershape "
 
 this.stdHeaders = [
-    model.UrlTo("media/css/reset-fonts-grids-base.css"),
-    model.UrlTo("media/css/docstyle-default.css"),
-    model.UrlTo("media/css/docstyle-customised.css"),
-    model.UrlTo("media/css/syntax.css"),
+    widgets.UrlTo("media/css/reset-fonts-grids-base.css"),
+    widgets.UrlTo("media/css/docstyle-default.css"),
+    widgets.UrlTo("media/css/docstyle-customised.css"),
+    widgets.UrlTo("media/css/syntax.css"),
 ]
 this.metadata = {
     "robots":"all",
@@ -30,7 +30,7 @@ ns.sidebar = countershape.widgets.SiblingPageIndex(
 ns.license = file("../LICENSE").read()
 
 ns.imgBanner = countershape.html.IMG(
-    src=countershape.model.UrlTo("countershape.png"),
+    src=countershape.widgets.UrlTo("countershape.png"),
     width="280",
     height="77",
     align="right"
