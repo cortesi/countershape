@@ -223,8 +223,6 @@ class HTMLPage(BasePage):
         particular layout object chosen for the class.
     """
     structural = True
-    layout = layout.DefaultLayout
-
     def pageTitle(self, *args, **kwargs):
         return self.title or self.name
 
@@ -256,8 +254,8 @@ class HTMLPage(BasePage):
             return meth
 
     def render(self):
-        layout = self.findAttr("layout")
-        return unicode(layout(self))
+        l = self.findAttr("layout", layout.DefaultLayout)
+        return unicode(l(self))
 
     def __repr__(self):
         return "HTMLPage(%s)"%self.name

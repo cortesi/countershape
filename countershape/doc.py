@@ -74,7 +74,6 @@ class _DocHTMLPage(model.HTMLPage, _DocMixin):
     link = widgets.Link([])
     _verbatimComponents = "pageTitle"
     _pageTitle = None
-    layout = layout.DefaultLayout
 
     def __init__(self, name, title, namespace=None, src=None, pageTitle=None):
         model.HTMLPage.__init__(self)
