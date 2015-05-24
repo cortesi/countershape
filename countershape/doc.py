@@ -3,7 +3,7 @@ import os.path
 import fnmatch
 import codecs
 
-from . import model, utils, template, markup, layout, widgets
+from . import model, utils, template, markup, widgets
 
 _ConfFile = "index.py"
 

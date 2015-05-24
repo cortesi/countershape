@@ -117,8 +117,6 @@ class Top:
         return utils.urlCat("./", state.page.top())
 
 
-
-
 class NavBar(html._Renderable):
     _cubictemp_unescaped = 1
 
