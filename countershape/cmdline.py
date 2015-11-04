@@ -3,7 +3,6 @@ import sys
 import argparse
 
 import logging
-import livereload, livereload.handlers
 
 from . import doc, blog, analysis, model
 
@@ -22,11 +21,6 @@ def main():
         "-d", "--dummy",
         action="store_true", dest="dummy", default=False,
         help="Perform a dummy run - don't render any files."
-    )
-    parser.add_argument(
-        "-l", "--live",
-        action="store_true", dest="live", default=False,
-        help="Start a live server."
     )
     group = parser.add_argument_group("Analysis")
     group.add_argument(
@@ -115,21 +109,3 @@ def main():
             return d
 
         render()
-        if args.live:
-            def rerender():
-                render()
-                for w in livereload.handlers.LiveReloadHandler.waiters:
-                    msg = {
-                        'command': 'reload',
-                        'path': "*",
-                        'liveCSS': True
-                    }
-                    try:
-                        w.write_message(msg)
-                    except:
-                        logging.error('Error sending message', exc_info=True)
-                        livereload.handlers.LiveReloadHandler.waiters.remove(waiter)
-
-            server = livereload.Server()
-            server.watch(args.src, func=rerender)
-            server.serve(root=args.dst)

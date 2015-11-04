@@ -69,7 +69,9 @@ class Links:
             links.append(
                 dict(
                     title = template.Template(self.markup, i["title"]),
-                    body = template.Template(self.markup, i["body"]) if i["body"] else None,
+                    body = template.Template(
+                        self.markup, i["body"]
+                    ) if i["body"] else None,
                     link = i["link"],
                 )
             )
@@ -476,7 +478,10 @@ class ArchivePage(doc._DocHTMLPage):
                 html.Group(
                     html.SPAN(widgets.LinkTo(i), _class="archive-post"),
                     " ",
-                    html.SPAN(i.time.strftime("%d %b %Y"), _class="archive-date")
+                    html.SPAN(
+                        i.time.strftime("%d %b %Y"),
+                        _class="archive-date"
+                    )
                 )
             )
         if postlst:
