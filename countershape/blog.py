@@ -87,20 +87,6 @@ class _Postfix:
     """
         Defines a postfix added to blog posts and the index page.
     """
-    def index(self, page):
-        """
-            Page postfix for the index page - will appear once at the bottom of
-            the index page.
-        """
-        return ""
-
-    def inline(self, post):
-        """
-            Postfix for blog posts appearing inline on a page with other posts
-            (i.e. the index page). Will appear after each post.
-        """
-        return ""
-
     def solo(self, post):
         """
             Postfix for blog posts appearing alone on a page (i.e. the
@@ -428,32 +414,6 @@ class BlogDirectory(doc.Directory):
         return sorted(lst, lambda x, y: cmp(y.time, x.time))
 
 
-class IndexPage(doc._DocHTMLPage):
-    def __init__(self, name, title, posts, blog, *postfixes):
-        doc._DocHTMLPage.__init__(self, name, title)
-        self.posts, self.blog, self.postfixes = posts, blog, postfixes
-
-    def _getIndex(self):
-        out = html.Group()
-        for i in self.blog.blogdir.sortedPosts()[:self.posts]:
-            if "draft" in i.options:
-                continue
-            ps = [functools.partial(j.inline, i) for j in self.blog.postfixes]
-            out.addChild(_PostRenderer(i, *ps))
-        for i in self.blog.postfixes:
-            out.addChild(i.index(self))
-        return out
-
-    def _getLayoutComponent(self, attr):
-        if attr == self.findAttr("contentName"):
-            return self._getIndex()
-        else:
-            return doc._DocHTMLPage._getLayoutComponent(self, attr)
-
-    def __repr__(self):
-        return "Index(%s)"%(self.title)
-
-
 class ArchivePage(doc._DocHTMLPage):
     def __init__(self, name, title, blog):
         doc._DocHTMLPage.__init__(self, name, title)
@@ -562,9 +522,6 @@ class Blog:
                 "Blog source is not a directory: %s"%src
             )
         self.blogdir = BlogDirectory(base, src, self)
-
-    def index(self, name, title, posts=10):
-        return IndexPage(name, title, posts, self, *self.postfixes)
 
     def archive(self, name, title):
         return ArchivePage(name, title, self)

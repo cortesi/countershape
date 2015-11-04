@@ -261,7 +261,6 @@ class TestBlog:
         r = TestRoot(
                     [
                         self.b(),
-                        self.b.index("index.html", "Blog"),
                         self.b.archive("name.html", "Title"),
                         self.b.rss("rss.xml", "RS"),
                     ]
@@ -295,18 +294,6 @@ class TestBlog:
         assert a.name == "name"
         assert a.title == "my title"
         a._getArchive()
-
-    def test_index(self):
-        p = self.b.index("name", "my title")
-        countershape.state.application = self.a
-        countershape.state.page = p
-        assert p.name == "name"
-        assert p.title == "my title"
-        p._getIndex()
-
-    def test_index_repr(self):
-        a = self.b.index("name", "my title")
-        repr(a)
 
     def test_rss(self):
         a = self.b.rss("name", "my title")
