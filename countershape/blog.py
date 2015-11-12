@@ -134,7 +134,7 @@ class RecentPosts(_PostList):
         A postfix that shows a list of recent top posts, excluding link posts
         (i.e. posts with a specified url option).
     """
-    RECENT_TITLE = "More posts:"
+    RECENT_TITLE = "Recent posts:"
     RELATED_TITLE = "Related:"
     CSS_PREFIX = "recent"
 
@@ -161,12 +161,9 @@ class RecentPosts(_PostList):
                 self._makeList(related_posts, self.related, self.RELATED_TITLE)
             )
         if self.recent:
-            for i in related_posts:
-                if i in posts:
-                    posts.remove(i)
             parts.append(
                 self._makeList(
-                    [i for i in posts if "top" in i.options],
+                    posts,
                     self.recent,
                     self.RECENT_TITLE
                 )
@@ -384,7 +381,9 @@ class Post(doc._DocHTMLPage):
     def _prime(self, app):
         doc._DocHTMLPage._prime(self, app)
         dt = self.findAttr("contentName")
-        postfixes = [functools.partial(i.solo, self) for i in self.blog.postfixes]
+        postfixes = [
+            functools.partial(i.solo, self) for i in self.blog.postfixes
+        ]
         self.namespace[dt] = _PostRenderer(self, *postfixes)
 
     def __repr__(self):
